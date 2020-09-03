@@ -146,9 +146,15 @@ npm run dev
 <!-- ROADMAP -->
 ## Rotas
 
-### Super User
-See the [open issues](https://github.com/github_username/repo/issues) for a list of proposed features (and known issues).
+A __{url}__ é http://localhost:3000
 
+### Super User
+Para o login do usuário root, utilize a seguinte rota:
+
+| GET                 | {url}/superuser/signin                                                                                                                                                                     |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Corpo da requisição | { 	"email": "youremail@youremail.com", 	"password": "dsdsdss" }                                                                                                                              |
+| Resposta            | {   "superUserId": 1,   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" } |
 
 
 
