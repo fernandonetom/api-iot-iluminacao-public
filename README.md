@@ -70,6 +70,7 @@
       - [Listagem para "hoje"](#listagem-para-hoje)
       - [Listagem para "data" específica](#listagem-para-data-específica)
       - [Listagem para "paríodo"](#listagem-para-paríodo)
+- [Erros e mesagens](#erros-e-mesagens)
 - [Licença](#licença)
 - [Contato](#contato)
 
@@ -377,8 +378,9 @@ Exemplo de requisição:
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
 | Corpo da requisição  | { 	"id": "2", 	"rangeType": "hoje" }                                                                                                                                                  |
-Exemplo da resposta:
 
+
+Exemplo da resposta:
 ```
 [
   {
@@ -449,8 +451,9 @@ Exemplo de requisição:
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
 | Corpo da requisição  | { 	"id": "2", 	"rangeType": "data", "data": "2020-09-02" }                                                                                                                                                  |
-Exemplo da resposta:
 
+
+Exemplo da resposta:
 ```
 [
   {
@@ -477,8 +480,9 @@ Exemplo de requisição:
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
 | Corpo da requisição  | { 	"id": "2", 	"rangeType": "periodo", "dataInicio": "2020-09-01", "dataFim": "2020-09-03" }                                                                                                                                                  |
-Exemplo da resposta:
 
+
+Exemplo da resposta:
 ```
 [
   {
@@ -499,8 +503,8 @@ Exemplo de requisição:
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
 | Corpo da requisição  | { 	"id": "2", 	"rangeType": "periodo", "dataInicio": "2020-09-01", "dataFim": "2020-09-03" }                                                                                                                                                  |
-Exemplo da resposta:
 
+Exemplo da resposta:
 ```
 [
   {
@@ -514,6 +518,32 @@ Exemplo da resposta:
 ]
 ```
 Perceba que o dia 03 não foi mostrado pois não há dados no dia.
+
+## Erros e mesagens
+| Código | Messagem                                       | Descrição                                                                                |
+|--------|------------------------------------------------|------------------------------------------------------------------------------------------|
+| 200    | Criado com sucesso                             | Operação realizada                                                                       |
+| 200    | Excluido com sucesso                           | Dado excluido                                                                            |
+| 200    | Atualizado com sucesso                         | Dado atualizado com sucesso                                                              |
+| 400    | ID não informado                               | O ID da organização, usuário, etc, não foi informado                                     |
+| 400    | Tipo não permitido                             | Tipo não permitido (consulte em [tipos de dados](#tipos-de-dados)                                                          |
+| 400    | Formado dos dados está inválido                | Formado dos dados está inválido (consulte em [listagem de dados](#listagem-de-dados))                        |
+| 400    | Data de inicio é maior que a do fim            | Data de inicio é maior que a do fim ex.: início 2020-09-02 e fim 2020-09-01              |
+| 400    | As datas de início e fim são iguais            | As datas de início e fim devem ser diferentes para listar um período                     |
+| 400    | Email em uso                                   | Email utilizado por outro usuário                                                        |
+| 400    | Email inválido                                 | Deve ser no formado email@provedor.com                                                   |
+| 400    | Campos obrigatório estão em branco             | Campos obrigatório estão em branco                                                       |
+| 401    | Token não informado                            | O token não foi informado na requisição                                                  |
+| 401    | Token inválido                                 | Token inválido ou já expirado                                                            |
+| 401    | Você não tem permissão para executar essa ação | Você não é administrador ou não pode alterar por exemplo um usuário que não lhe pertence |
+| 404    | Organização não encontrada                     | Organização não encontrada no banco de dados                                             |
+| 404    | Usuário não encontrado                         | Usuário não encontrado no banco de dados                                                 |
+| 404    | Super usuário não encontrado                   | Super usuário não encontrado no banco de dados                                           |
+| 404    | Usuário mqtt não encontrado                    | Usuário mqtt não encontrado no banco de dados                                            |
+| 500    | Tente novamente mais tarde                     | Erro interno do servidor                                                                 |
+
+
+
 <!-- LICENSE -->
 ## Licença
 
