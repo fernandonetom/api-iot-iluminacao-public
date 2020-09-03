@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h4>postes</h4>
+  <div class="dispositivos">
+    <div class="checkbox">
+      <label><input type="checkbox" rel="2" onchange="change();"/>Poste 2</label>
+    </div>
+    <div class="checkbox">
+      <label><input type="checkbox" rel="3" onchange="change();"/>Poste 3</label>
+    </div>
+  </div>
+  <h4>dados</h4>
+  <div class="tipos">
+    <div class="checkbox">
+      <label><input type="checkbox" rel="alerta" onchange="change();"/>alerta</label>
+    </div>
+    <div class="checkbox">
+      <label><input type="checkbox" rel="movimentacao" onchange="change();"/>movimentacao</label>
+    </div>
+    <div class="checkbox">
+      <label><input type="checkbox" rel="temperatura" onchange="change();"/>temperatura</label>
+    </div>
+    <div class="checkbox">
+      <label><input type="checkbox" rel="umidade" onchange="change();"/>umidade</label>
+    </div>
+    <div class="checkbox">
+      <label><input type="checkbox" rel="luminosidade" onchange="change();"/>luminosidade</label>
+    </div>
+    <div class="checkbox">
+      <label><input type="checkbox" rel="tensao" onchange="change();"/>tensao</label>
+    </div>
+  </div>
+  <button onclick="submit()">Buscar dados</button>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const tipos = ["alerta", "temperatura", "movimentacao"]
+  const id = [2, 3]
+
+  async function buscar(id, tipos){
+    let response = {}
+    await Promise.all(id.map(async (id)=> {
+      response = {...response, [id]: null}
+      await Promise.all(tipos.map(async (tipo)=> {
+        const {data} = await axios.get(`http://localhost:3000/storage/list/${tipo}`, {id, rangeType: "data", data: "2020-09-02"});
+        response[id] = {...response[id], [tipo]: data}
+      }))
+    }))
+    // await Promise.all(tipos.map(async (tipo)=> {
+    //   const {data} = await axios.post(`http://localhost:3000/storage/list/${tipo}`, {id: 3, rangeType: "hoje"});
+    //   response = {...response, [tipo]: data}
+    // }))
+    console.log(response);
+  }
+  //buscar(id, tipos);
+
+  function change() {
+    // var dispositivos = document.querySelectorAll(".dispositivos input[type='checkbox']");
+    // var tipos = document.querySelectorAll(".tipos input[type='checkbox']");
+    // var filtros = {
+    //   dispositivos: getClassOfCheckedCheckboxes(dispositivos),
+    //   tipos: getClassOfCheckedCheckboxes(tipos)
+    // };
+    // console.log(filtros.dispositivos, filtros.dispositivos);
+  }
+  function submit(){
+    var dispositivos = document.querySelectorAll(".dispositivos input[type='checkbox']");
+    var tipos = document.querySelectorAll(".tipos input[type='checkbox']");
+    var filtros = {
+      dispositivos: getClassOfCheckedCheckboxes(dispositivos),
+      tipos: getClassOfCheckedCheckboxes(tipos)
+    };
+
+    buscar(filtros.dispositivos, filtros.tipos);
+  }
+  function getClassOfCheckedCheckboxes(checkboxes) {
+    var classes = [];
+
+    if (checkboxes && checkboxes.length > 0) {
+      for (var i = 0; i < checkboxes.length; i++) {
+        var cb = checkboxes[i];
+
+        if (cb.checked) {
+          classes.push(cb.getAttribute("rel"));
+        }
+      }
+    }
+
+    return classes;
+  }
+
+
+</script>
+</body>
+</html>
