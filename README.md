@@ -34,20 +34,24 @@
 <!-- TABLE OF CONTENTS -->
 ## Sumário
 
-* [Sobre o projeto](#sobre-o-projeto)
-  * [Feito com](#feito-com)
-* [Começando](#começando)
-  * [Requesíto](#requesíto)
-  * [Instalação](#instalação)
-* [Configurações](#configurações)
-* [Uso](#uso)
-* [Rotas](#rotas)
-  * [Super User](#super-user)
-  * [Organizations](#sorganizations)
-  * [Users](#users)
-  * [Mqtt user](#mqtt-user)
-  * [Storage](#storage)
-* [License](#license)
+- [Sumário](#sumário)
+- [Sobre o projeto](#sobre-o-projeto)
+  - [Feito com](#feito-com)
+- [Começando](#começando)
+  - [Requesíto](#requesíto)
+  - [Instalação](#instalação)
+- [Configurações](#configurações)
+- [Uso](#uso)
+- [Rotas](#rotas)
+  - [Super User](#super-user)
+    - [Super User Login](#super-user-login)
+    - [Super User Criar organização](#super-user-criar-organização)
+    - [Super User Atualizar organização:](#super-user-atualizar-organização)
+    - [Super User Excluir uma organização:](#super-user-excluir-uma-organização)
+    - [Super User Listar organizações](#super-user-listar-organizações)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgements](#acknowledgements)
 
 
 
@@ -83,7 +87,7 @@ npm install npm@latest -g
 ```
 
 ### Instalação
- 
+
 1. Clone o repositório
 ```sh
 git clone https://github.com/fernandonetom/api-iot-iluminacao-public.git
@@ -149,7 +153,8 @@ npm run dev
 A __{url}__ é http://localhost:3000, todas os corpo das requisições e respostas são no formato JSON.
 
 ### Super User
-* Login
+
+#### Super User Login
 
 | GET                 | {url}/superuser/signin                                                                                                                                                                     |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -157,7 +162,7 @@ A __{url}__ é http://localhost:3000, todas os corpo das requisições e respost
 | Resposta            | {   "superUserId": 1,   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" } |
 
 
-* Criar organização
+#### Super User Criar organização
 
 | POST                 | {url}/superuser/organizations                                                                                                                                                       |
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -165,21 +170,21 @@ A __{url}__ é http://localhost:3000, todas os corpo das requisições e respost
 | Corpo da requisição  | { 	"name": "Organization Example", 	"email": "orgemail@orgemail.com", 	"password": "pass", 	"superUserId": "1" }                                                                        |
 | Resposta             | {   "organizationId": 1 }                                                                                                                                                           |
 
-* Atualizar organização:
+#### Super User Atualizar organização:
 
 | PUT                  | {url}/superuser/organizations/{organizationId}                                                                                                                                      |
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
 | Corpo da requisição  | { 	"name": "Empresa", 	"email": "mail@mail.com", 	"password": "123" //Se deixado em branco não vai alterar a senha }                                                            |
 | Resposta             | {   "message": "Atualizado com sucesso" }                                                                                                                                           |
-* Excluir uma organização: 
+#### Super User Excluir uma organização:
 
 | DELETE               | {url}/superuser/organizations/{organizationId}                                                                                                                                      |
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
 | Resposta             | {   "message": "Excluido com sucesso" }                                                                                                                                             |
 
-* Listar organizações
+#### Super User Listar organizações
 
 | GET                  | {url}/superuser/organizations                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
