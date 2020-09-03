@@ -122,9 +122,11 @@ class StorageController {
 
     const dado = `dados_${tipo}`;
 
+    const validateValor = tipo === 'alerta' || tipo === 'movimentacao' ? 1 : valor;
+
     try {
       const data = await StoragesRepositories.create({
-        dado, id, valor,
+        dado, id, valor: validateValor,
       });
       res.json({ dataId: data[0] });
     } catch (error) {
