@@ -146,10 +146,10 @@ npm run dev
 <!-- ROADMAP -->
 ## Rotas
 
-A __{url}__ é http://localhost:3000
+A __{url}__ é http://localhost:3000, todas os corpo das requisições e respostas são no formato JSON.
 
 ### Super User
-Para o login do usuário root, utilize a seguinte rota:
+* Login
 
 | GET                 | {url}/superuser/signin                                                                                                                                                                     |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -157,9 +157,34 @@ Para o login do usuário root, utilize a seguinte rota:
 | Resposta            | {   "superUserId": 1,   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" } |
 
 
+* Criar organização
 
+| POST                 | {url}/superuser/organizations                                                                                                                                                       |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+| Corpo da requisição  | { 	"name": "Organization Example", 	"email": "orgemail@orgemail.com", 	"password": "pass", 	"superUserId": "1" }                                                                        |
+| Resposta             | {   "organizationId": 1 }                                                                                                                                                           |
 
+* Atualizar organização:
 
+| PUT                  | {url}/superuser/organizations/{organizationId}                                                                                                                                      |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+| Corpo da requisição  | { 	"name": "Empresa", 	"email": "mail@mail.com", 	"password": "123" //Se deixado em branco não vai alterar a senha }                                                            |
+| Resposta             | {   "message": "Atualizado com sucesso" }                                                                                                                                           |
+* Excluir uma organização: 
+
+| DELETE               | {url}/superuser/organizations/{organizationId}                                                                                                                                      |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+| Resposta             | {   "message": "Excluido com sucesso" }                                                                                                                                             |
+
+* Listar organizações
+
+| GET                  | {url}/superuser/organizations                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"                                                                                                                                                                                                                                                                                                                                                            |
+| Resposta             | [   {     "id": 1,     "name": "Empresa 1",     "email": "mail@mail.com",     "password": "$2b$10$.tHRDVLvNMIO",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",     "tokenResetPassword": null,     "superuser_id": 1   },   {     "id": 2,     "name": "Empresa 2",     "email": "mail2@mail.com",     "password": "$2b$10$.tHRDVLvNMIO",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",     "tokenResetPassword": null,     "superuser_id": 1   },  ]  |
 <!-- LICENSE -->
 ## License
 
