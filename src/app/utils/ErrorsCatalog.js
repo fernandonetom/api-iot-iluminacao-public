@@ -9,8 +9,8 @@ const ErrorsCatalog = {
     notFound: { error: 'Organization not founded', messagem: 'Organização não encontrada' },
   },
   user: {
-    notFound: { error: 'unauthorized', message: 'Usuário não encontrado' },
-    notInformed: { error: 'unauthorized', message: 'Usuário não informado' },
+    notFound: { error: 'User not founded', message: 'Usuário não encontrado' },
+    notInformed: { error: 'User not informed', message: 'Usuário não informado' },
   },
   superuser: {
     userNotFound: { error: 'Superuser not found', message: 'Super usuário não encontrado' },
@@ -20,6 +20,9 @@ const ErrorsCatalog = {
     invalidData: { error: 'Invalid data', message: 'Formado dos dados está inválido' },
     dateAfter: { error: 'Invalid data', message: 'Data de inicio é maior que a do fim' },
     dateEqual: { error: 'Invalid data', message: 'As datas de início e fim são iguais' },
+  },
+  mqttUsers: {
+    notFound: { error: 'Mqtt user not founded', message: 'Usuário mqtt não encontrado' },
   },
   emailInUser: { error: 'Email already in use', message: 'Email em uso' },
   emailInvalid: { error: 'Inválid email', message: 'Email inválido' },

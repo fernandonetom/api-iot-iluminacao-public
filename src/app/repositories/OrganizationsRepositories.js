@@ -2,7 +2,7 @@ const db = require('../../database/connection');
 
 class OrganizationsRepositories {
   async index() {
-    const organizations = await db('organizations').select('*');
+    const organizations = await db('organizations').select('id', 'name', 'email', 'createdAt', 'lastLogin', 'superuser_id');
     return organizations;
   }
 

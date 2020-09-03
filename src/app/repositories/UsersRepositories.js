@@ -2,7 +2,11 @@ const db = require('../../database/connection');
 
 class UsersRepository {
   async index() {
-    const users = await db('users').select('users.*', 'organizations.name AS organization_name').join('organizations', 'users.organization_id', '=', 'organizations.id');
+    const users = await db('users')
+      .select('users.id', 'users.name', 'users.level',
+        'users.createdAt', 'users.lastLogin', 'users.organization_id',
+        'organizations.name AS organization_name')
+      .join('organizations', 'users.organization_id', '=', 'organizations.id');
     return users;
   }
 
@@ -17,7 +21,7 @@ class UsersRepository {
   }
 
   async findByOrgId(orgId) {
-    const users = await db('users').where('organization_id', orgId);
+    const users = await db('users').select('id', 'name', 'email', 'createdAt', 'lastLogin', 'organization_id').where('organization_id', orgId);
     return users;
   }
 

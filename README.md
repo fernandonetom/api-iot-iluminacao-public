@@ -46,15 +46,21 @@
   - [Super User](#super-user)
     - [Super User Login](#super-user-login)
     - [Super User Criar organização](#super-user-criar-organização)
-    - [Super User Atualizar organização:](#super-user-atualizar-organização)
-    - [Super User Excluir uma organização:](#super-user-excluir-uma-organização)
+    - [Super User Atualizar organização](#super-user-atualizar-organização)
+    - [Super User Excluir uma organização](#super-user-excluir-uma-organização)
     - [Super User Listar organizações](#super-user-listar-organizações)
   - [Organizations](#organizations)
     - [Organizations Login](#organizations-login)
     - [Organizations Criar usuário](#organizations-criar-usuário)
-    - [Organizations Atualizar usuário:](#organizations-atualizar-usuário)
-    - [Organizations Excluir uma usuário:](#organizations-excluir-uma-usuário)
+    - [Organizations Atualizar usuário](#organizations-atualizar-usuário)
+    - [Organizations Excluir uma usuário](#organizations-excluir-uma-usuário)
     - [Organizations Listar usuários](#organizations-listar-usuários)
+  - [Users](#users)
+    - [Users Login](#users-login)
+    - [Users Criar usuário MQTT](#users-criar-usuário-mqtt)
+    - [Users Atualizar usuário MQTT](#users-atualizar-usuário-mqtt)
+    - [Organizations Excluir uma usuário](#organizations-excluir-uma-usuário-1)
+    - [Organizations Listar usuários](#organizations-listar-usuários-1)
 - [License](#license)
 - [Contact](#contact)
 - [Acknowledgements](#acknowledgements)
@@ -176,14 +182,14 @@ A __{url}__ é http://localhost:3000, todas os corpo das requisições e respost
 | Corpo da requisição  | { 	"name": "Organization Example", 	"email": "orgemail@orgemail.com", 	"password": "pass", 	"superUserId": "1" }                                                                        |
 | Resposta             | {   "organizationId": 1 }                                                                                                                                                           |
 
-#### Super User Atualizar organização:
+#### Super User Atualizar organização
 
 | PUT                  | {url}/superuser/organizations/{organizationId}                                                                                                                                      |
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
 | Corpo da requisição  | { 	"name": "Empresa", 	"email": "mail@mail.com", 	"password": "123" //Se deixado em branco não vai alterar a senha }                                                            |
 | Resposta             | {   "message": "Atualizado com sucesso" }                                                                                                                                           |
-#### Super User Excluir uma organização:
+#### Super User Excluir uma organização
 
 | DELETE               | {url}/superuser/organizations/{organizationId}                                                                                                                                      |
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -195,12 +201,12 @@ A __{url}__ é http://localhost:3000, todas os corpo das requisições e respost
 | GET                  | {url}/superuser/organizations                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"                                                                                                                                                                                                                                                                                                                                                            |
-| Resposta             | [   {     "id": 1,     "name": "Empresa 1",     "email": "mail@mail.com",     "password": "$2b$10$.tHRDVLvNMIO",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",     "tokenResetPassword": null,     "superuser_id": 1   },   {     "id": 2,     "name": "Empresa 2",     "email": "mail2@mail.com",     "password": "$2b$10$.tHRDVLvNMIO",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",     "tokenResetPassword": null,     "superuser_id": 1   },  ]  |
+| Resposta             | [   {     "id": 1,     "name": "Empresa 1",     "email": "mail@mail.com",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",  "superuser_id": 1   },   {     "id": 2,     "name": "Empresa 2",     "email": "mail2@mail.com",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",  "superuser_id": 1   },  ]  |
 
 ### Organizations
 
 #### Organizations Login
-| GET                 | {url}/organizations/signis                                                                                                                                                                     |
+| GET                 | {url}/organizations/signin                                                                                                                                                                     |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Corpo da requisição | { 	"email": "youremail@youremail.com", 	"password": "dsdsdss" }                                                                                                                              |
 | Resposta            | {   "organizationId": 1,   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" } |
@@ -213,7 +219,7 @@ A __{url}__ é http://localhost:3000, todas os corpo das requisições e respost
 | Corpo da requisição  | { 	"name": "User Example", 	"email": "usermail@usermail.com", 	"password": "pass", 	"organizationId": "1", 	"admin": "true" //deixe em branco para user comum}                                                                        |
 | Resposta             | {   "userId": 1 }                                                                                                                                                           |
 
-#### Organizations Atualizar usuário:
+#### Organizations Atualizar usuário
 
 | PUT                  | {url}/users/{userId}                                                                                                                                      |
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -222,7 +228,7 @@ A __{url}__ é http://localhost:3000, todas os corpo das requisições e respost
 | Resposta             | {   "message": "Atualizado com sucesso" }
 
 
-#### Organizations Excluir uma usuário:
+#### Organizations Excluir uma usuário
 
 | DELETE               | {url}/users/{userId}                                                                                                                                     |
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -234,9 +240,45 @@ A __{url}__ é http://localhost:3000, todas os corpo das requisições e respost
 | GET                  | {url}/users                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"                                                                                                                                                                                                                                                                                                                                                            |
-| Resposta             | [   {     "id": 1,     "name": "Usuário 1",     "email": "mail@mail.com","leve": "admin",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",     "tokenResetPassword": null,     "organization_id": 1   },   {     "id": 2,     "name": "Empresa 2",     "email": "mail2@mail.com", "leve": "user",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",     "tokenResetPassword": null,     "organization_id": 1   },  ]  |
+| Resposta             | [   {     "id": 1,     "name": "Usuário 1",     "email": "mail@mail.com","leve": "admin",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",     "organization_id": 1   },   {     "id": 2,     "name": "Empresa 2",     "email": "mail2@mail.com", "leve": "user",     "createdAt": "2020-09-01T12:36:57.926Z",     "lastLogin": "2020-09-03T01:24:45.000Z",     "organization_id": 1   },  ]  |
+
+### Users
+#### Users Login
+| GET                 | {url}/users/signin                                                                                                                                                                     |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Corpo da requisição | { 	"email": "youremail@youremail.com", 	"password": "dsdsdss" }                                                                                                                              |
+| Resposta            | {   "userId": 1,   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" } |
+
+#### Users Criar usuário MQTT
+
+| POST                 | {url}/mqttusers                                                                                                                                                       |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+| Corpo da requisição  | { 	"name": "Poste zona 2", 	"latitude": "-8.05428" //opcional, se em branco ficará nulo, 	"longitude": "-34.8813" //opcional, se em branco ficará nulo}                                                                        |
+| Resposta             | {   "mqttUserID": 1, "name": "Poste zona 2", "username": "a5b6c7", "password": "d4c8v3",  	"latitude": -8.05428, "longitude": -34.8813, "user_id": 1, "organization_id": 1}                                                                                                                                                           |
+
+#### Users Atualizar usuário MQTT
+
+| PUT                  | {url}/mqttusers/{mqttusersId}                                                                                                                                      |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+| Corpo da requisição  | { 	"name": "Poste atualizado", "latitude": "-8.05428" //opcional, se em branco não será alterado, 	"longitude": "-34.8813" //opcional, //opcional, se em branco não será alterado}                                                            |
+| Resposta             | {   "message": "Atualizado com sucesso" }
 
 
+#### Organizations Excluir uma usuário
+
+| DELETE               | {url}/mqttusers/{mqttusersId}                                                                                                                                      |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+| Resposta             | {   "message": "Excluido com sucesso" }                                                                                                                                             |
+
+#### Organizations Listar usuários
+
+| GET                  | {url}/mqttusers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"                                                                                                                                                                                                                                                                                                                                                            |
+| Resposta             | [   {     "id": 1,     "name": "Poste 1",     "username": "a5b6c7","password": "d4c8v3",  "latitude": -35.05, "longitude": -19.05641, "organization_id": 1, "user_id": 1,   "createdAt": "2020-09-01T12:36:57.926Z"},   {     "id": 2,     "name": "Poste 2 atualizado",     "username": "a5b4d7","password": "d5s9as",  "latitude": null, "longitude": null, "organization_id": 1, "user_id": 1,   "createdAt": "2020-09-01T12:36:57.926Z"},  ]  |
 
 
 <!-- LICENSE -->

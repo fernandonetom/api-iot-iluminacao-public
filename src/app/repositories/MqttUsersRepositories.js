@@ -41,5 +41,19 @@ class MqttUsersRepository {
     }).returning('id');
     return mqtt;
   }
+
+  async update({
+    name,
+    latitude,
+    longitude,
+    id,
+  }) {
+    const mqtt = await db('mqtt_user').update({
+      name,
+      latitude,
+      longitude,
+    }).where('id', id);
+    return mqtt;
+  }
 }
 module.exports = new MqttUsersRepository();

@@ -20,6 +20,7 @@ router.post('/organizations/signin', OrganizationController.signIn);
 
 router.get('/mqttusers', UsersAuth.verify, UsersAuth.isAdmin, MqttUserController.index);
 router.post('/mqttusers', UsersAuth.verify, MqttUserController.store);
+router.put('/mqttusers/:id', UsersAuth.verify, UsersAuth.isAdmin, MqttUserController.update);
 router.delete('/mqttusers/:id', UsersAuth.verify, UsersAuth.isAdmin, MqttUserController.delete);
 
 router.post('/storage/create/:tipo', StorageController.store);
