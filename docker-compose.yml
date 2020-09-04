@@ -1,15 +1,28 @@
 version: '3.1'
 
 services:
-  db:
-    image: postgres
+  api:
+    build: .
     restart: unless-stopped
-    environment:
-      POSTGRES_PASSWORD: 1212
-      POSTGRES_USER: postesolar
+    command: npm start
     ports:
-      - 5435:5432
+      - 3000:3000
+      - 65080:65080
     volumes:
-      - db-data:/var/lib/postgresql/data:rw
-volumes:
-  db-data:
+      - .:/usr/app
+      - /usr/app/node_modules/
+      - ./websocket/certs/cert.key:/usr/app/cert.key
+      - ./websocket/certs/cert.crt:/usr/app/cert.crt
+  # database:
+  #   container_name: postgres-teste
+  #   image: postgres
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_PASSWORD: 1212
+  #     POSTGRES_USER: postesolar
+  #   ports:
+  #     - 5435:5432
+  #   volumes:
+  #     - db-data:/var/lib/postgresql/data
+# volumes:
+#   db-data:
