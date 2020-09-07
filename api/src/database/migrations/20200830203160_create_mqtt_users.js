@@ -21,7 +21,13 @@ exports.up = function (knex) {
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
     t.timestamp('createdAt', { useTz: true }).notNullable().defaultTo(knex.fn.now());
-  });
+  }).then(() => knex('mqtt_user').insert({
+    name: process.env.ROOT_NAME,
+    username: process.env.ROOT_EMAIL,
+    password: process.env.ROOT_PASS,
+    organization_id: 1,
+    user_id: 1,
+  }));
 };
 
 exports.down = function (knex) {
