@@ -11,7 +11,10 @@ import {
 } from "./styles";
 import InfoTitle from "../../../components/InfoTitle";
 import DevicesPanel from "../../../components/DevicesPanel";
+import SidebarMenu from "../../../components/SidebarMenu";
+import { useState } from "react";
 export default function UserHome() {
+  const [menu, setMenu] = useState(false);
   const devices = [
     { id: 1, name: "Poste 1" },
     { id: 2, name: "Poste 2" },
@@ -28,13 +31,13 @@ export default function UserHome() {
   ];
   return (
     <>
-      <Header>
+      <Header openMenu={() => setMenu(true)}>
         <HeaderContent>
           <InfoLeft>
             <InfoTitle>Dispositivos cadastrados</InfoTitle>
             <NewDevice to="/user/new-device">
               <PlusIcon />
-              Novo dispositivo
+              <span>Novo dispositivo</span>
             </NewDevice>
           </InfoLeft>
           <InfoRight>
@@ -44,6 +47,12 @@ export default function UserHome() {
         </HeaderContent>
       </Header>
       <DevicesPanel data={devices} />
+      <SidebarMenu
+        isVisible={menu}
+        active="dashboard"
+        type="user"
+        onClose={() => setMenu(false)}
+      />
       <TotalDevices>
         {devices.length === 0
           ? "Nenhum dispositivo cadastrado"

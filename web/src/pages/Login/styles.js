@@ -18,12 +18,14 @@ export const LeftSection = styled.section`
   color: ${themeData.colors.background};
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   padding: 20vh 0 5vh 0;
   text-align: center;
   @media screen and (max-width: 1000px) {
     width: 100%;
     background-color: transparent;
     padding: 0;
+    justify-content: initial;
   }
 `;
 export const LogoSection = styled.div`
@@ -68,6 +70,7 @@ export const RightSection = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   @media screen and (max-width: 1000px) {
     width: 100%;
     padding: 0 20px 0 20px;
@@ -98,6 +101,7 @@ export const SubmitButtom = styled.button`
   font-size: 1rem;
   cursor: pointer;
   margin-top: 50px;
+
   &:hover {
     background-color: ${(props) =>
       props.loginType === "user"
@@ -140,6 +144,7 @@ export const ChangeLogin = styled(Link)`
   cursor: pointer;
   margin-top: 50px;
   color: ${themeData.colors.background};
+  text-align: center;
   &:hover {
     background-color: ${(props) =>
       props.logintype === "user"

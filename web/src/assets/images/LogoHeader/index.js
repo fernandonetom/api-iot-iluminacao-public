@@ -51,12 +51,12 @@ export default function LogoHeader() {
         <text
           transform="translate(485 572)"
           fill="#d0d0d0"
-          fontSize="41"
-          fontFamily="Poppins-Medium, Poppins"
-          fontWeight="500"
-          letterSpacing="0.03em"
+          fontSize="30"
+          fontFamily="Poppins"
+          fontWeight="300"
+          letterSpacing="0.05em"
         >
-          <tspan x="0" y="0">
+          <tspan x="8" y="-3">
             SiPi
           </tspan>
         </text>

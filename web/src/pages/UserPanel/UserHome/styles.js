@@ -9,6 +9,9 @@ export const HeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media screen and (max-width: 700px) {
+    padding: 0 20px;
+  }
 `;
 export const NewDevice = styled(Link)`
   margin-left: 20px;
@@ -27,6 +30,26 @@ export const NewDevice = styled(Link)`
   &:hover {
     background-color: ${themeData.colors.greenLight};
   }
+  @media screen and (max-width: 700px) {
+    & {
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: block;
+      position: relative;
+    }
+    svg {
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      top: 7px;
+      left: 7px;
+    }
+    span {
+      display: none;
+    }
+  }
 `;
 export const InfoRight = styled.div`
   margin-left: 20px;
@@ -40,6 +63,9 @@ export const InfoRight = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
 `;
 export const Circle = styled.div`
   background-color: ${(props) =>
@@ -60,4 +86,8 @@ export const TotalDevices = styled.div`
   margin: 0 auto;
   font-weight: 100;
   font-size: 1rem;
+  @media screen and (max-width: 700px) {
+    padding: 0 20px;
+    margin-bottom: 20px;
+  }
 `;
