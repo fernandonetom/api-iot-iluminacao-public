@@ -40,7 +40,7 @@ class UserController {
       userId: user[0].id,
       orgId: user[0].organization_id,
       userLevel: user[0].level,
-    }, process.env.SECRET, { expiresIn });
+    }, process.env.SECRET_USERS, { expiresIn });
 
     res.json({ userId: user[0].id, token });
   }

@@ -1,0 +1,16 @@
+$background-color: #232931;
+$color: #eeeeee;
+$font-family: "Poppins";
+
+* {
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: $background-color;
+  font-family: $font-family;
+  color: $color;
+  overflow-x: hidden;
+  font-size: 60%;
+}

@@ -9,7 +9,7 @@ class OrganizationsAuth {
 
     const jwtToken = token.split(' ')[1];
     try {
-      const { orgId } = jwt.verify(jwtToken, process.env.SECRET);
+      const { orgId } = jwt.verify(jwtToken, process.env.SECRET_ORGANIZATIONS);
 
       const findOrg = await OrganizationsRepositories.findById(orgId);
 

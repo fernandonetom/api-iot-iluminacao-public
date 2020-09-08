@@ -22,7 +22,7 @@ class SuperUserController {
 
     const token = jwt.sign({
       superUserId: user[0].id,
-    }, process.env.SECRET, { expiresIn: 60 * 30 });
+    }, process.env.SECRET_SUPERUSER, { expiresIn: 60 * 30 });
 
     try {
       await SuperUsersRepositories.updateLastLogin({ id: user[0].id, hour: moment.utc().format() });

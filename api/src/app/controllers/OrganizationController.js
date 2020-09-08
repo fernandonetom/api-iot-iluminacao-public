@@ -66,7 +66,7 @@ class OrganizationController {
 
     const token = jwt.sign({
       orgId: organization[0].id,
-    }, process.env.SECRET, { expiresIn: 60 * 60 });
+    }, process.env.SECRET_ORGANIZATIONS, { expiresIn: 60 * 60 });
 
     res.json({ organizationId: organization[0].id, token });
   }

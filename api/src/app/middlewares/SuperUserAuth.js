@@ -8,7 +8,7 @@ class UsersAuth {
 
     const jwtToken = token.split(' ')[1];
     try {
-      const { superUserId } = jwt.verify(jwtToken, process.env.SECRET);
+      const { superUserId } = jwt.verify(jwtToken, process.env.SECRET_SUPERUSER);
       req.body.superUserId = superUserId;
       next();
     } catch (err) {

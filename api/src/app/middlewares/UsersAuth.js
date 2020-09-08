@@ -9,7 +9,7 @@ class UsersAuth {
 
     const jwtToken = token.split(' ')[1];
     try {
-      const { userId, userLevel, orgId } = jwt.verify(jwtToken, process.env.SECRET);
+      const { userId, userLevel, orgId } = jwt.verify(jwtToken, process.env.SECRET_USERS);
       req.body.userId = userId;
       req.body.userLevel = userLevel;
       req.body.orgId = orgId;
