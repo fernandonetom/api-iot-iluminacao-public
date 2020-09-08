@@ -5,7 +5,6 @@ import {
   RightSection,
   LogoSection,
   TextLoginType,
-  LogoImage,
   LogoText,
   FormSection,
   FormInput,
@@ -13,19 +12,19 @@ import {
   ForgotPass,
   ChangeLogin,
 } from "./styles";
-import logoLogin from "../../assets/images/logo-login.svg";
 import Input from "../../components/Input";
 import Checkbox from "../../components/Checkbox";
+import LoginLogo from "../../assets/images/LoginLogo";
 export default function Login({ loginType }) {
   return (
     <>
       <Container>
         <LeftSection loginType={loginType}>
-          <LogoSection>
-            <LogoImage src={logoLogin} alt={process.env.REACT_APP_NAME} />
+          <LogoSection loginType={loginType}>
+            <LoginLogo />
             <LogoText>Sistema de Iluminação Pública Inteligente</LogoText>
           </LogoSection>
-          <TextLoginType>
+          <TextLoginType loginType={loginType}>
             {loginType === "user" ? "usuário" : "organização"}
           </TextLoginType>
         </LeftSection>
@@ -45,7 +44,7 @@ export default function Login({ loginType }) {
           </FormSection>
           <ChangeLogin
             to={loginType === "user" ? "/organization/login" : "/login"}
-            loginType={loginType}
+            logintype={loginType}
           >
             acessar como {loginType === "user" ? "organização" : "usuário"}
           </ChangeLogin>
