@@ -2,11 +2,10 @@ import React from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 
 import Login from "./pages/Login";
-
+import UserHome from "./pages/UserPanel/UserHome";
 export default function Routes() {
   return (
     <BrowserRouter>
-
       <Switch>
         <Route exact path="/">
           <h1>inicio</h1>
@@ -15,11 +14,13 @@ export default function Routes() {
         <Route path="/login">
           <Login loginType="user" />
         </Route>
+        <Route path="/user/dashboard">
+          <UserHome />
+        </Route>
         <Route path="/organization/login">
           <Login loginType="organization" />
         </Route>
       </Switch>
-
     </BrowserRouter>
   );
 }
