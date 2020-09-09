@@ -5,7 +5,8 @@ export const Container = styled.div`
   position: relative;
   input {
     border: 0;
-    background-color: ${themeData.colors.backgroundLight};
+    background-color: ${(props) =>
+      props.bgColor ? props.bgColor : themeData.colors.backgroundLight};
     border-bottom: 1px solid transparent;
     outline: none;
     width: ${(props) => (props.width ? props.width : "auto")};

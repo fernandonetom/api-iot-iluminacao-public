@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import UserHome from "./pages/UserPanel/UserHome";
 import UserMqttDetails from "./pages/UserPanel/UserMqttDetails";
 import UserMqttNew from "./pages/UserPanel/UserMqttNew";
+import UserProfile from "./pages/UserPanel/UserProfile";
 export default function Routes() {
   return (
     <BrowserRouter>
@@ -19,11 +20,17 @@ export default function Routes() {
         <Route path="/user/dashboard">
           <UserHome />
         </Route>
+        <Route path="/user/profile">
+          <UserProfile />
+        </Route>
         <Route path="/user/device-details">
           <UserMqttDetails />
         </Route>
         <Route path="/user/device-edit">
           <UserMqttNew type="edit" />
+        </Route>
+        <Route path="/user/new-device">
+          <UserMqttNew type="new" />
         </Route>
         <Route path="/organization/login">
           <Login loginType="organization" />

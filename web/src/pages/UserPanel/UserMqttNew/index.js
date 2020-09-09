@@ -44,7 +44,10 @@ export default function UserMqttNew({ type }) {
   }, [center]);
   return (
     <>
-      <Header menuType="user" active="dashboard">
+      <Header
+        menuType="user"
+        active={type === "new" ? "novo dispositivo" : "dashboard"}
+      >
         <HeaderContent>
           <InfoLeft>
             {type && type === "new" && (
@@ -81,7 +84,7 @@ export default function UserMqttNew({ type }) {
               {center.status === "error" && "localização não encontrada"}
             </Text>
           </FormLabel>
-          {center.lat && true && (
+          {center.lat && false && (
             <MapContent>
               <GoogleMapReact
                 bootstrapURLKeys={{

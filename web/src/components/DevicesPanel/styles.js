@@ -41,12 +41,10 @@ export const DeviceItem = styled.div`
   align-items: center;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
-  &:hover {
-    background-color: ${themeData.colors.grayLight};
-  }
   @media screen and (min-width: 700px) {
     &:hover {
       transform: scale(1.05);
+      background-color: ${themeData.colors.grayLight};
     }
   }
 `;
