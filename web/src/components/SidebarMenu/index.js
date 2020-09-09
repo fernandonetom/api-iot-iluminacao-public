@@ -11,12 +11,20 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
       { title: "perfil", url: "/user/profile", icon: "user" },
     ],
   };
+  function handleClose() {
+    const menuElement = document.getElementById("menu");
+    menuElement.classList.add("close-menu");
+    const backgroundElement = document.getElementById("background");
+    backgroundElement.classList.add("close-menu");
+
+    setTimeout(() => onClose(), 300);
+  }
   return (
     <>
       {isVisible && (
         <>
-          <Aside isVisible={isVisible}>
-            <CloseButton onClick={onClose}>
+          <Aside id="menu" isVisible={isVisible}>
+            <CloseButton onClick={handleClose}>
               <MenuIcon />
             </CloseButton>
             <h3>Painel de usuário</h3>
@@ -47,7 +55,11 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
               </li>
             </ul>
           </Aside>
-          <Background isVisible={isVisible} onClick={onClose} />
+          <Background
+            id="background"
+            isVisible={isVisible}
+            onClick={handleClose}
+          />
         </>
       )}
     </>

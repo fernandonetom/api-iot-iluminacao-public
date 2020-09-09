@@ -14,6 +14,26 @@ export const Background = styled.div`
   --webkit-backdrop-filter: blur(10.684100151062012px);
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
+  animation: fade-in-back 300ms;
+  @keyframes fade-in-back {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  &.close-menu {
+    animation: fade-out-back 300ms forwards;
+    @keyframes fade-out-back {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+  }
 `;
 export const CloseButton = styled.button`
   cursor: pointer;
@@ -43,7 +63,32 @@ export const Aside = styled.aside`
   background-color: ${themeData.colors.background};
   width: 25vw;
   height: 100vh;
+  overflow: hidden;
   padding: 40px;
+  animation: move 300ms;
+  @keyframes move {
+    from {
+      opacity: 0;
+      transform: translateX(150px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  &.close-menu {
+    animation: close 300ms forwards;
+    @keyframes close {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(150px);
+      }
+    }
+  }
   svg {
     width: 30px;
   }
