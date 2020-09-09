@@ -91,6 +91,29 @@ export default function Icons({ name }) {
           </g>
         </svg>
       );
+    case "arrow-left":
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="26.254"
+          viewBox="0 0 30 26.254"
+        >
+          <g transform="translate(-8.998 -10.123)">
+            <path
+              d="M17.672,10.674a2.831,2.831,0,0,1,0,2.655L11.716,23.25l5.956,9.923a2.835,2.835,0,0,1,0,2.655.852.852,0,0,1-1.593,0L9.329,24.578a2.831,2.831,0,0,1,0-2.655l6.75-11.249a.851.851,0,0,1,1.593,0Z"
+              fill="#eee"
+              fillRule="evenodd"
+            />
+            <path
+              d="M10.125,18c0-.621.862-1.125,1.925-1.125H37.074c1.063,0,1.925.5,1.925,1.125s-.862,1.125-1.925,1.125H12.05C10.987,19.125,10.125,18.621,10.125,18Z"
+              transform="translate(0 5.25)"
+              fill="#eee"
+              fillRule="evenodd"
+            />
+          </g>
+        </svg>
+      );
     default:
       return <>X</>;
   }

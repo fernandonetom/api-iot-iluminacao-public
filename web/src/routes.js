@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 
 import Login from "./pages/Login";
 import UserHome from "./pages/UserPanel/UserHome";
+import UserMqttDetails from "./pages/UserPanel/UserMqttDetails";
 export default function Routes() {
   return (
     <BrowserRouter>
@@ -16,6 +17,9 @@ export default function Routes() {
         </Route>
         <Route path="/user/dashboard">
           <UserHome />
+        </Route>
+        <Route path="/user/device-details">
+          <UserMqttDetails />
         </Route>
         <Route path="/organization/login">
           <Login loginType="organization" />
