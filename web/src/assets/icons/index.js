@@ -114,6 +114,23 @@ export default function Icons({ name }) {
           </g>
         </svg>
       );
+    case "map-pin":
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="27"
+          height="36"
+          viewBox="0 0 27 36"
+        >
+          <g transform="translate(-2718 364)">
+            <path
+              d="M12.113,35.274C1.9,20.463,0,18.943,0,13.5a13.5,13.5,0,0,1,27,0c0,5.443-1.9,6.963-12.113,21.774a1.689,1.689,0,0,1-2.775,0ZM13.5,19.125A5.625,5.625,0,1,0,7.875,13.5,5.624,5.624,0,0,0,13.5,19.125Z"
+              transform="translate(2718 -364)"
+              fill="#f26e50"
+            />
+          </g>
+        </svg>
+      );
     default:
       return <>X</>;
   }

@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import Login from "./pages/Login";
 import UserHome from "./pages/UserPanel/UserHome";
 import UserMqttDetails from "./pages/UserPanel/UserMqttDetails";
+import UserMqttNew from "./pages/UserPanel/UserMqttNew";
 export default function Routes() {
   return (
     <BrowserRouter>
@@ -20,6 +21,9 @@ export default function Routes() {
         </Route>
         <Route path="/user/device-details">
           <UserMqttDetails />
+        </Route>
+        <Route path="/user/device-edit">
+          <UserMqttNew type="edit" />
         </Route>
         <Route path="/organization/login">
           <Login loginType="organization" />

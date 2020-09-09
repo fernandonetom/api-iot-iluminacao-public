@@ -19,18 +19,18 @@ export const BackButton = styled.button`
   }
 `;
 export const EditButton = styled(Link)`
-  background-color: ${themeData.colors.orangeDark};
+  background-color: ${themeData.colors.orangeLight};
   cursor: pointer;
   margin-left: 20px;
   padding: 5px 15px;
   border-radius: 10px;
-  color: ${themeData.colors.lightGray};
+  color: ${themeData.colors.background};
   text-decoration: none;
-  font-weight: 300;
+  font-weight: 500;
   font-size: 0.8rem;
-  text-transform: uppercase;
+  text-transform: capitalize;
   &:hover {
-    background-color: ${themeData.colors.orange};
+    background-color: ${themeData.colors.greenLight};
   }
   @media screen and (max-width: 700px) {
     margin-left: auto;
@@ -119,15 +119,19 @@ export const DetailsItem = styled.div`
 export const DetailsItemLeft = styled.div`
   letter-spacing: 0.06rem;
   h3 {
-    font-size: 0.8rem;
-    font-weight: 300;
+    font-size: 1rem;
+    font-weight: 200;
   }
   span {
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: 300;
   }
   @media screen and (max-width: 700px) {
+    h3 {
+      font-size: 0.8rem;
+    }
     span {
+      font-size: 0.8rem;
       line-height: 1.5rem;
     }
   }

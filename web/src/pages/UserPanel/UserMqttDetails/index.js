@@ -14,10 +14,10 @@ import {
   DetailsItem,
   DetailsItemLeft,
   DetailsItemRight,
-  Maker,
   Footer,
   EditButton,
 } from "./styles";
+import MakerMap from "../../../components/MakerMap";
 import InfoTitle from "../../../components/InfoTitle";
 import Icons from "../../../assets/icons";
 import themeData from "../../../assets/theme/theme";
@@ -91,7 +91,7 @@ export default function UserMqttDetails() {
               <Icons name="arrow-left" />
             </BackButton>
             <InfoTitle>{device.name}</InfoTitle>
-            <EditButton to="#">editar poste</EditButton>
+            <EditButton to="device-edit">editar</EditButton>
           </InfoLeft>
           <InfoRight>
             <Circle status="online" />
@@ -222,7 +222,7 @@ export default function UserMqttDetails() {
           </DetailsItem>
         </DetailsPanelLeft>
         <DetailsPanelRight>
-          {center.lat && true && (
+          {center.lat && false && (
             <GoogleMapReact
               bootstrapURLKeys={{
                 key: process.env.REACT_APP_MAPS_API_KEY,
@@ -230,7 +230,7 @@ export default function UserMqttDetails() {
               defaultCenter={center}
               defaultZoom={15}
             >
-              <Maker lat={center.lat} lng={center.lng} />
+              <MakerMap lat={center.lat} lng={center.lng} />
             </GoogleMapReact>
           )}
         </DetailsPanelRight>
