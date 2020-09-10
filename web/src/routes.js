@@ -6,6 +6,7 @@ import UserHome from "./pages/UserPanel/UserHome";
 import UserMqttDetails from "./pages/UserPanel/UserMqttDetails";
 import UserMqttNew from "./pages/UserPanel/UserMqttNew";
 import UserProfile from "./pages/UserPanel/UserProfile";
+import OrgHome from "./pages/OrgPanel/OrgHome";
 export default function Routes() {
   return (
     <BrowserRouter>
@@ -34,6 +35,9 @@ export default function Routes() {
         </Route>
         <Route path="/organization/login">
           <Login loginType="organization" />
+        </Route>
+        <Route path="/organization/dashboard">
+          <OrgHome />
         </Route>
       </Switch>
     </BrowserRouter>

@@ -4,7 +4,9 @@ import MenuIcon from "../../assets/images/MenuIcon";
 import Icons from "../../assets/icons";
 export default function SidebarMenu({ isVisible, active, type, onClose }) {
   const menuItems = {
-    organization: [{ title: "Teste", url: "/teste", icon: "tre" }],
+    organization: [
+      { title: "dashboard", url: "/organization/dashboard", icon: "dashboard" },
+    ],
     user: [
       { title: "dashboard", url: "/user/dashboard", icon: "dashboard" },
       { title: "novo dispositivo", url: "/user/new-device", icon: "plus" },
@@ -27,7 +29,9 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
             <CloseButton onClick={handleClose}>
               <MenuIcon />
             </CloseButton>
-            <h3>Painel de usuário</h3>
+            <h3>
+              {type === "user" ? "painel de usuário" : "painel da organização"}
+            </h3>
             <hr />
             <span>Olá, Fernando!</span>
 
