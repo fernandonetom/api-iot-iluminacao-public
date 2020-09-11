@@ -24,7 +24,7 @@ router.put('/mqttusers/:id', UsersAuth.verify, UsersAuth.isAdmin, MqttUserContro
 router.delete('/mqttusers/:id', UsersAuth.verify, UsersAuth.isAdmin, MqttUserController.delete);
 
 router.post('/storage/create/:tipo', StorageController.store);
-router.get('/storage/list/:tipo', UsersAuth.verify, StorageController.index);
+router.post('/storage/list/:tipo', UsersAuth.verify, StorageController.index);
 
 router.post('/superuser/signin', SuperUserController.signIn);
 router.get('/superuser/organizations', SuperUserAuth.verify, OrganizationController.index);

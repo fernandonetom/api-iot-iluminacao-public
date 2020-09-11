@@ -63,7 +63,7 @@ export const Aside = styled.aside`
   background-color: ${themeData.colors.background};
   width: 25vw;
   height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   padding: 40px;
   animation: move 300ms;
   @keyframes move {

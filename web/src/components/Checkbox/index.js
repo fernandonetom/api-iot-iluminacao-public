@@ -6,7 +6,7 @@ export default function Checkbox({ label, ...attrs }) {
     <>
       <Container>
         {label}
-        <input type="checkbox" />
+        <input type="checkbox" {...attrs} />
         <span className="checkmark"></span>
       </Container>
     </>
