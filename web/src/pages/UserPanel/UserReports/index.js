@@ -2,7 +2,7 @@ import React from "react";
 import Checkbox from "../../../components/Checkbox";
 import Header from "../../../components/Header";
 import InfoTitle from "../../../components/InfoTitle";
-import { BoxItems, Container, Title } from "./styles";
+import { BoxItems, Container, Title, MultiSelect, SelectDiv } from "./styles";
 export default function UserReports() {
   const devices = [
     { id: 1, name: "Poste 1" },
@@ -18,26 +18,40 @@ export default function UserReports() {
     { id: 11, name: "Poste 11" },
     { id: 12, name: "Poste 12" },
   ];
+  const dados = [
+    { id: "alerta", name: "Alerta" },
+    { id: "temperatura", name: "Temperatura" },
+    { id: "movimentacao", name: "Movimentação" },
+    { id: "luminosidade", name: "Luminosidade" },
+    { id: "umidade", name: "Umidade" },
+    { id: "tensao", name: "Tensão" },
+  ];
   return (
     <>
       <Header active="relatórios" menuType="user">
         <InfoTitle>Relatórios</InfoTitle>
       </Header>
       <Container>
-        <Title>Selecione os dispositivos</Title>
+        <SelectDiv>
+          <MultiSelect
+            options={devices}
+            displayValue="name"
+            emptyRecordMsg="Nenhum resultado encontrado"
+            placeholder="Selecione os dispositivos"
+            closeIcon="cancel"
+          />
+        </SelectDiv>
+        <SelectDiv>
+          <MultiSelect
+            options={dados}
+            displayValue="name"
+            emptyRecordMsg="Nenhum resultado encontrado"
+            placeholder="Selecione os dados"
+            closeIcon="cancel"
+          />
+        </SelectDiv>
         <BoxItems>
-          {devices.map((item) => (
-            <Checkbox key={item.id} label={item.name} value={item.id} />
-          ))}
-        </BoxItems>
-
-        <Title>Selecione os dados</Title>
-        <BoxItems>
-          <Checkbox label="Alerta" value="alerta" />
-          <Checkbox label="Alerta" value="alerta" />
-          <Checkbox label="Alerta" value="alerta" />
-          <Checkbox label="Alerta" value="alerta" />
-          <Checkbox label="Alerta" value="alerta" />
+          <Title>Período</Title>
         </BoxItems>
       </Container>
     </>
