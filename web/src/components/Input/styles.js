@@ -46,6 +46,32 @@ export const Container = styled.div`
       color: ${themeData.colors.greenDark};
     }
   }
+  input[type="date"] {
+    font-family: "Poppins";
+    font-size: 1rem;
+    &:focus {
+      ::-webkit-datetime-edit-month-field:focus {
+        background-color: ${themeData.colors.greenDark};
+      }
+      ::-webkit-datetime-edit-day-field:focus {
+        background-color: ${themeData.colors.greenDark};
+      }
+      ::-webkit-datetime-edit-year-field:focus {
+        background-color: ${themeData.colors.greenDark};
+      }
+    }
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    font-size: 1.3rem;
+    background-color: ${themeData.colors.greenDark};
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: ${themeData.colors.green};
+      transform: scale(1.1);
+    }
+  }
   label {
     pointer-events: none;
     position: absolute;
