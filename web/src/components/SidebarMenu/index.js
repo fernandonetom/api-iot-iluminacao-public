@@ -6,6 +6,7 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
   const menuItems = {
     organization: [
       { title: "dashboard", url: "/organization/dashboard", icon: "dashboard" },
+      { title: "usuários", url: "/organization/users", icon: "users" },
     ],
     user: [
       { title: "dashboard", url: "/user/dashboard", icon: "dashboard" },

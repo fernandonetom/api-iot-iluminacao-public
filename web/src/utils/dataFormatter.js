@@ -1,4 +1,3 @@
-import themeData from "../assets/theme/theme";
 function randomColor() {
   const arrayColors = ["#31AD84", "#BF3719", "#237F99", "#CC8139", "#EEEEEE"];
 
