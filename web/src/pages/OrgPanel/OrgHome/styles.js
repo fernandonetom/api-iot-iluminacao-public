@@ -9,10 +9,15 @@ export const DashboardTitle = styled.div`
     margin: 20px auto;
   }
 `;
-export const Container = styled.div`
+export const Content = styled.div`
   width: 100%;
   max-width: 1280px;
   margin: 20px auto;
+  @media screen and (max-width: 770px) {
+    padding: 0 20px;
+  }
+`;
+export const Container = styled.div`
   display: grid;
   grid-template-areas:
     "admin users graph"
@@ -37,8 +42,7 @@ export const Container = styled.div`
       "dispo"
       "regis"
       "graph";
-    grid-template-columns: 1fr;
-    padding: 0 20px;
+    grid-template-columns: 100%;
   }
 `;
 export const Block = styled.div`

@@ -8,13 +8,12 @@ import {
   NewDevice,
   InfoRight,
   HeaderContent,
-  Circle,
-  TotalDevices,
   ExpandRow,
   UserDataRow,
   UserDataActions,
   UserActionEdit,
   UserActionDelete,
+  Table,
 } from "./styles";
 import DataTable, { createTheme } from "react-data-table-component";
 import moment from "moment";
@@ -22,7 +21,6 @@ import "moment/locale/pt-br";
 import themeData from "../../../assets/theme/theme";
 moment.locale("pt-br");
 export default function ListUsers() {
-  console.log(moment.locale());
   const users = [
     {
       id: 1,
@@ -45,7 +43,7 @@ export default function ListUsers() {
         <HeaderContent>
           <InfoLeft>
             <InfoTitle>Usuários cadastrados</InfoTitle>
-            <NewDevice to="/user/new-device">
+            <NewDevice to="/organization/new-user">
               <PlusIcon />
               <span>Novo usuário</span>
             </NewDevice>
@@ -54,66 +52,68 @@ export default function ListUsers() {
         </HeaderContent>
       </Header>
       <Container>
-        <DataTable
-          data={users}
-          columns={[
-            { name: "Nome", selector: "name", sortable: true },
-            { name: "Email", selector: "email", sortable: true },
-            {
-              name: "Nível",
-              selector: "level",
-              conditionalCellStyles: [
-                {
-                  when: (row) => row.level === "user",
-                  style: {
-                    "& div": {
-                      display: "none",
-                    },
-                    "&::before": {
-                      content: `"Usuário"`,
-                      backgroundColor: themeData.colors.orangeDark,
-                      color: themeData.colors.lightGray,
-                      padding: 5,
-                      width: 60,
-                      textAlign: "center",
-                      borderRadius: 10,
-                    },
-                  },
-                },
-                {
-                  when: (row) => row.level === "admin",
-                  style: {
-                    "& div": {
-                      display: "none",
-                    },
-                    "&::before": {
-                      content: `"Admin"`,
-                      backgroundColor: themeData.colors.greenDark,
-                      color: themeData.colors.background,
-                      padding: 5,
-                      width: 60,
-                      textAlign: "center",
-                      borderRadius: 10,
+        <Table>
+          <DataTable
+            data={users}
+            columns={[
+              { name: "Nome", selector: "name", sortable: true },
+              { name: "Email", selector: "email", sortable: true },
+              {
+                name: "Nível",
+                selector: "level",
+                conditionalCellStyles: [
+                  {
+                    when: (row) => row.level === "user",
+                    style: {
+                      "& div": {
+                        display: "none",
+                      },
+                      "&::before": {
+                        content: `"Usuário"`,
+                        backgroundColor: themeData.colors.orangeDark,
+                        color: themeData.colors.lightGray,
+                        padding: 5,
+                        width: 60,
+                        textAlign: "center",
+                        borderRadius: 10,
+                      },
                     },
                   },
-                },
-              ],
-            },
-          ]}
-          noHeader
-          theme={"solarized"}
-          expandableRows
-          expandOnRowClicked
-          expandableRowsComponent={<ExpandComponents />}
-          highlightOnHover
-          pagination
-          paginationComponentOptions={{
-            rowsPerPageText: "Usuários por página",
-            rangeSeparatorText: "de",
-            selectAllRowsItem: true,
-            selectAllRowsItemText: "Todos",
-          }}
-        />
+                  {
+                    when: (row) => row.level === "admin",
+                    style: {
+                      "& div": {
+                        display: "none",
+                      },
+                      "&::before": {
+                        content: `"Admin"`,
+                        backgroundColor: themeData.colors.greenDark,
+                        color: themeData.colors.background,
+                        padding: 5,
+                        width: 60,
+                        textAlign: "center",
+                        borderRadius: 10,
+                      },
+                    },
+                  },
+                ],
+              },
+            ]}
+            noHeader
+            theme={"solarized"}
+            expandableRows
+            expandOnRowClicked
+            expandableRowsComponent={<ExpandComponents />}
+            highlightOnHover
+            pagination
+            paginationComponentOptions={{
+              rowsPerPageText: "Usuários por página",
+              rangeSeparatorText: "de",
+              selectAllRowsItem: true,
+              selectAllRowsItemText: "Todos",
+            }}
+          />
+        </Table>
       </Container>
     </>
   );

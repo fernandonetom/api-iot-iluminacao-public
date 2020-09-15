@@ -7,6 +7,8 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
     organization: [
       { title: "dashboard", url: "/organization/dashboard", icon: "dashboard" },
       { title: "usuários", url: "/organization/users", icon: "users" },
+      { title: "novo usuário", url: "/organization/new-user", icon: "plus" },
+      { title: "perfil", url: "/organization/profile", icon: "user" },
     ],
     user: [
       { title: "dashboard", url: "/user/dashboard", icon: "dashboard" },

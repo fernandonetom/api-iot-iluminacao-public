@@ -5,9 +5,15 @@ export const Container = styled.div`
   width: 100%;
   max-width: 1280px;
   margin: 20px auto;
-  padding: 10px;
+  border-radius: 5px;
+  @media screen and (max-width: 700px) {
+    padding: 0 20px;
+  }
+`;
+export const Table = styled.div`
   background-color: ${themeData.colors.gray};
   border-radius: 5px;
+  padding: 10px;
 `;
 export const InfoLeft = styled.div`
   display: flex;
@@ -105,6 +111,10 @@ export const ExpandRow = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  @media screen and (max-width: 700px) {
+    flex-direction: column;
+    width: 80vw;
+  }
 `;
 export const UserDataRow = styled.div`
   font-size: 0.8rem;
@@ -116,6 +126,9 @@ export const UserDataRow = styled.div`
   }
   h4 {
     font-weight: 300;
+  }
+  @media screen and (max-width: 700px) {
+    margin-bottom: 20px;
   }
 `;
 export const UserDataActions = styled.div``;
