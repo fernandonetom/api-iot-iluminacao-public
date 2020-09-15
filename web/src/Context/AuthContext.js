@@ -9,6 +9,7 @@ export default function AuthProvider({ children }) {
     authLoading,
     handleLogin,
     handleLogout,
+    redirectIfLogged,
   } = useAuth();
   return (
     <Context.Provider
@@ -18,6 +19,7 @@ export default function AuthProvider({ children }) {
         authLoading,
         handleLogin,
         handleLogout,
+        redirectIfLogged,
       }}
     >
       {children}

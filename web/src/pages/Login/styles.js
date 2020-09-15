@@ -160,11 +160,12 @@ export const ErrorBox = styled.div`
   background-color: ${themeData.colors.orange};
   border-radius: 5px;
   min-height: 40px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
   color: ${themeData.colors.background};
+  font-weight: 500;
 
   @media screen and (max-width: 700px) {
     margin-top: 20px;

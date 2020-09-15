@@ -14,6 +14,7 @@ export default function useAuth() {
         setUserData({
           token: data.token,
           loginType: data.loginType,
+          userLevel: data.userLevel,
         });
       } catch (err) {
         setAuthenticated(false);
@@ -33,21 +34,31 @@ export default function useAuth() {
     if (data.error) {
       return data;
     }
-    console.log(data);
     localStorage.setItem("@sipi-data", JSON.stringify({ ...data, loginType }));
     api.defaults.headers.Authorization = `Bearer ${data.token}`;
     setAuthenticated(true);
     setUserData(JSON.stringify(data));
 
-    loginType === "users"
-      ? history.replace("/user/dashboard")
-      : history.replace("/organization/dashboard");
+    history.replace(`/${loginType}/dashboard`);
   }
   function handleLogout() {
     setAuthenticated(false);
     localStorage.removeItem("@sipi-data");
+    setUserData({});
     api.defaults.headers.Authorization = undefined;
     history.push("/");
   }
-  return { authenticated, userData, authLoading, handleLogin, handleLogout };
+  function redirectIfLogged() {
+    return userData.token
+      ? history.replace(`/${userData.loginType}/dashboard`)
+      : null;
+  }
+  return {
+    authenticated,
+    userData,
+    authLoading,
+    handleLogin,
+    handleLogout,
+    redirectIfLogged,
+  };
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Container,
   LeftSection,
@@ -20,13 +20,16 @@ import { Context } from "../../Context/AuthContext";
 import GlobalLoading from "../../components/GlobalLoading";
 
 export default function Login({ loginType }) {
-  const { handleLogin, authLoading } = useContext(Context);
+  const { handleLogin, authLoading, redirectIfLogged } = useContext(Context);
   const [email, setEmail] = useState("");
   const [remember, setRemember] = useState(false);
   const [password, setPassword] = useState("");
   const [configs, setConfigs] = useState({
     error: { code: null, message: null },
   });
+  useEffect(() => {
+    redirectIfLogged();
+  }, [redirectIfLogged]);
   async function handleSubmit() {
     if (email.trim().length === 0 || password.trim().length === 0) {
       return setConfigs({
@@ -77,7 +80,7 @@ export default function Login({ loginType }) {
                 width="100%"
                 error={configs.error.code === "empty" ? "error" : null}
                 onChange={setEmail}
-                autocomplete="off"
+                autoComplete="off"
               />
             </FormInput>
             <FormInput>
@@ -88,7 +91,7 @@ export default function Login({ loginType }) {
                 width="100%"
                 error={configs.error.code === "empty" ? "error" : null}
                 onChange={setPassword}
-                autocomplete="off"
+                autoComplete="off"
               />
             </FormInput>
             <FormInput>
@@ -103,7 +106,7 @@ export default function Login({ loginType }) {
             <ForgotPass to="forgot">esqueci minha senha</ForgotPass>
           </FormSection>
           <ChangeLogin
-            to={loginType === "users" ? "/organization/login" : "/login"}
+            to={loginType === "users" ? "/organizations/login" : "/login"}
             logintype={loginType}
           >
             acessar como {loginType === "users" ? "organização" : "usuário"}

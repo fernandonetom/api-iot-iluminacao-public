@@ -14,37 +14,37 @@ import OrgProfile from "./pages/OrgPanel/OrgProfile";
 export default function Routes() {
   return (
     <Switch>
-      <Route path="/user/dashboard">
+      <Route path="/users/dashboard">
         <UserHome />
       </Route>
-      <Route path="/user/profile">
+      <Route path="/users/profile">
         <UserProfile />
       </Route>
-      <Route path="/user/device-details">
+      <Route path="/users/device-details">
         <UserMqttDetails />
       </Route>
-      <Route path="/user/device-edit">
+      <Route path="/users/device-edit">
         <UserMqttNew type="edit" />
       </Route>
-      <Route path="/user/new-device">
+      <Route path="/users/new-device">
         <UserMqttNew type="new" />
       </Route>
-      <Route path="/user/reports">
+      <Route path="/users/reports">
         <UserReports />
       </Route>
-      <Route path="/organization/login">
+      <Route path="/organizations/login">
         <Login loginType="organizations" />
       </Route>
-      <Route path="/organization/dashboard">
+      <Route path="/organizations/dashboard">
         <OrgHome />
       </Route>
-      <Route path="/organization/users">
+      <Route path="/organizations/users">
         <ListUsers />
       </Route>
-      <Route path="/organization/new-user">
+      <Route path="/organizations/new-user">
         <CreateUser type="new" />
       </Route>
-      <Route path="/organization/profile">
+      <Route path="/organizations/profile">
         <OrgProfile />
       </Route>
       <Route path="*">

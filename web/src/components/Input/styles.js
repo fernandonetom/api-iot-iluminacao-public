@@ -18,8 +18,8 @@ export const Container = styled.div`
     -moz-transition: all 0.3s ease-out;
     -webkit-appearance: none;
     border-radius: 3px;
+    font-family: "Poppins";
     font-weight: 300;
-    letter-spacing: 0.1rem;
     border: ${(props) =>
       props.error ? `1px solid ${themeData.colors.orange}` : 0};
 
