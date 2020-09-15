@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Aside, Background, MenuLink, Logout, CloseButton } from "./styles";
 import MenuIcon from "../../assets/images/MenuIcon";
 import Icons from "../../assets/icons";
+import { Context } from "../../Context/AuthContext";
 export default function SidebarMenu({ isVisible, active, type, onClose }) {
+  const { handleLogout } = useContext(Context);
   const menuItems = {
     organization: [
       { title: "dashboard", url: "/organization/dashboard", icon: "dashboard" },
@@ -54,7 +56,7 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
                 </li>
               ))}
               <li>
-                <Logout to="logout">
+                <Logout onClick={handleLogout}>
                   <div className="menuIcon">
                     <Icons name="sair" />
                   </div>

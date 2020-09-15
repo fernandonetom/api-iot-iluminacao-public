@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import themeData from "../../../assets/theme/theme";
-import { Link } from "react-router-dom";
 export const InfoLeft = styled.div`
   display: flex;
   align-items: center;
@@ -18,7 +17,9 @@ export const BackButton = styled.button`
     width: 20px;
   }
 `;
-export const EditButton = styled(Link)`
+export const EditButton = styled.button`
+  border: 0;
+  outline: 0;
   background-color: ${themeData.colors.orange};
   cursor: pointer;
   margin-left: 20px;

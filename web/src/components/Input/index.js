@@ -7,11 +7,12 @@ export default function Input({
   width,
   bgColor,
   onChange,
+  error,
   ...attrs
 }) {
   return (
     <>
-      <Container width={width} bgColor={bgColor}>
+      <Container width={width} bgColor={bgColor} error={error}>
         <input
           placeholder=" "
           id={name}

@@ -59,7 +59,7 @@ export default function UserMqttNew({ type }) {
               {type && type === "edit" ? "Atualizar poste" : "Cadastrar poste"}
             </InfoTitle>
 
-            <EditButton to="device-edit">Cancelar</EditButton>
+            <EditButton onClick={() => history.goBack()}>Cancelar</EditButton>
           </InfoLeft>
         </HeaderContent>
       </Header>

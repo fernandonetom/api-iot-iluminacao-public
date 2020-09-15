@@ -4,7 +4,6 @@ import themeData from "../../assets/theme/theme";
 export const Container = styled.div`
   position: relative;
   input {
-    border: 0;
     background-color: ${(props) =>
       props.bgColor ? props.bgColor : themeData.colors.backgroundLight};
     border-bottom: 1px solid transparent;
@@ -21,6 +20,8 @@ export const Container = styled.div`
     border-radius: 3px;
     font-weight: 300;
     letter-spacing: 0.1rem;
+    border: ${(props) =>
+      props.error ? `1px solid ${themeData.colors.orange}` : 0};
 
     &:focus {
       border-bottom: 1px solid ${themeData.colors.lightGrayDark};

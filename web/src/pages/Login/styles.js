@@ -12,7 +12,7 @@ export const Container = styled.div`
 export const LeftSection = styled.section`
   width: 40vw;
   background-color: ${(props) =>
-    props.loginType === "user"
+    props.loginType === "users"
       ? themeData.colors.greenDark
       : themeData.colors.blueDark};
   color: ${themeData.colors.background};
@@ -36,7 +36,7 @@ export const LogoSection = styled.div`
     path,
     text {
       fill: ${(props) =>
-        props.loginType === "user"
+        props.loginType === "users"
           ? themeData.colors.greenDark
           : themeData.colors.blueDark};
     }
@@ -57,7 +57,7 @@ export const TextLoginType = styled.h3`
   @media screen and (max-width: 1000px) {
     margin-top: -50px;
     color: ${(props) =>
-      props.loginType === "user"
+      props.loginType === "users"
         ? themeData.colors.greenDark
         : themeData.colors.blueDark};
   }
@@ -93,7 +93,7 @@ export const SubmitButtom = styled.button`
   border: 0;
   border-radius: 3px;
   background-color: ${(props) =>
-    props.loginType === "user"
+    props.loginType === "users"
       ? themeData.colors.greenDark
       : themeData.colors.blueDark};
   text-transform: uppercase;
@@ -104,7 +104,7 @@ export const SubmitButtom = styled.button`
 
   &:hover {
     background-color: ${(props) =>
-      props.loginType === "user"
+      props.loginType === "users"
         ? themeData.colors.green
         : themeData.colors.blue};
   }
@@ -135,7 +135,7 @@ export const ChangeLogin = styled(Link)`
   border: 0;
   border-radius: 3px;
   background-color: ${(props) =>
-    props.logintype === "user"
+    props.logintype === "users"
       ? themeData.colors.blueDark
       : themeData.colors.greenDark};
   text-transform: uppercase;
@@ -147,11 +147,29 @@ export const ChangeLogin = styled(Link)`
   text-align: center;
   &:hover {
     background-color: ${(props) =>
-      props.logintype === "user"
+      props.logintype === "users"
         ? themeData.colors.blue
         : themeData.colors.green};
   }
   @media screen and (max-width: 1000px) {
     width: 100%;
+  }
+`;
+export const ErrorBox = styled.div`
+  width: 100%;
+  background-color: ${themeData.colors.orange};
+  border-radius: 5px;
+  min-height: 40px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${themeData.colors.background};
+
+  @media screen and (max-width: 700px) {
+    margin-top: 20px;
+  }
+  &:not(:first-child) {
+    margin-top: 20px;
   }
 `;

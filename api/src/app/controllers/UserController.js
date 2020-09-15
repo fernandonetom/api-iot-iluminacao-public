@@ -1,12 +1,12 @@
-require('dotenv').config();
-const validator = require('email-validator');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const moment = require('moment-timezone');
-const UsersRepositories = require('../repositories/UsersRepositories');
-const OrganizationsRepositories = require('../repositories/OrganizationsRepositories');
-const ErrorsCatalog = require('../utils/ErrorsCatalog');
-const MessageCatalog = require('../utils/MessageCatalog');
+require("dotenv").config();
+const validator = require("email-validator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const moment = require("moment-timezone");
+const UsersRepositories = require("../repositories/UsersRepositories");
+const OrganizationsRepositories = require("../repositories/OrganizationsRepositories");
+const ErrorsCatalog = require("../utils/ErrorsCatalog");
+const MessageCatalog = require("../utils/MessageCatalog");
 
 class UserController {
   async index(req, res) {
@@ -17,59 +17,83 @@ class UserController {
 
   async signIn(req, res) {
     const { email, password, remember } = req.body;
-    if (!email || !password) return res.json({ error: 'Null data', message: 'Campos em branco' });
-    if (!validator.validate(email)) return res.json({ error: 'Inválid email', message: 'Email inválido' });
+    if (!email || !password)
+      return res.json({ error: "Null data", message: "Campos em branco" });
+    if (!validator.validate(email))
+      return res.json({ error: "Inválid email", message: "Email inválido" });
 
     const user = await UsersRepositories.findUserByEmail(email);
 
-    if (user.length === 0) return res.json({ error: 'User not founded', message: 'Usuário não cadastrado' });
+    if (user.length === 0)
+      return res.json({
+        error: "User not founded",
+        message: "Usuário não cadastrado",
+      });
 
     const compare = await bcrypt.compare(password, user[0].password);
 
-    if (!compare) return res.json({ error: 'Login error', message: 'Senha inválida' });
+    if (!compare)
+      return res.json({ error: "Login error", message: "Senha inválida" });
 
-    const expiresIn = remember ? '1 years' : 60 * 60;
+    const expiresIn = remember ? "1 years" : 60 * 60;
 
     try {
-      await UsersRepositories.updateLastLogin({ id: user[0].id, hour: moment.utc().format() });
+      await UsersRepositories.updateLastLogin({
+        id: user[0].id,
+        hour: moment.utc().format(),
+      });
     } catch (error) {
       return res.json(ErrorsCatalog.server(error));
     }
 
-    const token = jwt.sign({
-      userId: user[0].id,
-      orgId: user[0].organization_id,
-      userLevel: user[0].level,
-    }, process.env.SECRET_USERS, { expiresIn });
+    const token = jwt.sign(
+      {
+        userId: user[0].id,
+        orgId: user[0].organization_id,
+        userLevel: user[0].level,
+      },
+      process.env.SECRET_USERS,
+      { expiresIn }
+    );
 
-    res.json({ userId: user[0].id, token });
+    res.json({ userLevel: user[0].level, token });
   }
 
   async store(req, res) {
-    const {
-      name, email, password, admin, organizationId,
-    } = req.body;
-    const level = admin ? 'admin' : 'user';
+    const { name, email, password, admin, organizationId } = req.body;
+    const level = admin ? "admin" : "user";
 
-    if (!name || !email || !password || !organizationId) return res.json({ error: 'Null data', message: 'Campos em branco' });
+    if (!name || !email || !password || !organizationId)
+      return res.json({ error: "Null data", message: "Campos em branco" });
 
-    if (!validator.validate(email)) return res.json({ error: 'Inválid email', message: 'Email inválido' });
+    if (!validator.validate(email))
+      return res.json({ error: "Inválid email", message: "Email inválido" });
 
     const findOrg = await OrganizationsRepositories.findById(organizationId);
 
     if (findOrg.length === 0) {
-      return res.json({ error: 'Organization not founded', message: 'Organização não encontrada' });
+      return res.json({
+        error: "Organization not founded",
+        message: "Organização não encontrada",
+      });
     }
 
     const findEmail = await UsersRepositories.findUserByEmail(email);
     if (findEmail.length > 0) {
-      return res.json({ error: 'Email already in use', message: 'Email em uso' });
+      return res.json({
+        error: "Email already in use",
+        message: "Email em uso",
+      });
     }
 
     try {
       const passwordHash = await bcrypt.hash(password, 10);
       const user = await UsersRepositories.create({
-        name, email, password: passwordHash, level, organizationId,
+        name,
+        email,
+        password: passwordHash,
+        level,
+        organizationId,
       });
       res.json({ userId: user });
     } catch (error) {
@@ -84,7 +108,8 @@ class UserController {
 
     try {
       const findOrg = await OrganizationsRepositories.findById(orgId);
-      if (findOrg.length === 0) return res.json(ErrorsCatalog.organization.notFound);
+      if (findOrg.length === 0)
+        return res.json(ErrorsCatalog.organization.notFound);
     } catch (error) {
       res.json(ErrorsCatalog.server(error));
     }
@@ -108,15 +133,14 @@ class UserController {
   }
 
   async update(req, res) {
-    const {
-      name, email, password, admin, orgId,
-    } = req.body;
+    const { name, email, password, admin, orgId } = req.body;
 
-    const level = admin ? 'admin' : 'user';
+    const level = admin ? "admin" : "user";
 
     const { id } = req.params;
 
-    if (!id || !name || !email || !orgId) return res.json(ErrorsCatalog.nullData);
+    if (!id || !name || !email || !orgId)
+      return res.json(ErrorsCatalog.nullData);
 
     if (!validator.validate(email)) return res.json(ErrorsCatalog.emailInvalid);
 
@@ -136,7 +160,11 @@ class UserController {
 
     try {
       await UsersRepositories.update({
-        id, name, email, level, password: newPassword,
+        id,
+        name,
+        email,
+        level,
+        password: newPassword,
       });
       res.json(MessageCatalog.updated);
     } catch (error) {
