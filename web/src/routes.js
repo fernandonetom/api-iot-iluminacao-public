@@ -44,6 +44,9 @@ export default function Routes() {
       <Route path="/organizations/new-user">
         <CreateUser type="new" />
       </Route>
+      <Route path="/organizations/edit-user/:id">
+        <CreateUser type="edit" />
+      </Route>
       <Route path="/organizations/profile">
         <OrgProfile />
       </Route>

@@ -56,6 +56,11 @@ export const FormContent = styled.section`
   @media screen and (max-width: 700px) {
     padding: 30px 20px;
   }
+  .infoSenha {
+    font-size: 0.8rem;
+    color: ${themeData.colors.orangeLight};
+    margin-bottom: 20px;
+  }
 `;
 export const FormGroup = styled.div`
   display: flex;
@@ -146,4 +151,17 @@ export const SubmitButton = styled.button`
 export const MapContent = styled.div`
   width: 100%;
   height: 200px;
+`;
+export const ErrorBox = styled.div`
+  width: 100%;
+  background-color: ${themeData.colors.orange};
+  border-radius: 5px;
+  min-height: 40px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${themeData.colors.background};
+  font-weight: 500;
+  margin-bottom: 20px;
 `;

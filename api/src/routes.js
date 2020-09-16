@@ -24,6 +24,16 @@ router.get(
   OrganizationsAuth.verify,
   OrganizationController.profile
 );
+router.get(
+  "/organizations/users/:id",
+  OrganizationsAuth.verify,
+  OrganizationController.getUserInfo
+);
+router.put(
+  "/organizations/users/:id",
+  OrganizationsAuth.verify,
+  OrganizationController.updateUser
+);
 
 router.get(
   "/mqttusers",

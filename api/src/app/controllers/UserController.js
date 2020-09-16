@@ -60,16 +60,16 @@ class UserController {
   }
 
   async store(req, res) {
-    const { name, email, password, admin, organizationId } = req.body;
+    const { name, email, password, admin, orgId } = req.body;
     const level = admin ? "admin" : "user";
 
-    if (!name || !email || !password || !organizationId)
+    if (!name || !email || !password)
       return res.json({ error: "Null data", message: "Campos em branco" });
 
     if (!validator.validate(email))
       return res.json({ error: "Inválid email", message: "Email inválido" });
 
-    const findOrg = await OrganizationsRepositories.findById(organizationId);
+    const findOrg = await OrganizationsRepositories.findById(orgId);
 
     if (findOrg.length === 0) {
       return res.json({
@@ -93,7 +93,7 @@ class UserController {
         email,
         password: passwordHash,
         level,
-        organizationId,
+        organizationId: orgId,
       });
       res.json({ userId: user });
     } catch (error) {

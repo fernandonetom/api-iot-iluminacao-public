@@ -7,6 +7,7 @@ const OrganizationsRepositories = require("../repositories/OrganizationsReposito
 const SuperUsersRepositories = require("../repositories/SuperUsersRepositories");
 const ErrorsCatalog = require("../utils/ErrorsCatalog");
 const MessageCatalog = require("../utils/MessageCatalog");
+const UsersRepositories = require("../repositories/UsersRepositories");
 
 class OrganizationController {
   async index(req, res) {
@@ -175,6 +176,58 @@ class OrganizationController {
       email: org[0].email,
       createdAt: org[0].createdAt,
     });
+  }
+  async getUserInfo(req, res) {
+    const { id } = req.params;
+    const user = await UsersRepositories.findById(id);
+
+    if (user.length === 0) return res.json(ErrorsCatalog.user.notFound);
+
+    res.json({
+      name: user[0].name,
+      email: user[0].email,
+      userLevel: user[0].level,
+      createdAt: user[0].createdAt,
+    });
+  }
+  async updateUser(req, res) {
+    const { name, email, password, admin, orgId } = req.body;
+
+    const level = admin ? "admin" : "user";
+
+    const { id } = req.params;
+
+    if (!id || !name || !email || !orgId)
+      return res.json(ErrorsCatalog.nullData);
+
+    if (!validator.validate(email)) return res.json(ErrorsCatalog.emailInvalid);
+
+    const findEmail = await UsersRepositories.findUserByEmail(email);
+
+    if (findEmail.length > 0 && findEmail[0].id !== parseFloat(id)) {
+      return res.json(ErrorsCatalog.emailInUser);
+    }
+
+    let newPassword;
+    if (!password) {
+      const findPassword = await UsersRepositories.findById(id);
+      newPassword = findPassword[0].password;
+    } else {
+      newPassword = await bcrypt.hash(password, 10);
+    }
+
+    try {
+      await UsersRepositories.update({
+        id,
+        name,
+        email,
+        level,
+        password: newPassword,
+      });
+      res.json(MessageCatalog.updated);
+    } catch (error) {
+      res.json({ error: error.code, message: error.message });
+    }
   }
 }
 module.exports = new OrganizationController();
