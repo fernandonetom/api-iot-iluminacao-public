@@ -163,5 +163,18 @@ class OrganizationController {
       res.json({ error: error.code, message: error.message });
     }
   }
+  async profile(req, res) {
+    const { orgId } = req.body;
+
+    const org = await OrganizationsRepositories.findById(orgId);
+
+    if (org.length === 0) return res.json(ErrorsCatalog.organization.notFound);
+
+    res.json({
+      name: org[0].name,
+      email: org[0].email,
+      createdAt: org[0].createdAt,
+    });
+  }
 }
 module.exports = new OrganizationController();

@@ -19,6 +19,11 @@ router.delete("/users/:id", OrganizationsAuth.verify, UserController.delete);
 router.post("/users/signin", UserController.signIn);
 
 router.post("/organizations/signin", OrganizationController.signIn);
+router.get(
+  "/organizations/profile",
+  OrganizationsAuth.verify,
+  OrganizationController.profile
+);
 
 router.get(
   "/mqttusers",

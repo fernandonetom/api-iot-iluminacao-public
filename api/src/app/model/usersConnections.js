@@ -17,4 +17,31 @@ const UserConnectionsSchema = new mongodb.Schema({
 
 const UserConnections = mongodb.model("UserConnections", UserConnectionsSchema);
 
-module.exports = UserConnections;
+// module.exports = UserConnections;
+// db.userconnections.aggregate([
+//   { $match: {
+//     createdAt: {"$gte": ISODate("2020-09-13T00:00:00.000Z")}
+//   }
+//   },
+//   {
+//     $project: {
+//         createdAt: {
+//             $dateToString: {
+//                 format: "%Y-%m-%d",
+//                 date: "$createdAt"
+//             }
+//         }
+//     }
+//   },
+//   {
+//     $group: {
+//       _id: {
+//         createdAt: '$createdAt',
+//         hora: '$hora'
+//       },
+//       count: { $sum: 1 },
+
+//     }
+//   },
+//   { $addFields: { hora: "$cretedAt" } },
+// ]);

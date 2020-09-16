@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "../../../components/Header";
 import {
   Container,
@@ -20,9 +20,29 @@ import InfoTitle from "../../../components/InfoTitle";
 import Icons from "../../../assets/icons";
 import Input from "../../../components/Input";
 import themeData from "../../../assets/theme/theme";
+import { Context } from "../../../Context/AuthContext";
+import api from "../../../services/api";
+import GlobalLoading from "../../../components/GlobalLoading";
+import { DateToStringFormat } from "../../../utils/dateFormatter";
 export default function OrgProfile() {
+  const { authLoading } = useContext(Context);
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState({});
+  useEffect(() => {
+    if (!authLoading) {
+      (async () => {
+        try {
+          const profileResponse = await api.get("organizations/profile");
+          setUserData(profileResponse.data);
+        } catch (error) {}
+
+        setLoading(false);
+      })();
+    }
+  }, [authLoading, setLoading, loading]);
   return (
     <>
+      {loading && <GlobalLoading />}
       <Header menuType="organization" active="perfil" />
       <Container>
         <ContainerLeft>
@@ -34,9 +54,12 @@ export default function OrgProfile() {
             <ProfileAvatar>
               <Icons name="user-profile" />
             </ProfileAvatar>
-            <ProfileName>Universidade Federal da Paraíba</ProfileName>
-            <ProfileEmail>email@email.com</ProfileEmail>
-            <ProfileData>Cadastrado desde 1 de abril de 2020</ProfileData>
+            <ProfileName>{userData.name && userData.name}</ProfileName>
+            <ProfileEmail>{userData.email && userData.email}</ProfileEmail>
+            <ProfileData>
+              Cadastrado desde{" "}
+              {userData.createdAt && DateToStringFormat(userData.createdAt)}
+            </ProfileData>
           </ProfilePanel>
         </ContainerLeft>
         <ContainerRight>
