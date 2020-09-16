@@ -27,20 +27,30 @@ export default function UserMqttNew({ type }) {
   });
   const history = useHistory();
   useEffect(() => {
+    let isCancelled = false;
+
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(function (location) {
-        setCenter({
-          status: "loaded",
-          lat: location.coords.latitude,
-          lng: location.coords.longitude,
-        });
+        if (!isCancelled) {
+          setCenter({
+            status: "loaded",
+            lat: location.coords.latitude,
+            lng: location.coords.longitude,
+          });
+        }
       });
     } else {
-      setCenter({
-        ...center,
-        status: "error",
-      });
+      if (!isCancelled) {
+        setCenter({
+          ...center,
+          status: "error",
+        });
+      }
     }
+
+    return () => {
+      isCancelled = true;
+    };
   }, [center]);
   return (
     <>

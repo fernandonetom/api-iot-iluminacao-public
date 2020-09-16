@@ -12,6 +12,7 @@ const StatController = require("./app/controllers/StatController");
 const router = Router();
 
 router.get("/users", OrganizationsAuth.verify, UserController.index);
+router.get("/users/profile", UsersAuth.verify, UserController.profile);
 router.post("/users", OrganizationsAuth.verify, UserController.store);
 router.put("/users/:id", OrganizationsAuth.verify, UserController.update);
 router.delete("/users/:id", OrganizationsAuth.verify, UserController.delete);

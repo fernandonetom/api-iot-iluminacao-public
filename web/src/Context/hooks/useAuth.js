@@ -6,6 +6,13 @@ export default function useAuth() {
   const [userData, setUserData] = useState({});
   const [authLoading, setAuthLoading] = useState(true);
   useEffect(() => {
+    api.interceptors.response.use(undefined, function (error) {
+      if (401 === error.response.status) {
+        handleLogout();
+      } else {
+        return Promise.reject(error);
+      }
+    });
     const dataStorage = localStorage.getItem("@sipi-data");
     if (dataStorage) {
       try {
@@ -53,6 +60,9 @@ export default function useAuth() {
       ? history.replace(`/${userData.loginType}/dashboard`)
       : null;
   }
+  function responseObserver(response) {
+    console.log(response);
+  }
   return {
     authenticated,
     userData,
@@ -60,5 +70,6 @@ export default function useAuth() {
     handleLogin,
     handleLogout,
     redirectIfLogged,
+    responseObserver,
   };
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "../../../components/Header";
 import {
   Container,
@@ -21,24 +21,49 @@ import InfoTitle from "../../../components/InfoTitle";
 import Icons from "../../../assets/icons";
 import Input from "../../../components/Input";
 import themeData from "../../../assets/theme/theme";
+import { Context } from "../../../Context/AuthContext";
+import api from "../../../services/api";
+import GlobalLoading from "../../../components/GlobalLoading";
+import { DateToStringFormat } from "../../../utils/dateFormatter";
 export default function UserProfile() {
+  const { authLoading, responseObserver } = useContext(Context);
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState({});
+  useEffect(() => {
+    if (!authLoading) {
+      (async () => {
+        try {
+          const profileResponse = await api.get("users/profile");
+          setUserData(profileResponse.data);
+        } catch (error) {}
+
+        setLoading(false);
+      })();
+    }
+  }, [responseObserver, authLoading, setLoading, loading]);
   return (
     <>
+      {loading && <GlobalLoading />}
       <Header menuType="user" active="perfil" />
       <Container>
         <ContainerLeft>
           <InfoTitle>Perfil</InfoTitle>
           <ProfilePanel>
             <ProfilePanelTag>
-              <ProfileTag>administrador</ProfileTag>
+              <ProfileTag>
+                {userData.userLevel && userData.userLevel}
+              </ProfileTag>
             </ProfilePanelTag>
             <ProfileAvatar>
               <Icons name="user-profile" />
             </ProfileAvatar>
-            <ProfileName>Fernando Martins</ProfileName>
-            <ProfileEmail>email@email.com</ProfileEmail>
-            <ProfileOrg>Universidade Federal da Paraíba</ProfileOrg>
-            <ProfileData>Cadastrado desde 1 de abril de 2020</ProfileData>
+            <ProfileName>{userData.name && userData.name}</ProfileName>
+            <ProfileEmail>{userData.email && userData.email}</ProfileEmail>
+            <ProfileOrg>{userData.orgName && userData.orgName}</ProfileOrg>
+            <ProfileData>
+              Cadastrado desde{" "}
+              {userData.createdAt && DateToStringFormat(userData.createdAt)}
+            </ProfileData>
           </ProfilePanel>
         </ContainerLeft>
         <ContainerRight>

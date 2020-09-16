@@ -7,16 +7,20 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
   const { handleLogout } = useContext(Context);
   const menuItems = {
     organization: [
-      { title: "dashboard", url: "/organization/dashboard", icon: "dashboard" },
-      { title: "usuários", url: "/organization/users", icon: "users" },
-      { title: "novo usuário", url: "/organization/new-user", icon: "plus" },
-      { title: "perfil", url: "/organization/profile", icon: "user" },
+      {
+        title: "dashboard",
+        url: "/organizations/dashboard",
+        icon: "dashboard",
+      },
+      { title: "usuários", url: "/organizations/users", icon: "users" },
+      { title: "novo usuário", url: "/organizations/new-user", icon: "plus" },
+      { title: "perfil", url: "/organizations/profile", icon: "user" },
     ],
     user: [
-      { title: "dashboard", url: "/user/dashboard", icon: "dashboard" },
-      { title: "novo dispositivo", url: "/user/new-device", icon: "plus" },
-      { title: "relatórios", url: "/user/reports", icon: "reports" },
-      { title: "perfil", url: "/user/profile", icon: "user" },
+      { title: "dashboard", url: "/users/dashboard", icon: "dashboard" },
+      { title: "novo dispositivo", url: "/users/new-device", icon: "plus" },
+      { title: "relatórios", url: "/users/reports", icon: "reports" },
+      { title: "perfil", url: "/users/profile", icon: "user" },
     ],
   };
   function handleClose() {

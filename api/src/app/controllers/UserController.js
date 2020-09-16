@@ -171,5 +171,25 @@ class UserController {
       res.json({ error: error.code, message: error.message });
     }
   }
+
+  async profile(req, res) {
+    const { userId, orgId } = req.body;
+
+    const user = await UsersRepositories.findById(userId);
+
+    if (user.length === 0) return res.json(ErrorsCatalog.user.notFound);
+
+    const org = await OrganizationsRepositories.findById(orgId);
+
+    if (org.length === 0) return res.json(ErrorsCatalog.organization.notFound);
+
+    res.json({
+      name: user[0].name,
+      email: user[0].email,
+      userLevel: user[0].level,
+      createdAt: user[0].createdAt,
+      orgName: org[0].name,
+    });
+  }
 }
 module.exports = new UserController();
