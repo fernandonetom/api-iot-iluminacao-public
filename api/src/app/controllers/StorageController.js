@@ -1,43 +1,91 @@
-const moment = require('moment-timezone');
-const ErrorsCatalog = require('../utils/ErrorsCatalog');
-const StoragesRepositories = require('../repositories/StoragesRepositories');
+const moment = require("moment-timezone");
+const ErrorsCatalog = require("../utils/ErrorsCatalog");
+const StoragesRepositories = require("../repositories/StoragesRepositories");
 
 class StorageController {
   async index(req, res) {
     const { tipo } = req.params;
-    const allowDataType = ['alerta', 'temperatura', 'movimentacao', 'umidade', 'tensao', 'luminosidade'];
+    const allowDataType = [
+      "alerta",
+      "temperatura",
+      "movimentacao",
+      "umidade",
+      "tensao",
+      "luminosidade",
+    ];
     if (!allowDataType.includes(tipo)) {
       return res.json(ErrorsCatalog.storage.typeNotAllowed);
     }
 
-    const {
-      id, rangeType, data, dataInicio, dataFim,
-    } = req.body;
+    const { id, rangeType, data, dataInicio, dataFim } = req.body;
 
     if (!id || !rangeType) return res.json(ErrorsCatalog.storage.invalidData);
 
     let responseData = [];
 
     switch (rangeType) {
-      case 'hoje': {
-        const hoje = moment.utc().format('YYYY-MM-DD');
+      case "hoje": {
+        const hoje = moment().format("YYYY-MM-DD");
 
-        if (tipo === 'alerta' || tipo === 'movimentacao') {
-          const hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-            16, 17, 18, 19, 20, 21, 22, 23];
+        if (tipo === "alerta" || tipo === "movimentacao") {
+          const hours = [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+          ];
           try {
-            responseData = await Promise.all(hours.map(async (item) => {
-              const databaseResponse = await StoragesRepositories.listAlertAndMovimentoByDateHour(`dados_${tipo}`, hoje, item, id);
-              return { hora: `${item}:00`, data: hoje, quantidade: databaseResponse.count };
-            }));
+            responseData = await Promise.all(
+              hours.map(async (item) => {
+                const databaseResponse = await StoragesRepositories.listAlertAndMovimentoByDateHour(
+                  `dados_${tipo}`,
+                  hoje,
+                  item,
+                  id
+                );
+                return {
+                  hora: `${item}:00`,
+                  data: hoje,
+                  quantidade: databaseResponse.count,
+                };
+              })
+            );
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
         } else {
           try {
-            responseData = await StoragesRepositories.listStorageByDate(`dados_${tipo}`, hoje, id);
+            responseData = await StoragesRepositories.listStorageByDate(
+              `dados_${tipo}`,
+              hoje,
+              id
+            );
             if (responseData.length > 0) {
-              responseData = responseData.map((item) => ({ valor: item.valor, hora: moment(item.createdAt).format('HH:m'), data: hoje }));
+              responseData = responseData.map((item) => ({
+                valor: item.valor,
+                hora: moment(item.createdAt).format("HH:m"),
+                data: hoje,
+              }));
             }
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
@@ -45,27 +93,71 @@ class StorageController {
         }
         return res.json(responseData);
       }
-      case 'data': {
+      case "data": {
         if (!data) return res.json(ErrorsCatalog.storage.invalidData);
-        const validateDate = moment(data, 'YYYY-MM-DD', true);
+        const validateDate = moment(data, "YYYY-MM-DD", true);
 
-        if (!validateDate.isValid()) return res.json(ErrorsCatalog.storage.invalidData);
-        if (tipo === 'alerta' || tipo === 'movimentacao') {
-          const hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-            16, 17, 18, 19, 20, 21, 22, 23];
+        if (!validateDate.isValid())
+          return res.json(ErrorsCatalog.storage.invalidData);
+        if (tipo === "alerta" || tipo === "movimentacao") {
+          const hours = [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+          ];
           try {
-            responseData = await Promise.all(hours.map(async (item) => {
-              const databaseResponse = await StoragesRepositories.listAlertAndMovimentoByDateHour(`dados_${tipo}`, data, item, id);
-              return { hora: `${item}:00`, data, quantidade: databaseResponse.count };
-            }));
+            responseData = await Promise.all(
+              hours.map(async (item) => {
+                const databaseResponse = await StoragesRepositories.listAlertAndMovimentoByDateHour(
+                  `dados_${tipo}`,
+                  data,
+                  item,
+                  id
+                );
+                return {
+                  hora: `${item}:00`,
+                  data,
+                  quantidade: databaseResponse.count,
+                };
+              })
+            );
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
         } else {
           try {
-            responseData = await StoragesRepositories.listStorageByDate(`dados_${tipo}`, data, id);
+            responseData = await StoragesRepositories.listStorageByDate(
+              `dados_${tipo}`,
+              data,
+              id
+            );
             if (responseData.length > 0) {
-              responseData = responseData.map((item) => ({ valor: item.valor, hora: moment(item.createdAt).format('HH:m'), data }));
+              responseData = responseData.map((item) => ({
+                valor: item.valor,
+                hora: moment(item.createdAt).format("HH:m"),
+                data,
+              }));
             }
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
@@ -73,29 +165,50 @@ class StorageController {
         }
         return res.json(responseData);
       }
-      case 'periodo': {
-        if (!dataInicio || !dataFim) return res.json(ErrorsCatalog.storage.invalidData);
-        const validateDateInicio = moment(dataInicio, 'YYYY-MM-DD', true);
-        if (!validateDateInicio.isValid()) return res.json(ErrorsCatalog.storage.invalidData);
-        const validateDateFim = moment(dataFim, 'YYYY-MM-DD', true);
-        if (!validateDateFim.isValid()) return res.json(ErrorsCatalog.storage.invalidData);
-        if (dataInicio === dataFim) return res.json(ErrorsCatalog.storage.dateEqual);
-        if (validateDateInicio.isAfter(validateDateFim)) return res.json(ErrorsCatalog.storage.dateAfter);
+      case "periodo": {
+        if (!dataInicio || !dataFim)
+          return res.json(ErrorsCatalog.storage.invalidData);
+        const validateDateInicio = moment(dataInicio, "YYYY-MM-DD", true);
+        if (!validateDateInicio.isValid())
+          return res.json(ErrorsCatalog.storage.invalidData);
+        const validateDateFim = moment(dataFim, "YYYY-MM-DD", true);
+        if (!validateDateFim.isValid())
+          return res.json(ErrorsCatalog.storage.invalidData);
+        if (dataInicio === dataFim)
+          return res.json(ErrorsCatalog.storage.dateEqual);
+        if (validateDateInicio.isAfter(validateDateFim))
+          return res.json(ErrorsCatalog.storage.dateAfter);
 
-        if (tipo === 'alerta' || tipo === 'movimentacao') {
+        if (tipo === "alerta" || tipo === "movimentacao") {
           try {
-            responseData = await StoragesRepositories.listAlertAndMovimentoByPeriod(`dados_${tipo}`, dataInicio, dataFim, id);
+            responseData = await StoragesRepositories.listAlertAndMovimentoByPeriod(
+              `dados_${tipo}`,
+              dataInicio,
+              dataFim,
+              id
+            );
             if (responseData.length > 0) {
-              responseData = responseData.map((item) => ({ data: moment(item.createdAt).format('YYYY-MM-DD'), quantidade: item.count }));
+              responseData = responseData.map((item) => ({
+                data: moment(item.createdAt).format("YYYY-MM-DD"),
+                quantidade: item.count,
+              }));
             }
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
         } else {
           try {
-            responseData = await StoragesRepositories.listStorageByPeriodo(`dados_${tipo}`, dataInicio, dataFim, id);
+            responseData = await StoragesRepositories.listStorageByPeriodo(
+              `dados_${tipo}`,
+              dataInicio,
+              dataFim,
+              id
+            );
             if (responseData.length > 0) {
-              responseData = responseData.map((item) => ({ data: moment(item.createdAt).format('YYYY-MM-DD'), quantidade: parseFloat(item.count).toFixed(2) }));
+              responseData = responseData.map((item) => ({
+                data: moment(item.createdAt).format("YYYY-MM-DD"),
+                quantidade: parseFloat(item.count).toFixed(2),
+              }));
             }
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
@@ -110,7 +223,13 @@ class StorageController {
 
   async store(req, res) {
     const { tipo } = req.params;
-    const allowDataType = ['alerta', 'temperatura', 'movimentacao', 'umidade', 'tensao'];
+    const allowDataType = [
+      "alerta",
+      "temperatura",
+      "movimentacao",
+      "umidade",
+      "tensao",
+    ];
 
     if (!allowDataType.includes(tipo)) {
       return res.json(ErrorsCatalog.storage.typeNotAllowed);
@@ -122,11 +241,15 @@ class StorageController {
 
     const dado = `dados_${tipo}`;
 
-    const validateValor = tipo === 'alerta' || tipo === 'movimentacao' ? 1 : valor;
+    const validateValor =
+      tipo === "alerta" || tipo === "movimentacao" ? 1 : valor;
 
     try {
       const data = await StoragesRepositories.create({
-        dado, id, valor: validateValor,
+        dado,
+        id,
+        valor: validateValor,
+        createdAt: moment().utc().tz("America/Sao_Paulo").format(),
       });
       res.json({ dataId: data[0] });
     } catch (error) {

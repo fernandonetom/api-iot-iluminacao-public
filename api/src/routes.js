@@ -80,6 +80,6 @@ router.delete(
   OrganizationController.delete
 );
 
-router.get("/stats", StatController.index);
+router.get("/stats", StatController.listar);
 router.post("/stats", StatController.create);
 module.exports = router;

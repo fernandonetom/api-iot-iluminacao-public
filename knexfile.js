@@ -1,9 +1,9 @@
 // Update with your config settings.
-require('dotenv').config();
+require("dotenv").config();
 
 module.exports = {
   development: {
-    client: 'postgresql',
+    client: "postgresql",
     connection: {
       host: process.env.DB_HOST,
       database: process.env.DB_DATABASE_DEV,
@@ -15,14 +15,19 @@ module.exports = {
     pool: {
       min: 2,
       max: 10,
+      afterCreate: function (conn, cb) {
+        conn.query('SET timezone="America/Sao_Paulo";', function (err) {
+          cb(err, conn);
+        });
+      },
     },
     migrations: {
-      directory: './api/src/database/migrations',
-      tableName: 'knex_migrations',
+      directory: "./api/src/database/migrations",
+      tableName: "knex_migrations",
     },
   },
   production: {
-    client: 'postgresql',
+    client: "postgresql",
     connection: {
       host: process.env.DB_HOST,
       database: process.env.DB_DATABASE,
@@ -34,10 +39,15 @@ module.exports = {
     pool: {
       min: 2,
       max: 10,
+      afterCreate: function (conn, cb) {
+        conn.query('SET timezone="America/Sao_Paulo";', function (err) {
+          cb(err, conn);
+        });
+      },
     },
     migrations: {
-      directory: './api/src/database/migrations',
-      tableName: 'knex_migrations',
+      directory: "./api/src/database/migrations",
+      tableName: "knex_migrations",
     },
   },
 };
