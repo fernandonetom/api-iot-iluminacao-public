@@ -12,6 +12,7 @@ class StorageController {
       "umidade",
       "tensao",
       "luminosidade",
+      "rele",
     ];
     if (!allowDataType.includes(tipo)) {
       return res.json(ErrorsCatalog.storage.typeNotAllowed);
@@ -27,7 +28,7 @@ class StorageController {
       case "hoje": {
         const hoje = moment().format("YYYY-MM-DD");
 
-        if (tipo === "alerta" || tipo === "movimentacao") {
+        if (tipo === "alerta" || tipo === "movimentacao" || tipo === "rele") {
           const hours = [
             0,
             1,
@@ -99,7 +100,7 @@ class StorageController {
 
         if (!validateDate.isValid())
           return res.json(ErrorsCatalog.storage.invalidData);
-        if (tipo === "alerta" || tipo === "movimentacao") {
+        if (tipo === "alerta" || tipo === "movimentacao" || tipo === "rele") {
           const hours = [
             0,
             1,
@@ -179,7 +180,7 @@ class StorageController {
         if (validateDateInicio.isAfter(validateDateFim))
           return res.json(ErrorsCatalog.storage.dateAfter);
 
-        if (tipo === "alerta" || tipo === "movimentacao") {
+        if (tipo === "alerta" || tipo === "movimentacao" || tipo === "rele") {
           try {
             responseData = await StoragesRepositories.listAlertAndMovimentoByPeriod(
               `dados_${tipo}`,
@@ -229,6 +230,7 @@ class StorageController {
       "movimentacao",
       "umidade",
       "tensao",
+      "rele",
     ];
 
     if (!allowDataType.includes(tipo)) {
@@ -241,15 +243,11 @@ class StorageController {
 
     const dado = `dados_${tipo}`;
 
-    const validateValor =
-      tipo === "alerta" || tipo === "movimentacao" ? 1 : valor;
-
     try {
       const data = await StoragesRepositories.create({
         dado,
         id,
-        valor: validateValor,
-        createdAt: moment().utc().tz("America/Sao_Paulo").format(),
+        valor: parseFloat(valor),
       });
       res.json({ dataId: data[0] });
     } catch (error) {

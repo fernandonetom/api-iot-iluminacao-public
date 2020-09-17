@@ -43,13 +43,21 @@ class StoragesRepositories {
     return data;
   }
 
-  async create({ dado, id, valor, createdAt }) {
+  async create({ dado, id, valor }) {
     const data = await db(dado)
       .insert({
         mqtt_user_id: id,
         valor,
       })
       .returning("id");
+    return data;
+  }
+
+  async lastDataRegister(type, id) {
+    const data = await db(`dados_${type}`)
+      .where("mqtt_user_id", id)
+      .orderBy("createdAt", "desc")
+      .first();
     return data;
   }
 }

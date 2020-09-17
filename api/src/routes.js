@@ -35,12 +35,7 @@ router.put(
   OrganizationController.updateUser
 );
 
-router.get(
-  "/mqttusers",
-  UsersAuth.verify,
-  UsersAuth.isAdmin,
-  MqttUserController.index
-);
+router.get("/mqttusers", UsersAuth.verify, MqttUserController.index);
 router.post("/mqttusers", UsersAuth.verify, MqttUserController.store);
 router.put(
   "/mqttusers/:id",
@@ -54,6 +49,7 @@ router.delete(
   UsersAuth.isAdmin,
   MqttUserController.delete
 );
+router.get("/mqttusers/:id", UsersAuth.verify, MqttUserController.details);
 
 router.post("/storage/create/:tipo", StorageController.store);
 router.post("/storage/list/:tipo", UsersAuth.verify, StorageController.index);
