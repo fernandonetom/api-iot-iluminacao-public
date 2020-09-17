@@ -20,23 +20,20 @@ export default function UserHome() {
   const [status, setStatus] = useState("wait");
   const [devices, setDevices] = useState([]);
   const [error, setError] = useState(null);
-  const { authLoading } = useContext(Context);
   useEffect(() => {
-    if (!authLoading) {
-      (async () => {
-        try {
-          const { data } = await api.get("mqttusers");
-          setLoading(false);
-          if (data.error) {
-            setError("Não foi possível obter a listagem dos dispositivos");
-            setStatus("offline");
-          }
-          setDevices(data);
-          setStatus("online");
-        } catch (error) {}
-      })();
-    }
-  }, [authLoading]);
+    (async () => {
+      try {
+        const { data } = await api.get("mqttusers");
+        setLoading(false);
+        if (data.error) {
+          setError("Não foi possível obter a listagem dos dispositivos");
+          setStatus("offline");
+        }
+        setDevices(data);
+        setStatus("online");
+      } catch (error) {}
+    })();
+  }, []);
   return (
     <>
       <Header menuType="user" active="dashboard">

@@ -29,7 +29,7 @@ export default function Login({ loginType }) {
   });
   useEffect(() => {
     redirectIfLogged();
-  }, [redirectIfLogged]);
+  }, [authLoading, redirectIfLogged]);
   async function handleSubmit() {
     if (email.trim().length === 0 || password.trim().length === 0) {
       return setConfigs({

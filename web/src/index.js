@@ -16,7 +16,7 @@ ReactDOM.render(
     </AuthProvider>
     <ToastContainer
       closeButton={false}
-      style={{ fontSize: "1rem", fontWeight: "500", fontFamily: "Poppins" }}
+      style={{ fontSize: "1rem", fontWeight: "300", fontFamily: "Poppins" }}
     />
   </React.StrictMode>,
   document.getElementById("root")
