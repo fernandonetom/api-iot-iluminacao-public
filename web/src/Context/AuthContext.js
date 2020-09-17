@@ -1,7 +1,6 @@
 import React, { createContext } from "react";
 import useAuth from "./hooks/useAuth";
 export const Context = createContext();
-
 export default function AuthProvider({ children }) {
   const {
     authenticated,

@@ -20,10 +20,10 @@ export default function Routes() {
       <Route path="/users/profile">
         <UserProfile />
       </Route>
-      <Route path="/users/device-details">
+      <Route path="/users/device-details/:id">
         <UserMqttDetails />
       </Route>
-      <Route path="/users/device-edit">
+      <Route path="/users/device-edit/:id">
         <UserMqttNew type="edit" />
       </Route>
       <Route path="/users/new-device">

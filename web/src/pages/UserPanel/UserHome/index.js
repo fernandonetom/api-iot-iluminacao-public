@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "../../../components/Header";
 import PlusIcon from "../../../assets/icons/plusIcon";
 import {
@@ -11,22 +11,32 @@ import {
 } from "./styles";
 import InfoTitle from "../../../components/InfoTitle";
 import DevicesPanel from "../../../components/DevicesPanel";
+import LoadingComponent from "../../../components/LoadingComponent";
+import api from "../../../services/api";
+import { Context } from "../../../Context/AuthContext";
 
 export default function UserHome() {
-  const devices = [
-    { id: 1, name: "Poste 1" },
-    { id: 2, name: "Poste 2" },
-    { id: 3, name: "Poste 3" },
-    { id: 4, name: "Poste 4" },
-    { id: 5, name: "Poste 5" },
-    { id: 6, name: "Poste 6" },
-    { id: 7, name: "Poste 7" },
-    { id: 8, name: "Poste 8" },
-    { id: 9, name: "Poste 9" },
-    { id: 10, name: "Poste 10" },
-    { id: 11, name: "Poste 11" },
-    { id: 12, name: "Poste 12" },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState("wait");
+  const [devices, setDevices] = useState([]);
+  const [error, setError] = useState(null);
+  const { authLoading } = useContext(Context);
+  useEffect(() => {
+    if (!authLoading) {
+      (async () => {
+        try {
+          const { data } = await api.get("mqttusers");
+          setLoading(false);
+          if (data.error) {
+            setError("Não foi possível obter a listagem dos dispositivos");
+            setStatus("offline");
+          }
+          setDevices(data);
+          setStatus("online");
+        } catch (error) {}
+      })();
+    }
+  }, [authLoading]);
   return (
     <>
       <Header menuType="user" active="dashboard">
@@ -39,20 +49,26 @@ export default function UserHome() {
             </NewDevice>
           </InfoLeft>
           <InfoRight>
-            <Circle status="online" />
-            online
+            <Circle status={status} />
+            {status === "wait" && "conectando"}
+            {status === "offline" && status}
+            {status === "online" && status}
           </InfoRight>
         </HeaderContent>
       </Header>
-      <DevicesPanel data={devices} />
-
-      <TotalDevices>
-        {devices.length === 0
-          ? "Nenhum dispositivo cadastrado"
-          : `${devices.length} dispositivo${
-              devices.length > 1 ? "s" : ""
-            } cadastrado${devices.length > 1 ? "s" : ""}`}
-      </TotalDevices>
+      {loading && <LoadingComponent />}
+      {!loading && devices.length > 0 && <DevicesPanel data={devices} />}
+      {!loading && (
+        <TotalDevices>
+          {devices.length === 0
+            ? error
+              ? error
+              : "Nenhum dispositivo cadastrado"
+            : `${devices.length} dispositivo${
+                devices.length > 1 ? "s" : ""
+              } cadastrado${devices.length > 1 ? "s" : ""}`}
+        </TotalDevices>
+      )}
     </>
   );
 }
