@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header";
 import PlusIcon from "../../../assets/icons/plusIcon";
 import {
@@ -13,7 +13,6 @@ import InfoTitle from "../../../components/InfoTitle";
 import DevicesPanel from "../../../components/DevicesPanel";
 import LoadingComponent from "../../../components/LoadingComponent";
 import api from "../../../services/api";
-import { Context } from "../../../Context/AuthContext";
 
 export default function UserHome() {
   const [loading, setLoading] = useState(true);

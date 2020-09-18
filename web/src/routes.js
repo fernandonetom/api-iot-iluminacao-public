@@ -15,7 +15,7 @@ import { Context } from "./Context/AuthContext";
 import GlobalLoading from "./components/GlobalLoading";
 import { toast } from "react-toastify";
 function CustomRoute({ isPrivate, ...rest }) {
-  const { authLoading, authenticated, userData } = useContext(Context);
+  const { authLoading, authenticated } = useContext(Context);
 
   if (authLoading) {
     return <GlobalLoading />;
@@ -52,12 +52,7 @@ export default function Routes() {
         component={() => <UserMqttNew type="edit" />}
       />
       <CustomRoute
-        path="/users/device-new"
-        isPrivate
-        component={() => <UserMqttNew type="new" />}
-      />
-      <CustomRoute
-        path="/users/device-new"
+        path="/users/new-device"
         isPrivate
         component={() => <UserMqttNew type="new" />}
       />

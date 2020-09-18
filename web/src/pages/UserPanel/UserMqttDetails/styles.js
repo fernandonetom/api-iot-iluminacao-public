@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import themeData from "../../../assets/theme/theme";
+import PuffLoader from "react-spinners/PuffLoader";
 import { Link } from "react-router-dom";
+export const LoadingSpinner = styled(PuffLoader).attrs({
+  color: themeData.colors.orangeLight,
+  size: 40,
+})``;
 export const InfoLeft = styled.div`
   display: flex;
   align-items: center;
@@ -84,6 +89,32 @@ export const DetailsPanel = styled.section`
     padding: 0 20px;
     padding-top: 20px;
   }
+  .toolTipSuccess {
+    color: ${themeData.colors.background} !important;
+    background-color: ${themeData.colors.greenDark} !important;
+    font-size: 0.9rem !important;
+    font-weight: 500;
+    &.place-top {
+      &:after {
+        border-top-color: ${themeData.colors.greenDark} !important;
+        border-top-style: solid !important;
+        border-top-width: 6px !important;
+      }
+    }
+  }
+  .toolTipWarn {
+    color: ${themeData.colors.background} !important;
+    background-color: ${themeData.colors.blue} !important;
+    font-size: 0.9rem !important;
+    font-weight: 500;
+    &.place-bottom {
+      &:after {
+        border-bottom-color: ${themeData.colors.blue} !important;
+        border-bottom-style: solid !important;
+        border-bottom-width: 6px !important;
+      }
+    }
+  }
 `;
 export const DetailsPanelLeft = styled.div`
   width: 60%;
@@ -92,6 +123,7 @@ export const DetailsPanelLeft = styled.div`
   grid-row-gap: 20px;
   grid-column-gap: 40px;
   margin-right: 40px;
+
   @media screen and (max-width: 1050px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -118,13 +150,18 @@ export const DetailsItem = styled.div`
 `;
 export const DetailsItemLeft = styled.div`
   letter-spacing: 0.06rem;
+  text-transform: capitalize;
   h3 {
     font-size: 1rem;
     font-weight: 200;
   }
   span {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 300;
+  }
+  span.wait {
+    color: ${themeData.colors.orangeLight};
+    font-size: 0.8rem;
   }
   @media screen and (max-width: 700px) {
     h3 {
@@ -136,7 +173,18 @@ export const DetailsItemLeft = styled.div`
     }
   }
 `;
-export const DetailsItemRight = styled.div``;
+export const DetailsItemRight = styled.div`
+  svg {
+    ${(props) => (props.type === "light" ? "" : "cursor: pointer;")}
+    width: ${(props) => (props.type === "light" ? "30px" : "40px")};
+    path {
+      fill: ${(props) =>
+        props.status
+          ? themeData.colors.orangeLight
+          : themeData.colors.lightGrayDark};
+    }
+  }
+`;
 export const DetailsPanelRight = styled.div`
   flex: 1;
   @media screen and (max-width: 700px) {
