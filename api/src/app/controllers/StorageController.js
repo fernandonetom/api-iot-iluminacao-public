@@ -228,6 +228,7 @@ class StorageController {
       "alerta",
       "temperatura",
       "movimentacao",
+      "luminosidade",
       "umidade",
       "tensao",
       "rele",

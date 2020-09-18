@@ -17,14 +17,17 @@ import {
   Footer,
   EditButton,
   LoadingSpinner,
+  MapInfo,
 } from "./styles";
 import MakerMap from "../../../components/MakerMap";
 import InfoTitle from "../../../components/InfoTitle";
 import Icons from "../../../assets/icons";
 import themeData from "../../../assets/theme/theme";
 import isMobile from "../../../utils/isMobile";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
+import api from "../../../services/api";
+import { toast } from "react-toastify";
 const maximum = {
   temperatura: 50,
   luminosidade: 100,
@@ -59,37 +62,70 @@ function dataToChart(data) {
     ],
   };
 }
-
 export default function UserMqttDetails() {
   const history = useHistory();
+  const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({
-    temperatura: [5, 50],
-    luminosidade: [0, 100],
-    umidade: [0, 100],
-    tensao: [0, 15],
-    rele: true,
-    alerta: true,
-    movimentacao: true,
+    mqtt: null,
+    temperatura: [null, 50],
+    luminosidade: [null, 100],
+    umidade: [null, 100],
+    tensao: [null, 15],
+    rele: null,
+    alerta: null,
+    movimentacao: null,
   });
   const [center, setCenter] = useState({ lat: null, lng: null });
 
   useEffect(() => {
-    setTimeout(() => {
-      setData({
-        temperatura: [25, maximum.temperatura - 25],
-        luminosidade: [90, maximum.luminosidade - 90],
-        umidade: [88, maximum.umidade - 88],
-        tensao: [13.6, maximum.tensao - 13.6],
-        rele: false,
-        alerta: true,
-        movimentacao: false,
-      });
-      setLoading(false);
-    }, 5000);
-  }, [data]);
+    (async () => {
+      try {
+        const { data } = await api.get(`mqttusers/${id}`);
+        setLoading(false);
+        if (data.error) {
+          history.goBack();
+          return toast.error(data.message);
+        }
+        console.log(data.mqtt);
+        setData({
+          mqtt: data.mqtt,
+          temperatura: [
+            data.temperatura.valor ? parseFloat(data.temperatura.valor) : null,
+            data.temperatura.valor
+              ? maximum.temperatura - parseFloat(data.temperatura.valor)
+              : 0,
+          ],
+          luminosidade: [
+            data.luminosidade.valor
+              ? parseFloat(data.luminosidade.valor)
+              : null,
+            data.luminosidade.valor
+              ? maximum.luminosidade - parseFloat(data.luminosidade.valor)
+              : 0,
+          ],
+          umidade: [
+            data.umidade.valor ? parseFloat(data.umidade.valor) : null,
+            data.umidade.valor
+              ? maximum.umidade - parseFloat(data.umidade.valor)
+              : 0,
+          ],
+          tensao: [
+            data.tensao.valor ? parseFloat(data.tensao.valor) : null,
+            data.tensao.valor
+              ? maximum.tensao - parseFloat(data.tensao.valor)
+              : 0,
+          ],
+          movimentacao: data.movimentacao.valor
+            ? !!parseFloat(data.movimentacao.valor)
+            : null,
+          alerta: data.alerta.valor ? !!parseFloat(data.alerta.valor) : null,
+          rele: data.rele.valor ? !!parseFloat(data.rele.valor) : null,
+        });
+      } catch (error) {}
+    })();
+  }, [history, id]);
 
-  const device = { id: 1, name: "Poste 1" };
   return (
     <>
       <Header menuType="user" active="dashboard">
@@ -98,8 +134,11 @@ export default function UserMqttDetails() {
             <BackButton onClick={() => history.goBack()}>
               <Icons name="arrow-left" />
             </BackButton>
-            <InfoTitle>{device.name}</InfoTitle>
-            <EditButton to="device-edit">editar</EditButton>
+            {loading && <InfoTitle>Carregando...</InfoTitle>}
+            {!loading && data.mqtt && <InfoTitle>{data.mqtt.name}</InfoTitle>}
+            {!loading && data.mqtt && (
+              <EditButton to="device-edit">editar</EditButton>
+            )}
           </InfoLeft>
           <InfoRight>
             <Circle status="online" />
@@ -112,20 +151,28 @@ export default function UserMqttDetails() {
           <DetailsItem>
             <DetailsItemLeft>
               <h3>Lâmpada</h3>
-              {loading && <span className="wait">Aguardando</span>}
-              {!loading && <span>{data.rele ? "ligada" : "desligada"}</span>}
+              {(loading || data.rele === null) && (
+                <span className="wait">Aguardando</span>
+              )}
+              {!loading && data.rele !== null && (
+                <span>{data.rele ? "ligada" : "desligada"}</span>
+              )}
             </DetailsItemLeft>
             <DetailsItemRight type="light" status={data.rele}>
-              <LoadingSpinner loading={loading} />
-              {!loading && <Icons name="light" />}
+              <LoadingSpinner loading={loading || data.rele === null} />
+              {!loading && data.rele !== null && <Icons name="light" />}
             </DetailsItemRight>
           </DetailsItem>
 
           <DetailsItem>
             <DetailsItemLeft>
               <h3>Alerta</h3>
-              {loading && <span className="wait">Aguardando</span>}
-              {!loading && <span>{data.alerta ? "ligado" : "desligado"}</span>}
+              {(loading || data.alerta === null) && (
+                <span className="wait">Aguardando</span>
+              )}
+              {!loading && data.alerta !== null && (
+                <span>{data.alerta ? "ligado" : "desligado"}</span>
+              )}
             </DetailsItemLeft>
             <DetailsItemRight
               data-tip
@@ -133,8 +180,8 @@ export default function UserMqttDetails() {
               type="alert"
               status={data.alerta}
             >
-              <LoadingSpinner loading={loading} />
-              {!loading && <Icons name="alert" />}
+              <LoadingSpinner loading={loading || data.alerta === null} />
+              {!loading && data.alerta !== null && <Icons name="alert" />}
             </DetailsItemRight>
             <ReactTooltip
               className={data.alerta ? "toolTipWarn" : "toolTipSuccess"}
@@ -148,28 +195,32 @@ export default function UserMqttDetails() {
           <DetailsItem>
             <DetailsItemLeft>
               <h3>Movimentação</h3>
-              {loading && <span className="wait">Aguardando</span>}
-              {!loading && (
+              {(loading || data.movimentacao === null) && (
+                <span className="wait">Aguardando</span>
+              )}
+              {!loading && data.movimentacao !== null && (
                 <span>{data.movimentacao ? "detectada" : "não detectada"}</span>
               )}
             </DetailsItemLeft>
             <DetailsItemRight type="movimentacao" status={data.movimentacao}>
-              <LoadingSpinner loading={loading} />
-              {!loading && <Icons name="run" />}
+              <LoadingSpinner loading={loading || data.movimentacao === null} />
+              {!loading && data.movimentacao !== null && <Icons name="run" />}
             </DetailsItemRight>
           </DetailsItem>
 
           <DetailsItem>
             <DetailsItemLeft>
               <h3>Temperatura</h3>
-              {loading && <span className="wait">Aguardando</span>}
+              {(loading || data.temperatura[0] === null) && (
+                <span className="wait">Aguardando</span>
+              )}
               <span>
-                {!loading && data.temperatura && `${data.temperatura[0]} ºC`}
+                {!loading && data.temperatura[0] && `${data.temperatura[0]} ºC`}
               </span>
             </DetailsItemLeft>
             <DetailsItemRight>
-              <LoadingSpinner loading={loading} />
-              {!loading && (
+              <LoadingSpinner loading={loading || !data.temperatura[0]} />
+              {!loading && data.temperatura[0] && (
                 <Doughnut
                   width={isMobile ? 30 : 40}
                   data={dataToChart(data.temperatura)}
@@ -178,17 +229,22 @@ export default function UserMqttDetails() {
               )}
             </DetailsItemRight>
           </DetailsItem>
+
           <DetailsItem>
             <DetailsItemLeft>
-              <h3>Luminosidade</h3>
-              {loading && <span className="wait">Aguardando</span>}
+              <h3>luminosidade</h3>
+              {(loading || data.luminosidade[0] === null) && (
+                <span className="wait">Aguardando</span>
+              )}
               <span>
-                {!loading && data.luminosidade && `${data.luminosidade[0]} %`}
+                {!loading &&
+                  data.luminosidade[0] &&
+                  `${data.luminosidade[0]} %`}
               </span>
             </DetailsItemLeft>
             <DetailsItemRight>
-              <LoadingSpinner loading={loading} />
-              {!loading && (
+              <LoadingSpinner loading={loading || !data.luminosidade[0]} />
+              {!loading && data.luminosidade[0] && (
                 <Doughnut
                   width={isMobile ? 30 : 40}
                   data={dataToChart(data.luminosidade)}
@@ -197,15 +253,20 @@ export default function UserMqttDetails() {
               )}
             </DetailsItemRight>
           </DetailsItem>
+
           <DetailsItem>
             <DetailsItemLeft>
               <h3>umidade</h3>
-              {loading && <span className="wait">Aguardando</span>}
-              <span>{!loading && data.umidade && `${data.umidade[0]} %`}</span>
+              {(loading || data.umidade[0] === null) && (
+                <span className="wait">Aguardando</span>
+              )}
+              <span>
+                {!loading && data.umidade[0] && `${data.umidade[0]} %`}
+              </span>
             </DetailsItemLeft>
             <DetailsItemRight>
-              <LoadingSpinner loading={loading} />
-              {!loading && (
+              <LoadingSpinner loading={loading || !data.umidade[0]} />
+              {!loading && data.umidade[0] && (
                 <Doughnut
                   width={isMobile ? 30 : 40}
                   data={dataToChart(data.umidade)}
@@ -214,15 +275,18 @@ export default function UserMqttDetails() {
               )}
             </DetailsItemRight>
           </DetailsItem>
+
           <DetailsItem>
             <DetailsItemLeft>
-              <h3>Tensão</h3>
-              {loading && <span className="wait">Aguardando</span>}
-              <span>{!loading && data.tensao && `${data.tensao[0]} V`}</span>
+              <h3>tensão</h3>
+              {(loading || data.tensao[0] === null) && (
+                <span className="wait">Aguardando</span>
+              )}
+              <span>{!loading && data.tensao[0] && `${data.tensao[0]} V`}</span>
             </DetailsItemLeft>
             <DetailsItemRight>
-              <LoadingSpinner loading={loading} />
-              {!loading && (
+              <LoadingSpinner loading={loading || !data.tensao[0]} />
+              {!loading && data.tensao[0] && (
                 <Doughnut
                   width={isMobile ? 30 : 40}
                   data={dataToChart(data.tensao)}
@@ -232,16 +296,32 @@ export default function UserMqttDetails() {
             </DetailsItemRight>
           </DetailsItem>
         </DetailsPanelLeft>
-        <DetailsPanelRight>
-          {center.lat && false && (
+        <DetailsPanelRight
+          showLoader={loading}
+          showNull={!!data.mqtt?.latitude && !!data.mqtt?.longitude}
+        >
+          {loading && <MapInfo>{<LoadingSpinner loading />}</MapInfo>}
+          {!loading && !data.mqtt?.latitude && !data.mqtt?.longitude && (
+            <MapInfo>
+              <Icons name="map-pin" />
+              Sem localização
+            </MapInfo>
+          )}
+          {!loading && data.mqtt?.latitude && data.mqtt?.longitude && (
             <GoogleMapReact
               bootstrapURLKeys={{
                 key: process.env.REACT_APP_MAPS_API_KEY,
               }}
-              defaultCenter={center}
-              defaultZoom={15}
+              defaultCenter={{
+                lat: parseFloat(data.mqtt.latitude),
+                lng: parseFloat(data.mqtt.longitude),
+              }}
+              defaultZoom={18}
             >
-              <MakerMap lat={center.lat} lng={center.lng} />
+              <MakerMap
+                lat={parseFloat(data.mqtt.latitude)}
+                lng={parseFloat(data.mqtt.longitude)}
+              />
             </GoogleMapReact>
           )}
         </DetailsPanelRight>

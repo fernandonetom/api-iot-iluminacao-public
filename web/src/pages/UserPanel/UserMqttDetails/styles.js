@@ -94,11 +94,11 @@ export const DetailsPanel = styled.section`
     background-color: ${themeData.colors.greenDark} !important;
     font-size: 0.9rem !important;
     font-weight: 500;
-    &.place-top {
+    &.place-bottom {
       &:after {
-        border-top-color: ${themeData.colors.greenDark} !important;
-        border-top-style: solid !important;
-        border-top-width: 6px !important;
+        border-bottom-color: ${themeData.colors.greenDark} !important;
+        border-bottom-style: solid !important;
+        border-bottom-width: 6px !important;
       }
     }
   }
@@ -180,13 +180,34 @@ export const DetailsItemRight = styled.div`
     path {
       fill: ${(props) =>
         props.status
-          ? themeData.colors.orangeLight
+          ? themeData.colors.greenDark
           : themeData.colors.lightGrayDark};
     }
   }
 `;
 export const DetailsPanelRight = styled.div`
   flex: 1;
+  @media screen and (max-width: 700px) {
+    width: 100%;
+    height: 250px;
+    margin-top: 20px;
+  }
+`;
+export const MapInfo = styled.div`
+  flex: 1;
+  background-color: ${themeData.colors.gray};
+  height: 100%;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  svg {
+    margin-right: 1rem;
+    path {
+      fill: ${themeData.colors.orangeLight};
+    }
+  }
   @media screen and (max-width: 700px) {
     width: 100%;
     height: 250px;

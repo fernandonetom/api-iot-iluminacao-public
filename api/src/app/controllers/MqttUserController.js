@@ -46,8 +46,8 @@ class MqttUserController {
       name,
       username,
       password,
-      latitude: latitude || null,
-      longitude: longitude || null,
+      latitude: parseFloat(latitude) || null,
+      longitude: parseFloat(longitude) || null,
       user_id: userId,
       organization_id: orgId,
     };
@@ -80,8 +80,8 @@ class MqttUserController {
       if (findMqttUser[0].organization_id !== parseFloat(orgId))
         return res.status(401).json(ErrorsCatalog.unAuthorized.notPermissions);
 
-      let newLatitude = latitude || findMqttUser[0].latitude;
-      let newLongitude = longitude || findMqttUser[0].longitude;
+      let newLatitude = parseFloat(latitude) || findMqttUser[0].latitude;
+      let newLongitude = parseFloat(longitude) || findMqttUser[0].longitude;
 
       newLatitude = newLatitude === "null" ? null : newLatitude;
       newLongitude = newLongitude === "null" ? null : newLongitude;
@@ -160,7 +160,7 @@ class MqttUserController {
       valor: null,
     };
     res.json({
-      mqtt,
+      mqtt: mqtt[0],
       alerta: alerta || nullData,
       temperatura: temperatura || nullData,
       luminosidade: luminosidade || nullData,
