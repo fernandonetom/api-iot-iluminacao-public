@@ -10,10 +10,11 @@ const app_express = express();
 const mqtt = require("mqtt");
 
 const options = {
-  key: fs.readFileSync("/usr/app/cert.key"),
-  cert: fs.readFileSync("/usr/app/cert.crt"),
-  ca: fs.readFileSync("/usr/app/cert.crt"),
+  key: fs.readFileSync("/usr/app/conf/ssl.api.frstore.tk.key"),
+  cert: fs.readFileSync("/usr/app/conf/ssl.api.frstore.tk.crt"),
+  ca: fs.readFileSync("/usr/app/conf/ssl.api.frstore.tk.crt"),
 };
+
 const app = https.createServer(options, app_express);
 const io = require("socket.io").listen(app);
 
@@ -56,7 +57,7 @@ client.on("error", (err) => {
 let visits = 0;
 io.on("connection", (socket) => {
   console.log("Socket :: cliente conectado");
-  visits += visits;
+  visits += 1;
 
   io.emit("visits", visits);
   socket.on("dados", (data) => {

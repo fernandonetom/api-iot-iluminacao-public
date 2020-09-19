@@ -1,4 +1,4 @@
-version: '3.1'
+version: "3.1"
 
 services:
   api:
@@ -11,8 +11,9 @@ services:
     volumes:
       - .:/usr/app
       - /usr/app/node_modules/
-      - ./websocket/certs/cert.key:/usr/app/cert.key
-      - ./websocket/certs/cert.crt:/usr/app/cert.crt
+      - /home/postesolar/conf/web:/usr/app/conf
+    networks:
+      - api
   # database:
   #   container_name: postgres-teste
   #   image: postgres
@@ -26,3 +27,5 @@ services:
   #     - db-data:/var/lib/postgresql/data
 # volumes:
 #   db-data:
+networks:
+  api:
