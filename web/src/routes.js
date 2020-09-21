@@ -14,14 +14,15 @@ import OrgProfile from "./pages/OrgPanel/OrgProfile";
 import { Context } from "./Context/AuthContext";
 import GlobalLoading from "./components/GlobalLoading";
 import { toast } from "react-toastify";
-function CustomRoute({ isPrivate, ...rest }) {
-  const { authLoading, authenticated } = useContext(Context);
+function CustomRoute({ isPrivate, privateType, isLogin, ...rest }) {
+  const { authLoading, authenticated, userData } = useContext(Context);
 
   if (authLoading) {
     return <GlobalLoading />;
   }
   if (isPrivate && !authenticated) {
-    toast.error("Não autorizado, faça login para acessar o sistema", {
+    toast.error("Não autorizado, faça login para acessar o sistema.", {
+      toastId: "401",
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -32,6 +33,29 @@ function CustomRoute({ isPrivate, ...rest }) {
     });
     return <Redirect to="/login" />;
   }
+  console.log({
+    privateType,
+    type: userData.loginType !== privateType,
+  });
+  if (isPrivate && privateType && userData.loginType !== privateType) {
+    toast.error(
+      "Não autorizado, você não tem permissão para acessar a página solicitada.",
+      {
+        toastId: "401",
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }
+    );
+    return <Redirect to="/login" />;
+  }
+  if (isLogin && authenticated) {
+    return <Redirect to={`/${userData.loginType}/dashboard`} />;
+  }
 
   return <Route {...rest} />;
 }
@@ -39,52 +63,77 @@ function CustomRoute({ isPrivate, ...rest }) {
 export default function Routes() {
   return (
     <Switch>
-      <CustomRoute path="/users/dashboard" isPrivate component={UserHome} />
-      <CustomRoute path="/users/profile" isPrivate component={UserProfile} />
+      <CustomRoute
+        path="/users/dashboard"
+        privateType="users"
+        isPrivate
+        component={UserHome}
+      />
+      <CustomRoute
+        path="/users/profile"
+        privateType="users"
+        isPrivate
+        component={UserProfile}
+      />
       <CustomRoute
         path="/users/device-details/:id"
         isPrivate
+        privateType="users"
         component={UserMqttDetails}
       />
       <CustomRoute
         path="/users/device-edit/:id"
         isPrivate
+        privateType="users"
         component={() => <UserMqttNew type="edit" />}
       />
       <CustomRoute
         path="/users/new-device"
         isPrivate
+        privateType="users"
         component={() => <UserMqttNew type="new" />}
       />
       <CustomRoute path="/users/reports" isPrivate component={UserReports} />
       <CustomRoute
         path="/organizations/login"
+        isLogin
         component={() => <Login loginType="organizations" />}
       />
       <CustomRoute
         path="/organizations/dashboard"
         isPrivate
+        privateType="organizations"
         component={OrgHome}
       />
       <CustomRoute
         path="/organizations/users"
         isPrivate
         component={ListUsers}
+        privateType="organizations"
       />
       <CustomRoute
         path="/organizations/profile"
         isPrivate
+        privateType="organizations"
         component={OrgProfile}
       />
       <CustomRoute
         path="/organizations/new-user"
+        privateType="organizations"
+        isPrivate
         component={() => <CreateUser type="new" />}
       />
       <CustomRoute
         path="/organizations/edit-user/:id"
+        privateType="organizations"
+        isPrivate
         component={() => <CreateUser type="edit" />}
       />
-      <CustomRoute path="*" component={() => <Login loginType="users" />} />
+      <CustomRoute
+        path="*"
+        isLogin
+        component={() => <Login privateType="users" loginType="users" />}
+      />
     </Switch>
   );
 }

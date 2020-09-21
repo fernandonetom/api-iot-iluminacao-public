@@ -23,16 +23,17 @@ export const BackButton = styled.button`
     width: 20px;
   }
 `;
-export const EditButton = styled(Link)`
-  background-color: ${themeData.colors.orangeLight};
+export const EditButton = styled.button`
+  border: 0;
+  outline: 0;
+  background-color: ${themeData.colors.greenDark};
   cursor: pointer;
   margin-left: 20px;
   padding: 5px 15px;
   border-radius: 10px;
   color: ${themeData.colors.background};
-  text-decoration: none;
   font-weight: 500;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   text-transform: capitalize;
   &:hover {
     background-color: ${themeData.colors.greenLight};

@@ -28,6 +28,8 @@ import { useHistory, useParams } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
+import { DateToStringFormat } from "../../../utils/dateFormatter";
+import { MqttInfo } from "../../../utils/alerts";
 const maximum = {
   temperatura: 50,
   luminosidade: 100,
@@ -126,6 +128,9 @@ export default function UserMqttDetails() {
     })();
   }, [history, id]);
 
+  function handleMqttInfo() {
+    MqttInfo({ ...data.mqtt });
+  }
   return (
     <>
       <Header menuType="user" active="dashboard">
@@ -137,7 +142,7 @@ export default function UserMqttDetails() {
             {loading && <InfoTitle>Carregando...</InfoTitle>}
             {!loading && data.mqtt && <InfoTitle>{data.mqtt.name}</InfoTitle>}
             {!loading && data.mqtt && (
-              <EditButton to="device-edit">editar</EditButton>
+              <EditButton onClick={handleMqttInfo}>ver detalhes</EditButton>
             )}
           </InfoLeft>
           <InfoRight>
@@ -326,7 +331,12 @@ export default function UserMqttDetails() {
           )}
         </DetailsPanelRight>
       </DetailsPanel>
-      <Footer>cadastrado em 26/08/2020 às 13:25h</Footer>
+      <Footer>
+        {loading && "Carregando..."}
+        {!loading &&
+          data.mqtt?.createdAt &&
+          `cadastrado em ${DateToStringFormat(data.mqtt.createdAt)}`}
+      </Footer>
     </>
   );
 }

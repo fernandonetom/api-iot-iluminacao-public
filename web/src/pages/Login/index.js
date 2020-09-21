@@ -20,16 +20,14 @@ import { Context } from "../../Context/AuthContext";
 import GlobalLoading from "../../components/GlobalLoading";
 
 export default function Login({ loginType }) {
-  const { handleLogin, authLoading, redirectIfLogged } = useContext(Context);
+  const { handleLogin, authLoading } = useContext(Context);
   const [email, setEmail] = useState("");
   const [remember, setRemember] = useState(false);
   const [password, setPassword] = useState("");
   const [configs, setConfigs] = useState({
     error: { code: null, message: null },
   });
-  useEffect(() => {
-    redirectIfLogged();
-  }, [authLoading, redirectIfLogged]);
+
   async function handleSubmit() {
     if (email.trim().length === 0 || password.trim().length === 0) {
       return setConfigs({

@@ -12,6 +12,7 @@ export default function useAuth() {
       if (401 === error.response.status) {
         handleLogout();
         toast.error("Token expirado, faça login novamente", {
+          toastId: "401",
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -56,7 +57,7 @@ export default function useAuth() {
     localStorage.setItem("@sipi-data", JSON.stringify({ ...data, loginType }));
     api.defaults.headers.Authorization = `Bearer ${data.token}`;
     setAuthenticated(true);
-    setUserData(JSON.stringify(data));
+    setUserData({ ...data, loginType });
     setAuthLoading(false);
     history.replace(`/${loginType}/dashboard`);
   }
