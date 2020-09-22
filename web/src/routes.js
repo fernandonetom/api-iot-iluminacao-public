@@ -15,7 +15,7 @@ import OrgProfile from "./pages/OrgPanel/OrgProfile";
 import { Context } from "./Context/AuthContext";
 import GlobalLoading from "./components/GlobalLoading";
 import { toast } from "react-toastify";
-function CustomRoute({ isPrivate, privateType, isLogin, ...rest }) {
+function CustomRoute({ isPrivate, privateType, isLogin, isAdmin, ...rest }) {
   const { authLoading, authenticated, userData } = useContext(Context);
 
   if (authLoading) {
@@ -34,10 +34,6 @@ function CustomRoute({ isPrivate, privateType, isLogin, ...rest }) {
     });
     return <Redirect to="/login" />;
   }
-  console.log({
-    privateType,
-    type: userData.loginType !== privateType,
-  });
   if (isPrivate && privateType && userData.loginType !== privateType) {
     toast.error(
       "Não autorizado, você não tem permissão para acessar a página solicitada.",
@@ -52,6 +48,19 @@ function CustomRoute({ isPrivate, privateType, isLogin, ...rest }) {
         progress: undefined,
       }
     );
+    return <Redirect to="/login" />;
+  }
+  if (isAdmin && userData.userLevel !== "admin") {
+    toast.error("Você não é administrador para acessar essa página.", {
+      toastId: "401",
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     return <Redirect to="/login" />;
   }
   if (isLogin && authenticated) {
@@ -86,21 +95,30 @@ export default function Routes() {
         path="/users/device-edit/:id"
         isPrivate
         privateType="users"
+        isAdmin
         component={() => <UserMqttNew type="edit" />}
       />
       <CustomRoute
         path="/users/new-device"
         isPrivate
+        isAdmin
         privateType="users"
         component={() => <UserMqttNew type="new" />}
       />
       <CustomRoute
         path="/users/devices"
         isPrivate
+        isAdmin
         privateType="users"
         component={UserDevices}
       />
-      <CustomRoute path="/users/reports" isPrivate component={UserReports} />
+      <CustomRoute
+        path="/users/reports"
+        isPrivate
+        isAdmin
+        privateType="users"
+        component={UserReports}
+      />
       <CustomRoute
         path="/organizations/login"
         isLogin

@@ -4,7 +4,6 @@ const MqttUsersRepositories = require("../repositories/MqttUsersRepositories");
 const ErrorsCatalog = require("../utils/ErrorsCatalog");
 const MessageCatalog = require("../utils/MessageCatalog");
 const StoragesRepositories = require("../repositories/StoragesRepositories");
-
 class MqttUserController {
   async index(req, res) {
     // PRECISA AUTENTICAR USUARIO SIMPLES
@@ -32,7 +31,32 @@ class MqttUserController {
       }))
     );
   }
+  async homedashboard(req, res) {
+    const { orgId } = req.body;
+    if (!orgId)
+      return res.json({
+        error: "Organization not found",
+        message: "Organização não informada",
+      });
 
+    const organization = await OrganizationsRepositories.findById(orgId);
+    if (organization.length === 0)
+      return res.json({
+        error: "Inválid organization",
+        message: "Organização não existe",
+      });
+
+    const mqttUsers = await MqttUsersRepositories.findMqttByOrgId(orgId);
+
+    res.json(
+      mqttUsers.map((user) => ({
+        id: user.id,
+        name: user.name,
+        latitude: parseFloat(user.latitude),
+        longitude: parseFloat(user.longitude),
+      }))
+    );
+  }
   async store(req, res) {
     // PRECISA AUTENTICAR USUARIO ADMIN, SE CHEGOU AQUI TEMOS QUE É ADMIN
     const { name, latitude, longitude, userId, orgId } = req.body;
@@ -160,7 +184,13 @@ class MqttUserController {
       valor: null,
     };
     res.json({
-      mqtt: mqtt[0],
+      mqtt: {
+        id: mqtt[0].id,
+        name: mqtt[0].name,
+        latitude: mqtt[0].latitude,
+        longitude: mqtt[0].longitude,
+        createdAt: mqtt[0].createdAt,
+      },
       alerta: alerta || nullData,
       temperatura: temperatura || nullData,
       luminosidade: luminosidade || nullData,
@@ -169,6 +199,24 @@ class MqttUserController {
       movimentacao: movimentacao || nullData,
       rele: rele || nullData,
     });
+  }
+  async credentials(req, res) {
+    const { id } = req.params;
+    const { orgId } = req.body;
+    const mqtt = await MqttUsersRepositories.findById(id);
+
+    if (mqtt.length === 0)
+      return res.json({
+        error: "unauthorized",
+        message: "Usuário não encontrado",
+      });
+    if (orgId !== mqtt[0].organization_id)
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Você não tem permissão para executar essa ação",
+      });
+
+    res.json(mqtt[0]);
   }
 }
 module.exports = new MqttUserController();

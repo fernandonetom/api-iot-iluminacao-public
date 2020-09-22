@@ -24,10 +24,11 @@ import api from "../../../services/api";
 import GlobalLoading from "../../../components/GlobalLoading";
 import { deleteConfirm, showSucess } from "../../../utils/alerts";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 moment.locale("pt-br");
 export default function UserDevices() {
   const history = useHistory();
-  const { authLoading } = useContext(Context);
+  const { authLoading, userData } = useContext(Context);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   async function loadUsers() {
@@ -54,7 +55,16 @@ export default function UserDevices() {
           const response = await api.delete(`mqttusers/${user.id}`);
           setLoading(false);
           if (response.data.error) {
-            return console.log("Erro ao deletar ::", response.data.error);
+            return toast.error(response.data.message, {
+              toastId: "401",
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
           }
           showSucess("Excluido", 3000);
           loadUsers();
@@ -72,10 +82,12 @@ export default function UserDevices() {
         <HeaderContent>
           <InfoLeft>
             <InfoTitle>Usuários cadastrados</InfoTitle>
-            <NewDevice to="/users/new-device">
-              <PlusIcon />
-              <span>Novo dispositivo</span>
-            </NewDevice>
+            {userData.userLevel === "admin" && (
+              <NewDevice to="/users/new-device">
+                <PlusIcon />
+                <span>Novo dispositivo</span>
+              </NewDevice>
+            )}
           </InfoLeft>
           <InfoRight>busca</InfoRight>
         </HeaderContent>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "../../../components/Header";
 import PlusIcon from "../../../assets/icons/plusIcon";
 import {
@@ -13,8 +13,10 @@ import InfoTitle from "../../../components/InfoTitle";
 import DevicesPanel from "../../../components/DevicesPanel";
 import LoadingComponent from "../../../components/LoadingComponent";
 import api from "../../../services/api";
+import { Context } from "../../../Context/AuthContext";
 
 export default function UserHome() {
+  const { userData } = useContext(Context);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState("wait");
   const [devices, setDevices] = useState([]);
@@ -22,7 +24,7 @@ export default function UserHome() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get("mqttusers");
+        const { data } = await api.get("mqttusers/home");
         setLoading(false);
         if (data.error) {
           setError("Não foi possível obter a listagem dos dispositivos");
@@ -39,10 +41,12 @@ export default function UserHome() {
         <HeaderContent>
           <InfoLeft>
             <InfoTitle>Dispositivos cadastrados</InfoTitle>
-            <NewDevice to="/users/new-device">
-              <PlusIcon />
-              <span>Novo dispositivo</span>
-            </NewDevice>
+            {userData.userLevel === "admin" && (
+              <NewDevice to="/users/new-device">
+                <PlusIcon />
+                <span>Novo dispositivo</span>
+              </NewDevice>
+            )}
           </InfoLeft>
           <InfoRight>
             <Circle status={status} />

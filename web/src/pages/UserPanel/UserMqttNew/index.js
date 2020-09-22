@@ -60,30 +60,32 @@ export default function UserMqttNew({ type }) {
     setError({ name: null, location: null });
     if (type === "new") {
       setLoading(true);
-      const { data } = await api.post("mqttusers", {
-        name,
-        latitude: useLocation ? locationPin.lat : null,
-        longitude: useLocation ? locationPin.lng : null,
-      });
-      setLoading(false);
-      if (data.error) {
-        return showError("Algo deu errado!", undefined, data.message);
-      }
-      const { mqttUserId, username, password, latitude, longitude } = data;
-      return MqttInfo(
-        {
-          id: mqttUserId,
+      try {
+        const { data } = await api.post("mqttusers", {
           name,
-          username,
-          password,
-          latitude,
-          longitude,
-          title: `${name} foi cadastrado!`,
-        },
-        () => {
-          history.push("/users/dashboard");
+          latitude: useLocation ? locationPin.lat : null,
+          longitude: useLocation ? locationPin.lng : null,
+        });
+        setLoading(false);
+        if (data.error) {
+          return showError("Algo deu errado!", undefined, data.message);
         }
-      );
+        const { mqttUserId, username, password, latitude, longitude } = data;
+        return MqttInfo(
+          {
+            id: mqttUserId,
+            name,
+            username,
+            password,
+            latitude,
+            longitude,
+            title: `${name} foi cadastrado!`,
+          },
+          () => {
+            history.push("/users/dashboard");
+          }
+        );
+      } catch (error) {}
     }
     if (type === "edit") {
       setLoading(true);

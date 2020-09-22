@@ -32,6 +32,7 @@ export default function useAuth() {
         api.defaults.headers.Authorization = `Bearer ${data.token}`;
         setUserData({
           token: data.token,
+          name: data.name,
           loginType: data.loginType,
           userLevel: data.userLevel,
         });
@@ -54,10 +55,17 @@ export default function useAuth() {
       setAuthLoading(false);
       return data;
     }
-    localStorage.setItem("@sipi-data", JSON.stringify({ ...data, loginType }));
     api.defaults.headers.Authorization = `Bearer ${data.token}`;
+    const { data: profile } = await api.get(`${loginType}/profile`);
+
+    const signinData = {
+      ...data,
+      name: profile.name,
+      loginType,
+    };
+    localStorage.setItem("@sipi-data", JSON.stringify(signinData));
     setAuthenticated(true);
-    setUserData({ ...data, loginType });
+    setUserData(signinData);
     setAuthLoading(false);
     history.replace(`/${loginType}/dashboard`);
   }

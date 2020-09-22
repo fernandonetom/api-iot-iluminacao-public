@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import { Doughnut } from "react-chartjs-2";
+import GlobalLoading from "../../../components/GlobalLoading";
 import Header from "../../../components/Header";
 import {
   HeaderContent,
@@ -30,6 +31,7 @@ import api from "../../../services/api";
 import { toast } from "react-toastify";
 import { DateToStringFormat } from "../../../utils/dateFormatter";
 import { MqttInfo } from "../../../utils/alerts";
+import { Context } from "../../../Context/AuthContext";
 const maximum = {
   temperatura: 50,
   luminosidade: 100,
@@ -78,15 +80,25 @@ export default function UserMqttDetails() {
     alerta: null,
     movimentacao: null,
   });
-
+  const { userData } = useContext(Context);
+  const [loadingData, setLoadingData] = useState(false);
   useEffect(() => {
     (async () => {
       try {
         const { data } = await api.get(`mqttusers/${id}`);
         setLoading(false);
         if (data.error) {
-          history.goBack();
-          return toast.error(data.message);
+          history.push("/");
+          return toast.error(data.message, {
+            toastId: "401",
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }
         setData({
           mqtt: data.mqtt,
@@ -126,11 +138,17 @@ export default function UserMqttDetails() {
     })();
   }, [history, id]);
 
-  function handleMqttInfo() {
-    MqttInfo({ ...data.mqtt });
+  async function handleMqttInfo() {
+    try {
+      setLoadingData(true);
+      const { data } = await api.get(`mqttusers/credentials/${id}`);
+      setLoadingData(false);
+      return MqttInfo({ ...data });
+    } catch (error) {}
   }
   return (
     <>
+      {loadingData && <GlobalLoading />}
       <Header menuType="user" active="dashboard">
         <HeaderContent>
           <InfoLeft>
@@ -139,7 +157,7 @@ export default function UserMqttDetails() {
             </BackButton>
             {loading && <InfoTitle>Carregando...</InfoTitle>}
             {!loading && data.mqtt && <InfoTitle>{data.mqtt.name}</InfoTitle>}
-            {!loading && data.mqtt && (
+            {!loading && data.mqtt && userData.userLevel === "admin" && (
               <EditButton onClick={handleMqttInfo}>ver detalhes</EditButton>
             )}
           </InfoLeft>

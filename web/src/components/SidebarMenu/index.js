@@ -4,7 +4,7 @@ import MenuIcon from "../../assets/images/MenuIcon";
 import Icons from "../../assets/icons";
 import { Context } from "../../Context/AuthContext";
 export default function SidebarMenu({ isVisible, active, type, onClose }) {
-  const { handleLogout } = useContext(Context);
+  const { handleLogout, userData } = useContext(Context);
   const menuItems = {
     organization: [
       {
@@ -18,8 +18,18 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
     ],
     user: [
       { title: "dashboard", url: "/users/dashboard", icon: "dashboard" },
-      { title: "dispositivos", url: "/users/devices", icon: "light" },
-      { title: "relatórios", url: "/users/reports", icon: "reports" },
+      {
+        title: "dispositivos",
+        url: "/users/devices",
+        icon: "light",
+        admin: true,
+      },
+      {
+        title: "relatórios",
+        url: "/users/reports",
+        icon: "reports",
+        admin: true,
+      },
       { title: "perfil", url: "/users/profile", icon: "user" },
     ],
   };
@@ -43,22 +53,27 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
               {type === "user" ? "painel de usuário" : "painel da organização"}
             </h3>
             <hr />
-            <span>Olá, Fernando!</span>
+            <span>Olá, {userData.name}!</span>
 
             <ul>
-              {menuItems[type].map((menu) => (
-                <li key={menu.title}>
-                  <MenuLink
-                    to={menu.url}
-                    active={active === menu.title ? "true" : "false"}
-                  >
-                    <div className="menuIcon">
-                      <Icons name={menu.icon} />
-                    </div>
-                    <span className="menuPage">{menu.title}</span>
-                  </MenuLink>
-                </li>
-              ))}
+              {menuItems[type].map((menu) => {
+                if (menu.admin && userData.userLevel !== "admin") {
+                  return null;
+                }
+                return (
+                  <li key={menu.title}>
+                    <MenuLink
+                      to={menu.url}
+                      active={active === menu.title ? "true" : "false"}
+                    >
+                      <div className="menuIcon">
+                        <Icons name={menu.icon} />
+                      </div>
+                      <span className="menuPage">{menu.title}</span>
+                    </MenuLink>
+                  </li>
+                );
+              })}
               <li>
                 <Logout onClick={handleLogout}>
                   <div className="menuIcon">

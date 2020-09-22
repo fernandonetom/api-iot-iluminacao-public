@@ -37,7 +37,7 @@ export const deleteConfirm = async (title, message, onConfirm) => {
   });
 };
 export const MqttInfo = (
-  { id, name, username, password, latitude, longitude, createdAt, title },
+  { name, username, password, latitude, longitude, createdAt, title },
   onConfirm
 ) => {
   Swal.fire({
