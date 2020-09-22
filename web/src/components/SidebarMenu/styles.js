@@ -134,6 +134,10 @@ export const MenuLink = styled(Link)`
   align-items: center;
   padding: 0 20px;
   text-transform: uppercase;
+  svg {
+    width: 30px;
+    height: 30px;
+  }
   svg path {
     fill: ${(props) =>
       props.active === "true"

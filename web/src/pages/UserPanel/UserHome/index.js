@@ -39,7 +39,7 @@ export default function UserHome() {
         <HeaderContent>
           <InfoLeft>
             <InfoTitle>Dispositivos cadastrados</InfoTitle>
-            <NewDevice to="/user/new-device">
+            <NewDevice to="/users/new-device">
               <PlusIcon />
               <span>Novo dispositivo</span>
             </NewDevice>

@@ -1,11 +1,20 @@
 import Swal from "sweetalert2/src/sweetalert2.js";
-import "@sweetalert2/theme-dark/dark.scss";
+import "../assets/theme/modalTheme.scss";
 import themeData from "../assets/theme/theme";
 import moment from "moment-timezone";
 export const showSucess = (title, timer, message) => {
   Swal.fire({
     icon: "success",
     title: title || "Sucesso",
+    text: message,
+    showConfirmButton: false,
+    timer: timer,
+  });
+};
+export const showError = (title, timer, message) => {
+  Swal.fire({
+    icon: "error",
+    title: title || "Erro",
     text: message,
     showConfirmButton: false,
     timer: timer,
@@ -27,17 +36,12 @@ export const deleteConfirm = async (title, message, onConfirm) => {
     }
   });
 };
-export const MqttInfo = ({
-  id,
-  name,
-  username,
-  password,
-  latitude,
-  longitude,
-  createdAt,
-}) => {
+export const MqttInfo = (
+  { id, name, username, password, latitude, longitude, createdAt, title },
+  onConfirm
+) => {
   Swal.fire({
-    title: name,
+    title: title || name,
     html: `
     <div style="display:flex; justify-content:center; font-size:0.9rem; line-height: 1.5rem;">
     <table style="width:100%">
@@ -59,14 +63,18 @@ export const MqttInfo = ({
           </tr>
           <tr>
             <td>Data de inclusão</td>
-            <td>${moment(createdAt).format("DD/MM/YYYY [às] HH:mm[h]")}</td>
+            <td>${moment(createdAt || undefined).format(
+              "DD/MM/YYYY [às] HH:mm[h]"
+            )}</td>
           </tr>
         </table>
     </div>
     `,
-    icon: "info",
+    icon: title ? "success" : "info",
     showCancelButton: false,
     confirmButtonColor: themeData.colors.greenDark,
     confirmButtonText: "Ok!",
+  }).then((result) => {
+    onConfirm && onConfirm();
   });
 };

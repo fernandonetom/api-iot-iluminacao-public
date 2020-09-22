@@ -18,7 +18,7 @@ export default function SidebarMenu({ isVisible, active, type, onClose }) {
     ],
     user: [
       { title: "dashboard", url: "/users/dashboard", icon: "dashboard" },
-      { title: "novo dispositivo", url: "/users/new-device", icon: "plus" },
+      { title: "dispositivos", url: "/users/devices", icon: "light" },
       { title: "relatórios", url: "/users/reports", icon: "reports" },
       { title: "perfil", url: "/users/profile", icon: "user" },
     ],

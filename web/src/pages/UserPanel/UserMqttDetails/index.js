@@ -78,7 +78,6 @@ export default function UserMqttDetails() {
     alerta: null,
     movimentacao: null,
   });
-  const [center, setCenter] = useState({ lat: null, lng: null });
 
   useEffect(() => {
     (async () => {
@@ -89,7 +88,6 @@ export default function UserMqttDetails() {
           history.goBack();
           return toast.error(data.message);
         }
-        console.log(data.mqtt);
         setData({
           mqtt: data.mqtt,
           temperatura: [

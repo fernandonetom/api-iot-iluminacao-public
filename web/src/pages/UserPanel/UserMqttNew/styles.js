@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import themeData from "../../../assets/theme/theme";
+import BeatLoader from "react-spinners/BeatLoader";
 export const InfoLeft = styled.div`
   display: flex;
   align-items: center;
@@ -92,6 +93,7 @@ export const FormInput = styled.input`
   font-weight: 300;
   padding: 0 10px;
   border-radius: 5px;
+  ${(props) => (props.error ? `border: 1px solid ${themeData.colors.red}` : "")}
 `;
 export const FormLocationSelect = styled.div`
   width: 100%;
@@ -123,9 +125,9 @@ export const SubmitButton = styled.button`
   outline: 0;
   height: 40px;
   width: 200px;
-  text-align: center;
-  line-height: 40px;
-  vertical-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: ${themeData.colors.background};
   background-color: ${themeData.colors.greenDark};
   text-transform: uppercase;
@@ -145,5 +147,15 @@ export const SubmitButton = styled.button`
 
 export const MapContent = styled.div`
   width: 100%;
-  height: 200px;
+  height: 350px;
 `;
+
+export const ErrorBox = styled.div`
+  color: ${themeData.colors.redLight};
+  font-size: 1rem;
+  text-transform: uppercase;
+`;
+export const LoadingSpinner = styled(BeatLoader).attrs({
+  color: themeData.colors.background,
+  size: 10,
+})``;

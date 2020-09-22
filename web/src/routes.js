@@ -8,6 +8,7 @@ import UserMqttNew from "./pages/UserPanel/UserMqttNew";
 import UserProfile from "./pages/UserPanel/UserProfile";
 import OrgHome from "./pages/OrgPanel/OrgHome";
 import UserReports from "./pages/UserPanel/UserReports";
+import UserDevices from "./pages/UserPanel/UserDevices";
 import ListUsers from "./pages/OrgPanel/ListUsers";
 import CreateUser from "./pages/OrgPanel/CreateUser";
 import OrgProfile from "./pages/OrgPanel/OrgProfile";
@@ -92,6 +93,12 @@ export default function Routes() {
         isPrivate
         privateType="users"
         component={() => <UserMqttNew type="new" />}
+      />
+      <CustomRoute
+        path="/users/devices"
+        isPrivate
+        privateType="users"
+        component={UserDevices}
       />
       <CustomRoute path="/users/reports" isPrivate component={UserReports} />
       <CustomRoute
