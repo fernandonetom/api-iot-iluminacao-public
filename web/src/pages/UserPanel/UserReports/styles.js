@@ -186,7 +186,7 @@ export const BoxDataPeriod = styled.h4`
 export const BoxDataContent = styled.div`
   margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   grid-gap: 40px;
   @media screen and (max-width: 1270px) {
     grid-template-columns: repeat(1, 1fr);

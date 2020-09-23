@@ -1,13 +1,17 @@
 import themeData from "../assets/theme/theme";
 
-const alertMovOptions = (periodo) => {
+const alertMovOptions = (periodo, print) => {
   switch (periodo) {
     case "hoje":
     case "data":
       return {
         legend: {
           labels: {
-            fontColor: themeData.colors.lightGray,
+            fontColor: print
+              ? themeData.colors.backgroundDark
+              : themeData.colors.lightGray,
+            fontSize: 15,
+            fontWeight: 300,
           },
         },
         responsive: true,
@@ -26,10 +30,17 @@ const alertMovOptions = (periodo) => {
               scaleLabel: {
                 display: true,
                 labelString: "horário",
-                fontColor: themeData.colors.lightGray,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGray,
+                fontSize: 15,
               },
               ticks: {
-                fontColor: themeData.colors.lightGrayDark,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGrayDark,
+                beginAtZero: true,
+                fontSize: 15,
               },
             },
           ],
@@ -39,10 +50,17 @@ const alertMovOptions = (periodo) => {
               scaleLabel: {
                 display: true,
                 labelString: "quantidade",
-                fontColor: themeData.colors.lightGray,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGray,
+                fontSize: 15,
               },
               ticks: {
-                fontColor: themeData.colors.lightGrayDark,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGrayDark,
+                beginAtZero: true,
+                fontSize: 15,
               },
             },
           ],
@@ -52,7 +70,11 @@ const alertMovOptions = (periodo) => {
       return {
         legend: {
           labels: {
-            fontColor: themeData.colors.lightGray,
+            fontColor: print
+              ? themeData.colors.backgroundDark
+              : themeData.colors.lightGray,
+            fontSize: 15,
+            fontWeight: 300,
           },
         },
         responsive: true,
@@ -71,10 +93,16 @@ const alertMovOptions = (periodo) => {
               scaleLabel: {
                 display: true,
                 labelString: "data",
-                fontColor: themeData.colors.lightGray,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGray,
+                fontSize: 15,
               },
               ticks: {
-                fontColor: themeData.colors.lightGrayDark,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGrayDark,
+                fontSize: 15,
               },
             },
           ],
@@ -84,10 +112,16 @@ const alertMovOptions = (periodo) => {
               scaleLabel: {
                 display: true,
                 labelString: "quantidade",
-                fontColor: themeData.colors.lightGray,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGray,
+                fontSize: 15,
               },
               ticks: {
-                fontColor: themeData.colors.lightGrayDark,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGrayDark,
+                fontSize: 15,
               },
             },
           ],
@@ -97,14 +131,18 @@ const alertMovOptions = (periodo) => {
       return null;
   }
 };
-const typeOptions = (periodo, label) => {
+const typeOptions = (periodo, label, print) => {
   switch (periodo) {
     case "hoje":
     case "data":
       return {
         legend: {
           labels: {
-            fontColor: themeData.colors.lightGray,
+            fontColor: print
+              ? themeData.colors.backgroundDark
+              : themeData.colors.lightGray,
+            fontSize: 15,
+            fontWeight: 300,
           },
         },
         responsive: true,
@@ -123,10 +161,16 @@ const typeOptions = (periodo, label) => {
               scaleLabel: {
                 display: true,
                 labelString: "horário",
-                fontColor: themeData.colors.lightGray,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGray,
+                fontSize: 15,
               },
               ticks: {
-                fontColor: themeData.colors.lightGrayDark,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGrayDark,
+                fontSize: 15,
               },
             },
           ],
@@ -136,10 +180,17 @@ const typeOptions = (periodo, label) => {
               scaleLabel: {
                 display: true,
                 labelString: label,
-                fontColor: themeData.colors.lightGray,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGray,
+                fontSize: 15,
               },
               ticks: {
-                fontColor: themeData.colors.lightGrayDark,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGrayDark,
+                beginAtZero: true,
+                fontSize: 15,
               },
             },
           ],
@@ -149,7 +200,11 @@ const typeOptions = (periodo, label) => {
       return {
         legend: {
           labels: {
-            fontColor: themeData.colors.lightGray,
+            fontColor: print
+              ? themeData.colors.backgroundDark
+              : themeData.colors.lightGray,
+            fontSize: 15,
+            fontWeight: 300,
           },
         },
         responsive: true,
@@ -168,10 +223,16 @@ const typeOptions = (periodo, label) => {
               scaleLabel: {
                 display: true,
                 labelString: "data",
-                fontColor: themeData.colors.lightGray,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGray,
+                fontSize: 15,
               },
               ticks: {
-                fontColor: themeData.colors.lightGrayDark,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGrayDark,
+                fontSize: 15,
               },
             },
           ],
@@ -181,10 +242,17 @@ const typeOptions = (periodo, label) => {
               scaleLabel: {
                 display: true,
                 labelString: "valor",
-                fontColor: themeData.colors.lightGray,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGray,
+                fontSize: 15,
               },
               ticks: {
-                fontColor: themeData.colors.lightGrayDark,
+                fontColor: print
+                  ? themeData.colors.backgroundDark
+                  : themeData.colors.lightGrayDark,
+                beginAtZero: true,
+                fontSize: 15,
               },
             },
           ],

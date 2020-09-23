@@ -3,6 +3,7 @@ import Input from "../../../components/Input";
 import Header from "../../../components/Header";
 import InfoTitle from "../../../components/InfoTitle";
 import Radio from "../../../components/Radio";
+import { jsPDF } from "jspdf";
 import moment from "moment";
 import {
   BoxItems,
@@ -29,7 +30,6 @@ import { Line } from "react-chartjs-2";
 import {
   formatLabelsMovAler,
   formatMovAler,
-  formatTypesValues,
   formatDateLabel,
 } from "../../../utils/dataFormatter";
 import { alertMovOptions, typeOptions } from "../../../utils/reportsConfigs";
@@ -37,6 +37,7 @@ import LoadingStorage from "../../../components/LoadingStorage";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
+import { randomColors } from "../../../utils/randomColors";
 export default function UserReports() {
   const history = useHistory();
   const [period, setPeriod] = useState("hoje");
@@ -55,6 +56,7 @@ export default function UserReports() {
     options: null,
   });
   const [responseData, setResponseData] = useState([]);
+  const [print, setPrint] = useState(false);
   const dados = [
     { id: "alerta", name: "Alerta" },
     { id: "temperatura", name: "Temperatura" },
@@ -64,39 +66,6 @@ export default function UserReports() {
     { id: "tensao", name: "Tensão" },
   ];
 
-  // const responseData = [
-  //   {
-  //     id: 2,
-  //     alerta: [
-  //       { hora: "0:00", data: "2020-09-01", quantidade: 1 },
-  //       { hora: "1:00", data: "2020-09-01", quantidade: 4 },
-  //       { hora: "2:00", data: "2020-09-01", quantidade: 5 },
-  //     ],
-  //     movimentacao: [
-  //       { hora: "0:00", data: "2020-09-01", quantidade: 1 },
-  //       { hora: "1:00", data: "2020-09-01", quantidade: 4 },
-  //       { hora: "2:00", data: "2020-09-01", quantidade: 5 },
-  //     ],
-  //     temperatura: [
-  //       { valor: 25.6, hora: "20:00", data: "2020-09-01" },
-  //       { valor: 25.6, hora: "21:00", data: "2020-09-01" },
-  //     ],
-  //     luminosidade: [
-  //       { valor: 90, hora: "20:00", data: "2020-09-01" },
-  //       { valor: 80, hora: "21:00", data: "2020-09-01" },
-  //     ],
-  //     umidade: [
-  //       { valor: 90, hora: "20:00", data: "2020-09-01" },
-  //       { valor: 91, hora: "21:00", data: "2020-09-01" },
-  //       { valor: 87, hora: "22:00", data: "2020-09-01" },
-  //     ],
-  //     tensao: [
-  //       { valor: 12.2, hora: "20:00", data: "2020-09-01" },
-  //       { valor: 12.6, hora: "21:00", data: "2020-09-01" },
-  //       { valor: 12.5, hora: "22:00", data: "2020-09-01" },
-  //     ],
-  //   },
-  // ];
   const datesConfig = {
     dateFilter,
     dateStarterFilter,
@@ -160,6 +129,8 @@ export default function UserReports() {
         response.push(responseData);
       })
     );
+
+    response = response.map((item) => ({ ...item, color: randomColors() }));
     setConfig({ ...config, loadingData: false });
     setResponseData(response);
     setConfig({ ...config, showFilters: false });
@@ -179,6 +150,15 @@ export default function UserReports() {
   function handleNewSearch() {
     setConfig({ ...config, showFilters: true });
   }
+  function handlePDF() {
+    // setPrint(true);
+    // var printContents = document.getElementById("dataCharts").innerHTML;
+    // var originalContents = document.body.innerHTML;
+    // document.body.innerHTML = printContents;
+    // window.print();
+    // document.body.innerHTML = originalContents;
+    // setPrint(false);
+  }
   return (
     <>
       <Header active="relatórios" menuType="user">
@@ -188,7 +168,7 @@ export default function UserReports() {
           </InfoLeft>
           {!config.showFilters && (
             <InfoRight>
-              <GerarPDF>Exportar para PDF</GerarPDF>
+              <GerarPDF onClick={handlePDF}>Exportar para PDF</GerarPDF>
               <NovaBusca onClick={handleNewSearch}>Nova busca</NovaBusca>
             </InfoRight>
           )}
@@ -206,6 +186,7 @@ export default function UserReports() {
                 emptyRecordMsg="Nenhum resultado encontrado"
                 placeholder="Selecione os dispositivos"
                 closeIcon="cancel"
+                selectedValues={config.selectedDevices}
                 onSelect={handleDevicesAdd}
                 onRemove={handleDevicesRemove}
               />
@@ -219,6 +200,7 @@ export default function UserReports() {
                 emptyRecordMsg="Nenhum resultado encontrado"
                 placeholder="Selecione os dados"
                 closeIcon="cancel"
+                selectedValues={config.selectedTypes}
                 onSelect={handleTypesAdd}
                 onRemove={handleTypesRemove}
               />
@@ -299,25 +281,24 @@ export default function UserReports() {
                   </BoxDataPeriod>
                 </BoxDataHeader>
                 <BoxDataContent>
-                  {responseData.map((item, index) => (
-                    <BoxDataItem key={item.id}>
-                      <Line
-                        data={{
-                          labels: formatLabelsMovAler(
-                            period,
-                            datesConfig,
-                            item.alerta
-                          ),
-                          datasets: formatMovAler(
-                            period,
-                            item.alerta,
-                            config.selectedDevices[index].name
-                          ),
-                        }}
-                        options={alertMovOptions(period)}
-                      />
-                    </BoxDataItem>
-                  ))}
+                  <BoxDataItem>
+                    <Line
+                      data={{
+                        labels: formatLabelsMovAler(
+                          period,
+                          responseData,
+                          "alerta"
+                        ),
+                        datasets: formatMovAler(
+                          period,
+                          responseData,
+                          config.selectedDevices,
+                          "alerta"
+                        ),
+                      }}
+                      options={alertMovOptions(period, print)}
+                    />
+                  </BoxDataItem>
                 </BoxDataContent>
               </BoxData>
             )}
@@ -331,25 +312,24 @@ export default function UserReports() {
                   </BoxDataPeriod>
                 </BoxDataHeader>
                 <BoxDataContent>
-                  {responseData.map((item, index) => (
-                    <BoxDataItem key={item.id}>
-                      <Line
-                        data={{
-                          labels: formatLabelsMovAler(
-                            period,
-                            datesConfig,
-                            item.movimentacao
-                          ),
-                          datasets: formatMovAler(
-                            period,
-                            item.alerta,
-                            config.selectedDevices[index].name
-                          ),
-                        }}
-                        options={alertMovOptions(period)}
-                      />
-                    </BoxDataItem>
-                  ))}
+                  <BoxDataItem>
+                    <Line
+                      data={{
+                        labels: formatLabelsMovAler(
+                          period,
+                          responseData,
+                          "movimentacao"
+                        ),
+                        datasets: formatMovAler(
+                          period,
+                          responseData,
+                          config.selectedDevices,
+                          "movimentacao"
+                        ),
+                      }}
+                      options={alertMovOptions(period, print)}
+                    />
+                  </BoxDataItem>
                 </BoxDataContent>
               </BoxData>
             )}
@@ -363,25 +343,24 @@ export default function UserReports() {
                   </BoxDataPeriod>
                 </BoxDataHeader>
                 <BoxDataContent>
-                  {responseData.map((item, index) => (
-                    <BoxDataItem key={item.id}>
-                      <Line
-                        data={{
-                          labels: formatLabelsMovAler(
-                            period,
-                            datesConfig,
-                            item.temperatura
-                          ),
-                          datasets: formatTypesValues(
-                            period,
-                            item.temperatura,
-                            config.selectedDevices[index].name
-                          ),
-                        }}
-                        options={typeOptions(period, "temperatura")}
-                      />
-                    </BoxDataItem>
-                  ))}
+                  <BoxDataItem>
+                    <Line
+                      data={{
+                        labels: formatLabelsMovAler(
+                          period,
+                          responseData,
+                          "temperatura"
+                        ),
+                        datasets: formatMovAler(
+                          period,
+                          responseData,
+                          config.selectedDevices,
+                          "temperatura"
+                        ),
+                      }}
+                      options={typeOptions(period, "temperatura", print)}
+                    />
+                  </BoxDataItem>
                 </BoxDataContent>
               </BoxData>
             )}
@@ -395,25 +374,24 @@ export default function UserReports() {
                   </BoxDataPeriod>
                 </BoxDataHeader>
                 <BoxDataContent>
-                  {responseData.map((item, index) => (
-                    <BoxDataItem key={item.id}>
-                      <Line
-                        data={{
-                          labels: formatLabelsMovAler(
-                            period,
-                            datesConfig,
-                            item.luminosidade
-                          ),
-                          datasets: formatTypesValues(
-                            period,
-                            item.luminosidade,
-                            config.selectedDevices[index].name
-                          ),
-                        }}
-                        options={typeOptions(period, "luminosidade")}
-                      />
-                    </BoxDataItem>
-                  ))}
+                  <BoxDataItem>
+                    <Line
+                      data={{
+                        labels: formatLabelsMovAler(
+                          period,
+                          responseData,
+                          "luminosidade"
+                        ),
+                        datasets: formatMovAler(
+                          period,
+                          responseData,
+                          config.selectedDevices,
+                          "luminosidade"
+                        ),
+                      }}
+                      options={typeOptions(period, "luminosidade", print)}
+                    />
+                  </BoxDataItem>
                 </BoxDataContent>
               </BoxData>
             )}
@@ -427,25 +405,24 @@ export default function UserReports() {
                   </BoxDataPeriod>
                 </BoxDataHeader>
                 <BoxDataContent>
-                  {responseData.map((item, index) => (
-                    <BoxDataItem key={item.id}>
-                      <Line
-                        data={{
-                          labels: formatLabelsMovAler(
-                            period,
-                            datesConfig,
-                            item.umidade
-                          ),
-                          datasets: formatTypesValues(
-                            period,
-                            item.umidade,
-                            config.selectedDevices[index].name
-                          ),
-                        }}
-                        options={typeOptions(period, "umidade")}
-                      />
-                    </BoxDataItem>
-                  ))}
+                  <BoxDataItem>
+                    <Line
+                      data={{
+                        labels: formatLabelsMovAler(
+                          period,
+                          responseData,
+                          "umidade"
+                        ),
+                        datasets: formatMovAler(
+                          period,
+                          responseData,
+                          config.selectedDevices,
+                          "umidade"
+                        ),
+                      }}
+                      options={typeOptions(period, "umidade", print)}
+                    />
+                  </BoxDataItem>
                 </BoxDataContent>
               </BoxData>
             )}
@@ -459,25 +436,24 @@ export default function UserReports() {
                   </BoxDataPeriod>
                 </BoxDataHeader>
                 <BoxDataContent>
-                  {responseData.map((item, index) => (
-                    <BoxDataItem key={item.id}>
-                      <Line
-                        data={{
-                          labels: formatLabelsMovAler(
-                            period,
-                            datesConfig,
-                            item.tensao
-                          ),
-                          datasets: formatTypesValues(
-                            period,
-                            item.tensao,
-                            config.selectedDevices[index].name
-                          ),
-                        }}
-                        options={typeOptions(period, "tensão")}
-                      />
-                    </BoxDataItem>
-                  ))}
+                  <BoxDataItem>
+                    <Line
+                      data={{
+                        labels: formatLabelsMovAler(
+                          period,
+                          responseData,
+                          "tensao"
+                        ),
+                        datasets: formatMovAler(
+                          period,
+                          responseData,
+                          config.selectedDevices,
+                          "tensao"
+                        ),
+                      }}
+                      options={typeOptions(period, "tensão", print)}
+                    />
+                  </BoxDataItem>
                 </BoxDataContent>
               </BoxData>
             )}

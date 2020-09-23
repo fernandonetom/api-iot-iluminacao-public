@@ -3,69 +3,24 @@ function randomColor() {
 
   return arrayColors[Math.floor(Math.random() * arrayColors.length)];
 }
-const formatMovAler = (periodo, dados, label) => {
-  const color = randomColor();
-  switch (periodo) {
-    case "hoje":
-    case "data":
-      return [
-        {
-          label,
-          backgroundColor: color,
-          borderColor: color,
-          data: dados.map((item) => item.quantidade),
-          fill: false,
-        },
-      ];
-    case "periodo":
-      return [
-        {
-          label,
-          backgroundColor: color,
-          borderColor: color,
-          data: dados.map((item) => item.quantidade),
-          fill: false,
-        },
-      ];
-    default:
-      return null;
-  }
+const formatMovAler = (periodo, dados, label, type) => {
+  return dados.map((item, index) => {
+    return {
+      label: label[index].name,
+      backgroundColor: item.color,
+      borderColor: item.color,
+      data: item[type].map((dado) => dado.valor),
+      fill: false,
+    };
+  });
 };
-const formatTypesValues = (periodo, dados, label) => {
-  const color = randomColor();
+const formatLabelsMovAler = (periodo, dados, type) => {
   switch (periodo) {
     case "hoje":
     case "data":
-      return [
-        {
-          label,
-          backgroundColor: color,
-          borderColor: color,
-          data: dados.map((item) => item.valor),
-          fill: false,
-        },
-      ];
+      return dados[0][type].map((item) => item.hora);
     case "periodo":
-      return [
-        {
-          label,
-          backgroundColor: color,
-          borderColor: color,
-          data: dados.map((item) => item.valor),
-          fill: false,
-        },
-      ];
-    default:
-      return null;
-  }
-};
-const formatLabelsMovAler = (periodo, date, dados) => {
-  switch (periodo) {
-    case "hoje":
-    case "data":
-      return dados.map((item) => item.hora);
-    case "periodo":
-      return dados.map((item) => dateToString(item.data));
+      return dados[0][type].map((item) => dateToString(item.data));
     default:
       return null;
   }
@@ -90,10 +45,4 @@ const dateToString = (date) => {
   let dateArray = date.split("-");
   return `${dateArray[2]}/${dateArray[1]}/${dateArray[0]}`;
 };
-export {
-  formatMovAler,
-  formatLabelsMovAler,
-  dateToString,
-  formatDateLabel,
-  formatTypesValues,
-};
+export { formatMovAler, formatLabelsMovAler, dateToString, formatDateLabel };
