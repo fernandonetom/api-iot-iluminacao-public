@@ -12,9 +12,22 @@ class StoragesRepositories {
     return data;
   }
 
+  async listAlertAndMovimentoByDate(type, date, id) {
+    const data = await db
+      .select(
+        db.raw(
+          "date_part('hour', \"createdAt\") as hora, COUNT(*)::integer as valor"
+        )
+      )
+      .from(type)
+      .whereRaw('mqtt_user_id = ? and "createdAt"::date = ?', [id, date])
+      .groupByRaw("date_part('hour', \"createdAt\")");
+    return data;
+  }
+
   async listAlertAndMovimentoByPeriod(type, dateStart, dateStop, id) {
     const data = await db
-      .select(db.raw('"createdAt"::date, SUM (valor) as count'))
+      .select(db.raw('"createdAt"::date, COUNT(*)::integer as valor'))
       .from(type)
       .whereRaw(
         'mqtt_user_id = ? and "createdAt"::date >= ? and "createdAt"::date <= ?',
@@ -25,15 +38,21 @@ class StoragesRepositories {
   }
 
   async listStorageByDate(type, date, id) {
-    const data = await db(
-      type
-    ).whereRaw('mqtt_user_id = ? and "createdAt"::date = ?', [id, date]);
+    const data = await db
+      .select(
+        db.raw(
+          "date_part('hour', \"createdAt\") as hora, AVG(valor)::real as valor"
+        )
+      )
+      .from(type)
+      .whereRaw('mqtt_user_id = ? and "createdAt"::date = ?', [id, date])
+      .groupByRaw("date_part('hour', \"createdAt\")");
     return data;
   }
 
   async listStorageByPeriodo(type, dateStart, dateStop, id) {
     const data = await db
-      .select(db.raw('"createdAt"::date, AVG (valor) as count'))
+      .select(db.raw('"createdAt"::date, AVG (valor)::real as valor'))
       .from(type)
       .whereRaw(
         'mqtt_user_id = ? and "createdAt"::date >= ? and "createdAt"::date <= ?',

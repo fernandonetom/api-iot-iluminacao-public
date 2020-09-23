@@ -29,48 +29,34 @@ class StorageController {
         const hoje = moment().format("YYYY-MM-DD");
 
         if (tipo === "alerta" || tipo === "movimentacao" || tipo === "rele") {
-          const hours = [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-          ];
           try {
-            responseData = await Promise.all(
-              hours.map(async (item) => {
-                const databaseResponse = await StoragesRepositories.listAlertAndMovimentoByDateHour(
-                  `dados_${tipo}`,
-                  hoje,
-                  item,
-                  id
-                );
-                return {
-                  hora: `${item}:00`,
-                  data: hoje,
-                  quantidade: databaseResponse.count,
-                };
-              })
+            responseData = await StoragesRepositories.listAlertAndMovimentoByDate(
+              `dados_${tipo}`,
+              hoje,
+              id
             );
+
+            const responseHours = responseData.map(function (item) {
+              return item.hora;
+            });
+
+            const start = 0;
+            const end = 23;
+
+            for (var i = start; i <= end; i = i + 1) {
+              if (!responseHours.includes(i))
+                responseData.push({ hora: i, valor: 0 });
+            }
+
+            const result = responseData.sort(function (a, b) {
+              return a.hora < b.hora ? -1 : a.hora > b.hora ? 1 : 0;
+            });
+
+            const resultEnd = result.map((item) => {
+              return { ...item, hora: `${item.hora}:00`, data: hoje };
+            });
+
+            responseData = resultEnd;
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
@@ -81,13 +67,27 @@ class StorageController {
               hoje,
               id
             );
-            if (responseData.length > 0) {
-              responseData = responseData.map((item) => ({
-                valor: item.valor,
-                hora: moment(item.createdAt).format("HH:m"),
-                data: hoje,
-              }));
+            const responseHours = responseData.map(function (item) {
+              return item.hora;
+            });
+
+            const start = 0;
+            const end = 23;
+
+            for (var i = start; i <= end; i = i + 1) {
+              if (!responseHours.includes(i))
+                responseData.push({ hora: i, valor: 0 });
             }
+
+            const result = responseData.sort(function (a, b) {
+              return a.hora < b.hora ? -1 : a.hora > b.hora ? 1 : 0;
+            });
+
+            const resultEnd = result.map((item) => {
+              return { ...item, hora: `${item.hora}:00`, data: hoje };
+            });
+
+            responseData = resultEnd;
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
@@ -101,48 +101,34 @@ class StorageController {
         if (!validateDate.isValid())
           return res.json(ErrorsCatalog.storage.invalidData);
         if (tipo === "alerta" || tipo === "movimentacao" || tipo === "rele") {
-          const hours = [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-          ];
           try {
-            responseData = await Promise.all(
-              hours.map(async (item) => {
-                const databaseResponse = await StoragesRepositories.listAlertAndMovimentoByDateHour(
-                  `dados_${tipo}`,
-                  data,
-                  item,
-                  id
-                );
-                return {
-                  hora: `${item}:00`,
-                  data,
-                  quantidade: databaseResponse.count,
-                };
-              })
+            responseData = await StoragesRepositories.listAlertAndMovimentoByDate(
+              `dados_${tipo}`,
+              data,
+              id
             );
+
+            const responseHours = responseData.map(function (item) {
+              return item.hora;
+            });
+
+            const start = 0;
+            const end = 23;
+
+            for (var i = start; i <= end; i = i + 1) {
+              if (!responseHours.includes(i))
+                responseData.push({ hora: i, valor: 0 });
+            }
+
+            const result = responseData.sort(function (a, b) {
+              return a.hora < b.hora ? -1 : a.hora > b.hora ? 1 : 0;
+            });
+
+            const resultEnd = result.map((item) => {
+              return { ...item, hora: `${item.hora}:00`, data };
+            });
+
+            responseData = resultEnd;
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
@@ -153,13 +139,27 @@ class StorageController {
               data,
               id
             );
-            if (responseData.length > 0) {
-              responseData = responseData.map((item) => ({
-                valor: item.valor,
-                hora: moment(item.createdAt).format("HH:m"),
-                data,
-              }));
+            const responseHours = responseData.map(function (item) {
+              return item.hora;
+            });
+
+            const start = 0;
+            const end = 23;
+
+            for (var i = start; i <= end; i = i + 1) {
+              if (!responseHours.includes(i))
+                responseData.push({ hora: i, valor: 0 });
             }
+
+            const result = responseData.sort(function (a, b) {
+              return a.hora < b.hora ? -1 : a.hora > b.hora ? 1 : 0;
+            });
+
+            const resultEnd = result.map((item) => {
+              return { ...item, hora: `${item.hora}:00`, data };
+            });
+
+            responseData = resultEnd;
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
@@ -190,10 +190,29 @@ class StorageController {
             );
             if (responseData.length > 0) {
               responseData = responseData.map((item) => ({
+                valor: item.valor,
                 data: moment(item.createdAt).format("YYYY-MM-DD"),
-                quantidade: item.count,
               }));
             }
+
+            var returnedDays = responseData.map(function (item) {
+              return item.data;
+            });
+
+            const start = new Date(dataInicio);
+            const end = new Date(dataFim);
+            start.setDate(start.getDate() + 1);
+            end.setDate(end.getDate() + 1);
+
+            for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
+              const date = moment(d).format("YYYY-MM-DD");
+              if (!returnedDays.includes(date))
+                responseData.push({ valor: 0, data: date });
+            }
+
+            responseData = responseData.sort(function (a, b) {
+              return a.data < b.data ? -1 : a.data > b.data ? 1 : 0;
+            });
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
@@ -207,10 +226,29 @@ class StorageController {
             );
             if (responseData.length > 0) {
               responseData = responseData.map((item) => ({
+                valor: item.valor,
                 data: moment(item.createdAt).format("YYYY-MM-DD"),
-                quantidade: parseFloat(item.count).toFixed(2),
               }));
             }
+
+            var returnedDays = responseData.map(function (item) {
+              return item.data;
+            });
+
+            const start = new Date(dataInicio);
+            const end = new Date(dataFim);
+            start.setDate(start.getDate() + 1);
+            end.setDate(end.getDate() + 1);
+
+            for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
+              const date = moment(d).format("YYYY-MM-DD");
+              if (!returnedDays.includes(date))
+                responseData.push({ valor: 0, data: date });
+            }
+
+            responseData = responseData.sort(function (a, b) {
+              return a.data < b.data ? -1 : a.data > b.data ? 1 : 0;
+            });
           } catch (error) {
             return res.json(ErrorsCatalog.server(error));
           }
