@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import themeData from "../../../assets/theme/theme";
 import PuffLoader from "react-spinners/PuffLoader";
-import { Link } from "react-router-dom";
 export const LoadingSpinner = styled(PuffLoader).attrs({
   color: themeData.colors.orangeLight,
   size: 40,

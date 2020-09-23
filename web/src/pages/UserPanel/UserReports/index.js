@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../../components/Input";
 import Header from "../../../components/Header";
 import InfoTitle from "../../../components/InfoTitle";
@@ -23,6 +23,7 @@ import {
   BoxDataPeriod,
   BoxDataContent,
   BoxDataItem,
+  ErrorBox,
 } from "./styles";
 import { Line } from "react-chartjs-2";
 import {
@@ -33,31 +34,27 @@ import {
 } from "../../../utils/dataFormatter";
 import { alertMovOptions, typeOptions } from "../../../utils/reportsConfigs";
 import LoadingStorage from "../../../components/LoadingStorage";
+import api from "../../../services/api";
+import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 export default function UserReports() {
+  const history = useHistory();
   const [period, setPeriod] = useState("hoje");
   const [dateFilter, setDateFilter] = useState(moment().format("YYYY-MM-DD"));
   const [dateStarterFilter, setDateStarterFilter] = useState("");
   const [dateFinishFilter, setDateFinishFilter] = useState("");
   const [config, setConfig] = useState({
     showFilters: true,
-    selectedDevices: null,
-    selectedTypes: null,
+    selectedDevices: [],
+    selectedTypes: [],
     loadingData: false,
   });
-  const devices = [
-    { id: 1, name: "Poste 1" },
-    { id: 2, name: "Poste 2" },
-    { id: 3, name: "Poste 3" },
-    { id: 4, name: "Poste 4" },
-    { id: 5, name: "Poste 5" },
-    { id: 6, name: "Poste 6" },
-    { id: 7, name: "Poste 7" },
-    { id: 8, name: "Poste 8" },
-    { id: 9, name: "Poste 9" },
-    { id: 10, name: "Poste 10" },
-    { id: 11, name: "Poste 11" },
-    { id: 12, name: "Poste 12" },
-  ];
+  const [devices, setDevices] = useState([]);
+  const [erros, setErros] = useState({
+    devices: null,
+    options: null,
+  });
+  const [responseData, setResponseData] = useState([]);
   const dados = [
     { id: "alerta", name: "Alerta" },
     { id: "temperatura", name: "Temperatura" },
@@ -67,56 +64,105 @@ export default function UserReports() {
     { id: "tensao", name: "Tensão" },
   ];
 
-  const responseData = [
-    {
-      id: 2,
-      alerta: [
-        { hora: "0:00", data: "2020-09-01", quantidade: 1 },
-        { hora: "1:00", data: "2020-09-01", quantidade: 4 },
-        { hora: "2:00", data: "2020-09-01", quantidade: 5 },
-      ],
-      movimentacao: [
-        { hora: "0:00", data: "2020-09-01", quantidade: 1 },
-        { hora: "1:00", data: "2020-09-01", quantidade: 4 },
-        { hora: "2:00", data: "2020-09-01", quantidade: 5 },
-      ],
-      temperatura: [
-        { valor: 25.6, hora: "20:00", data: "2020-09-01" },
-        { valor: 25.6, hora: "21:00", data: "2020-09-01" },
-      ],
-      luminosidade: [
-        { valor: 90, hora: "20:00", data: "2020-09-01" },
-        { valor: 80, hora: "21:00", data: "2020-09-01" },
-      ],
-      umidade: [
-        { valor: 90, hora: "20:00", data: "2020-09-01" },
-        { valor: 91, hora: "21:00", data: "2020-09-01" },
-        { valor: 87, hora: "22:00", data: "2020-09-01" },
-      ],
-      tensao: [
-        { valor: 12.2, hora: "20:00", data: "2020-09-01" },
-        { valor: 12.6, hora: "21:00", data: "2020-09-01" },
-        { valor: 12.5, hora: "22:00", data: "2020-09-01" },
-      ],
-    },
-  ];
+  // const responseData = [
+  //   {
+  //     id: 2,
+  //     alerta: [
+  //       { hora: "0:00", data: "2020-09-01", quantidade: 1 },
+  //       { hora: "1:00", data: "2020-09-01", quantidade: 4 },
+  //       { hora: "2:00", data: "2020-09-01", quantidade: 5 },
+  //     ],
+  //     movimentacao: [
+  //       { hora: "0:00", data: "2020-09-01", quantidade: 1 },
+  //       { hora: "1:00", data: "2020-09-01", quantidade: 4 },
+  //       { hora: "2:00", data: "2020-09-01", quantidade: 5 },
+  //     ],
+  //     temperatura: [
+  //       { valor: 25.6, hora: "20:00", data: "2020-09-01" },
+  //       { valor: 25.6, hora: "21:00", data: "2020-09-01" },
+  //     ],
+  //     luminosidade: [
+  //       { valor: 90, hora: "20:00", data: "2020-09-01" },
+  //       { valor: 80, hora: "21:00", data: "2020-09-01" },
+  //     ],
+  //     umidade: [
+  //       { valor: 90, hora: "20:00", data: "2020-09-01" },
+  //       { valor: 91, hora: "21:00", data: "2020-09-01" },
+  //       { valor: 87, hora: "22:00", data: "2020-09-01" },
+  //     ],
+  //     tensao: [
+  //       { valor: 12.2, hora: "20:00", data: "2020-09-01" },
+  //       { valor: 12.6, hora: "21:00", data: "2020-09-01" },
+  //       { valor: 12.5, hora: "22:00", data: "2020-09-01" },
+  //     ],
+  //   },
+  // ];
   const datesConfig = {
     dateFilter,
     dateStarterFilter,
     dateFinishFilter,
   };
+
+  useEffect(() => {
+    getDevices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function getDevices() {
+    try {
+      setConfig({ ...config, loadingData: true });
+      const { data } = await api.get("mqttusers/home");
+      setConfig({ ...config, loadingData: false });
+      if (data.error) {
+        toast.error(data.message);
+        return history.pushState("/");
+      }
+      return setDevices(data);
+    } catch (error) {}
+  }
   function handlePeriod(option) {
     setPeriod(option.target.value);
     if (option.target.value === "hoje") {
       setDateFilter(moment().format("YYYY-MM-DD"));
     }
   }
-  function handleFilters() {
+  async function handleFilters() {
+    if (config.selectedDevices.length === 0) {
+      return setErros({
+        options: null,
+        devices: "Selecione pelo menos um dispositivo",
+      });
+    }
+    if (config.selectedTypes.length === 0) {
+      return setErros({
+        devices: null,
+        options: "Selecione pelo menos um dado",
+      });
+    }
     setConfig({ ...config, loadingData: true });
-    setDateFilter(dateFilter);
-    setTimeout(() => {
-      setConfig({ ...config, showFilters: false, loadingData: false });
-    }, 500);
+    let response = [];
+
+    await Promise.all(
+      config.selectedDevices.map(async (device) => {
+        let responseData = { id: device.id };
+        await Promise.all(
+          config.selectedTypes.map(async (tipo) => {
+            const { data } = await api.post(`storage/list/${tipo.id}`, {
+              id: device.id,
+              rangeType: period,
+              data: dateFilter,
+              dataInicio: dateStarterFilter,
+              dataFim: dateFinishFilter,
+            });
+            responseData = { ...responseData, [tipo.id]: data };
+          })
+        );
+        response.push(responseData);
+      })
+    );
+    setConfig({ ...config, loadingData: false });
+    setResponseData(response);
+    setConfig({ ...config, showFilters: false });
   }
   function handleDevicesAdd(selectedList) {
     setConfig({ ...config, selectedDevices: selectedList });
@@ -152,7 +198,9 @@ export default function UserReports() {
         {!config.loadingData && config.showFilters && (
           <>
             <SelectDiv>
+              {erros.devices && <ErrorBox>{erros.devices}</ErrorBox>}
               <MultiSelect
+                id="devices"
                 options={devices}
                 displayValue="name"
                 emptyRecordMsg="Nenhum resultado encontrado"
@@ -163,7 +211,9 @@ export default function UserReports() {
               />
             </SelectDiv>
             <SelectDiv>
+              {erros.options && <ErrorBox>{erros.options}</ErrorBox>}
               <MultiSelect
+                id="options-data"
                 options={dados}
                 displayValue="name"
                 emptyRecordMsg="Nenhum resultado encontrado"

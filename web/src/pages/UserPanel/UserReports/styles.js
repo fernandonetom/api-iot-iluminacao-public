@@ -66,6 +66,7 @@ export const SelectDiv = styled.div`
   }
   li:hover {
     background-color: ${themeData.colors.greenDark};
+    color: ${themeData.colors.background};
   }
   .chip {
     background: ${themeData.colors.greenDark};
@@ -192,3 +193,10 @@ export const BoxDataContent = styled.div`
   }
 `;
 export const BoxDataItem = styled.div``;
+export const ErrorBox = styled.div`
+  color: ${themeData.colors.redLight};
+  font-size: 1rem;
+  text-align: left;
+  text-transform: uppercase;
+  font-weight: 500;
+`;
