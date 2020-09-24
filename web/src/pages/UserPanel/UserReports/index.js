@@ -33,7 +33,7 @@ import {
   formatDateLabel,
 } from "../../../utils/dataFormatter";
 import { alertMovOptions, typeOptions } from "../../../utils/reportsConfigs";
-import LoadingStorage from "../../../components/LoadingStorage";
+import GlobalLoading from "../../../components/GlobalLoading";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
@@ -460,7 +460,7 @@ export default function UserReports() {
           </>
         )}
       </Container>
-      {config.loadingData && <LoadingStorage />}
+      {config.loadingData && <GlobalLoading />}
     </>
   );
 }

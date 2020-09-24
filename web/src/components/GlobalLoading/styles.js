@@ -24,17 +24,30 @@ export const Container = styled.div`
     }
   }
   svg {
-    animation: pulse 500ms infinite alternate ease-in-out;
-    path {
-      fill: ${themeData.colors.greenDark};
+    stroke: ${themeData.colors.lightGrayDark};
+    fill: ${themeData.colors.background};
+    stroke-width: 2px;
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: dash 2s linear alternate infinite;
+
+    path,
+    text {
+      animation: fill 2s ease-in-out alternate infinite 700ms;
+      @keyframes fill {
+        to {
+          fill: ${themeData.colors.lightGrayDark};
+        }
+      }
     }
-    @keyframes pulse {
-      from {
-        transform: scale(1);
-      }
+    @keyframes dash {
       to {
-        transform: scale(1.2);
+        stroke-dashoffset: 0;
       }
+    }
+
+    @media screen and (max-width: 1000px) {
+      width: 200px;
     }
   }
 `;
