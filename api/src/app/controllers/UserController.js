@@ -132,10 +132,29 @@ class UserController {
     }
   }
 
-  async update(req, res) {
-    const { name, email, password, admin, orgId } = req.body;
+  async profile(req, res) {
+    const { userId, orgId } = req.body;
 
-    const level = admin ? "admin" : "user";
+    const user = await UsersRepositories.findById(userId);
+
+    if (user.length === 0) return res.json(ErrorsCatalog.user.notFound);
+
+    const org = await OrganizationsRepositories.findById(orgId);
+
+    if (org.length === 0) return res.json(ErrorsCatalog.organization.notFound);
+
+    res.json({
+      id: user[0].id,
+      name: user[0].name,
+      email: user[0].email,
+      userLevel: user[0].level,
+      createdAt: user[0].createdAt,
+      orgName: org[0].name,
+    });
+  }
+
+  async update(req, res) {
+    const { name, email, password, orgId } = req.body;
 
     const { id } = req.params;
 
@@ -163,33 +182,12 @@ class UserController {
         id,
         name,
         email,
-        level,
         password: newPassword,
       });
       res.json(MessageCatalog.updated);
     } catch (error) {
       res.json({ error: error.code, message: error.message });
     }
-  }
-
-  async profile(req, res) {
-    const { userId, orgId } = req.body;
-
-    const user = await UsersRepositories.findById(userId);
-
-    if (user.length === 0) return res.json(ErrorsCatalog.user.notFound);
-
-    const org = await OrganizationsRepositories.findById(orgId);
-
-    if (org.length === 0) return res.json(ErrorsCatalog.organization.notFound);
-
-    res.json({
-      name: user[0].name,
-      email: user[0].email,
-      userLevel: user[0].level,
-      createdAt: user[0].createdAt,
-      orgName: org[0].name,
-    });
   }
 }
 module.exports = new UserController();

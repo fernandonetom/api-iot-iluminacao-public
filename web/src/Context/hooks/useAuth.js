@@ -82,6 +82,15 @@ export default function useAuth() {
     }
     return null;
   }
+  function updateUser({ name, email }) {
+    const newUser = {
+      ...userData,
+      email,
+      name,
+    };
+    setUserData(newUser);
+    localStorage.setItem("@sipi-data", JSON.stringify(newUser));
+  }
   return {
     authenticated,
     userData,
@@ -89,5 +98,6 @@ export default function useAuth() {
     handleLogin,
     handleLogout,
     redirectIfLogged,
+    updateUser,
   };
 }
