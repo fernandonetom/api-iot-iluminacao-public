@@ -3,7 +3,7 @@ import Input from "../../../components/Input";
 import Header from "../../../components/Header";
 import InfoTitle from "../../../components/InfoTitle";
 import Radio from "../../../components/Radio";
-import { jsPDF } from "jspdf";
+//import { jsPDF } from "jspdf";
 import moment from "moment";
 import {
   BoxItems,
@@ -56,7 +56,7 @@ export default function UserReports() {
     options: null,
   });
   const [responseData, setResponseData] = useState([]);
-  const [print, setPrint] = useState(false);
+  const [print] = useState(false);
   const dados = [
     { id: "alerta", name: "Alerta" },
     { id: "temperatura", name: "Temperatura" },

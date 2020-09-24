@@ -1,8 +1,3 @@
-function randomColor() {
-  const arrayColors = ["#31AD84", "#BF3719", "#237F99", "#CC8139", "#EEEEEE"];
-
-  return arrayColors[Math.floor(Math.random() * arrayColors.length)];
-}
 const formatMovAler = (periodo, dados, label, type) => {
   return dados.map((item, index) => {
     return {
