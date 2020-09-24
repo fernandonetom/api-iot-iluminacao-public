@@ -310,7 +310,7 @@ class StorageController {
       return;
     }
 
-    if (!id || !valor) return;
+    if (!id) return;
 
     const findMqtt = await MqttUsersRepositories.findById(id);
 
@@ -319,14 +319,13 @@ class StorageController {
     const dado = `dados_${tipo}`;
 
     try {
-      StoragesRepositories.create({
+      await StoragesRepositories.create({
         dado,
         id,
         valor: parseFloat(valor),
       });
-      console.log(`Dado inserido :: ${tipo} / ${valor} / ${id}`);
     } catch (error) {
-      console.log(`Erro ao inserir dado :: ${tipo} / ${valor} / ${id}`);
+      console.log(`Erro ao inserir dado :: ${error.message}`);
     }
   }
 }

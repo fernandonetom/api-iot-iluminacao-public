@@ -69,7 +69,7 @@ export const Circle = styled.div`
   background-color: ${(props) =>
     props.status === "online"
       ? themeData.colors.greenLight
-      : props.status === "wait"
+      : props.status === "conectando"
       ? themeData.colors.orange
       : themeData.colors.redDark};
   width: 0.9rem;

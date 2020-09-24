@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import { Doughnut } from "react-chartjs-2";
 import GlobalLoading from "../../../components/GlobalLoading";
 import Header from "../../../components/Header";
+import socket from "../../../services/websocket";
 import {
   HeaderContent,
   InfoLeft,
@@ -76,68 +78,142 @@ export default function UserMqttDetails() {
     luminosidade: [null, 100],
     umidade: [null, 100],
     tensao: [null, 15],
-    rele: null,
-    alerta: null,
-    movimentacao: null,
   });
   const { userData } = useContext(Context);
   const [loadingData, setLoadingData] = useState(false);
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await api.get(`mqttusers/${id}`);
-        setLoading(false);
-        if (data.error) {
-          history.push("/");
-          return toast.error(data.message, {
-            toastId: "401",
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
-        setData({
-          mqtt: data.mqtt,
-          temperatura: [
-            data.temperatura.valor ? parseFloat(data.temperatura.valor) : null,
-            data.temperatura.valor
-              ? maximum.temperatura - parseFloat(data.temperatura.valor)
-              : 0,
-          ],
-          luminosidade: [
-            data.luminosidade.valor
-              ? parseFloat(data.luminosidade.valor)
-              : null,
-            data.luminosidade.valor
-              ? maximum.luminosidade - parseFloat(data.luminosidade.valor)
-              : 0,
-          ],
-          umidade: [
-            data.umidade.valor ? parseFloat(data.umidade.valor) : null,
-            data.umidade.valor
-              ? maximum.umidade - parseFloat(data.umidade.valor)
-              : 0,
-          ],
-          tensao: [
-            data.tensao.valor ? parseFloat(data.tensao.valor) : null,
-            data.tensao.valor
-              ? maximum.tensao - parseFloat(data.tensao.valor)
-              : 0,
-          ],
-          movimentacao: data.movimentacao.valor
-            ? !!parseFloat(data.movimentacao.valor)
-            : null,
-          alerta: data.alerta.valor ? !!parseFloat(data.alerta.valor) : null,
-          rele: data.rele.valor ? !!parseFloat(data.rele.valor) : null,
-        });
-      } catch (error) {}
-    })();
-  }, [history, id]);
+  const [rele, setRele] = useState(null);
+  const [alerta, setAlerta] = useState(null);
+  const [movimentacao, setMovimentacao] = useState(null);
 
+  const [config, setConfig] = useState({
+    statusIo: "conectando",
+    already: false,
+  });
+  useEffect(() => {
+    let active = true;
+    if (active) {
+      (async () => {
+        try {
+          const { data } = await api.get(`mqttusers/${id}`);
+          setLoading(false);
+          if (data.error) {
+            history.push("/");
+            return toast.error(data.message, {
+              toastId: "401",
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
+          setRele(data.rele.valor ? !!parseFloat(data.rele.valor) : null);
+          setAlerta(data.alerta.valor ? !!parseFloat(data.alerta.valor) : null);
+          setMovimentacao(
+            data.movimentacao.valor
+              ? !!parseFloat(data.movimentacao.valor)
+              : null
+          );
+          setData({
+            mqtt: data.mqtt,
+            temperatura: [
+              data.temperatura.valor
+                ? parseFloat(data.temperatura.valor)
+                : null,
+              data.temperatura.valor
+                ? maximum.temperatura - parseFloat(data.temperatura.valor)
+                : 0,
+            ],
+            luminosidade: [
+              data.luminosidade.valor
+                ? parseFloat(data.luminosidade.valor)
+                : null,
+              data.luminosidade.valor
+                ? maximum.luminosidade - parseFloat(data.luminosidade.valor)
+                : 0,
+            ],
+            umidade: [
+              data.umidade.valor ? parseFloat(data.umidade.valor) : null,
+              data.umidade.valor
+                ? maximum.umidade - parseFloat(data.umidade.valor)
+                : 0,
+            ],
+            tensao: [
+              data.tensao.valor ? parseFloat(data.tensao.valor) : null,
+              data.tensao.valor
+                ? maximum.tensao - parseFloat(data.tensao.valor)
+                : 0,
+            ],
+          });
+
+          setConfig({ ...config, already: true });
+        } catch (error) {}
+      })();
+    }
+    return () => {
+      active = false;
+    };
+  }, []);
+  useEffect(() => {
+    let active = true;
+    if (config.already && active) {
+      socket.connect();
+      socket.emit("dados", [id]);
+      socket.on("ok", function () {
+        setConfig({
+          ...config,
+          statusIo: "online",
+        });
+      });
+      socket.on("connect", function () {
+        setConfig({
+          ...config,
+          statusIo: "online",
+        });
+      });
+      socket.on("disconnect", function () {
+        setConfig({ ...config, statusIo: "offline" });
+      });
+      socket.on("/poste", function (dados) {
+        console.log(`Recebeu: ${dados}`);
+        const [topico, , valor] = dados.split("/");
+        console.log("TOPICO :: " + topico + " valor :: " + parseFloat(valor));
+        console.log(data);
+        switch (topico) {
+          case "temperatura":
+          case "luminosidade":
+          case "umidade":
+          case "tensao":
+            setData({
+              ...data,
+              [topico]: [
+                parseFloat(valor),
+                maximum[topico] - parseFloat(valor),
+              ],
+            });
+            return;
+          case "rele":
+            setRele(!!parseFloat(valor));
+            return;
+          case "alerta":
+            setAlerta(!!parseFloat(valor));
+            return;
+          case "movimentacao":
+            setMovimentacao(!!parseFloat(valor));
+            return;
+          default:
+            return;
+        }
+      });
+    }
+
+    return () => {
+      active = false;
+      socket.disconnect();
+    };
+  }, [config.already]);
   async function handleMqttInfo() {
     try {
       setLoadingData(true);
@@ -145,6 +221,12 @@ export default function UserMqttDetails() {
       setLoadingData(false);
       return MqttInfo({ ...data });
     } catch (error) {}
+  }
+  function handleAlert() {
+    socket.emit("alerta", {
+      id,
+      valor: alerta ? "0" : "1",
+    });
   }
   return (
     <>
@@ -162,8 +244,8 @@ export default function UserMqttDetails() {
             )}
           </InfoLeft>
           <InfoRight>
-            <Circle status="online" />
-            online
+            <Circle status={config.statusIo} />
+            {config.statusIo}
           </InfoRight>
         </HeaderContent>
       </Header>
@@ -172,60 +254,61 @@ export default function UserMqttDetails() {
           <DetailsItem>
             <DetailsItemLeft>
               <h3>Lâmpada</h3>
-              {(loading || data.rele === null) && (
+              {(loading || rele === null) && (
                 <span className="wait">Aguardando</span>
               )}
-              {!loading && data.rele !== null && (
-                <span>{data.rele ? "ligada" : "desligada"}</span>
+              {!loading && rele !== null && (
+                <span>{rele ? "ligada" : "desligada"}</span>
               )}
             </DetailsItemLeft>
-            <DetailsItemRight type="light" status={data.rele}>
-              <LoadingSpinner loading={loading || data.rele === null} />
-              {!loading && data.rele !== null && <Icons name="light" />}
+            <DetailsItemRight type="light" status={rele}>
+              <LoadingSpinner loading={loading || rele === null} />
+              {!loading && rele !== null && <Icons name="light" />}
             </DetailsItemRight>
           </DetailsItem>
 
           <DetailsItem>
             <DetailsItemLeft>
               <h3>Alerta</h3>
-              {(loading || data.alerta === null) && (
+              {(loading || alerta === null) && (
                 <span className="wait">Aguardando</span>
               )}
-              {!loading && data.alerta !== null && (
-                <span>{data.alerta ? "ligado" : "desligado"}</span>
+              {!loading && alerta !== null && (
+                <span>{alerta ? "ligado" : "desligado"}</span>
               )}
             </DetailsItemLeft>
             <DetailsItemRight
               data-tip
               data-for="alertTooltip"
               type="alert"
-              status={data.alerta}
+              status={alerta}
+              onClick={handleAlert}
             >
-              <LoadingSpinner loading={loading || data.alerta === null} />
-              {!loading && data.alerta !== null && <Icons name="alert" />}
+              <LoadingSpinner loading={loading || alerta === null} />
+              {!loading && alerta !== null && <Icons name="alert" />}
             </DetailsItemRight>
             <ReactTooltip
-              className={data.alerta ? "toolTipWarn" : "toolTipSuccess"}
+              className={alerta ? "toolTipWarn" : "toolTipSuccess"}
               id="alertTooltip"
               place="bottom"
             >
-              <span>{data.alerta ? "Desligar alerta" : "Ligar alerta"}</span>
+              <span>{alerta ? "Desligar alerta" : "Ligar alerta"}</span>
             </ReactTooltip>
           </DetailsItem>
 
           <DetailsItem>
             <DetailsItemLeft>
               <h3>Movimentação</h3>
-              {(loading || data.movimentacao === null) && (
+              {(loading || movimentacao === null) && (
                 <span className="wait">Aguardando</span>
               )}
-              {!loading && data.movimentacao !== null && (
-                <span>{data.movimentacao ? "detectada" : "não detectada"}</span>
+              {!loading && movimentacao !== null && (
+                <span>{movimentacao ? "detectada" : "não detectada"}</span>
               )}
             </DetailsItemLeft>
-            <DetailsItemRight type="movimentacao" status={data.movimentacao}>
-              <LoadingSpinner loading={loading || data.movimentacao === null} />
-              {!loading && data.movimentacao !== null && <Icons name="run" />}
+            <DetailsItemRight type="movimentacao" status={movimentacao}>
+              <LoadingSpinner loading={loading || movimentacao === null} />
+              {!loading && movimentacao !== null && <Icons name="run" />}
             </DetailsItemRight>
           </DetailsItem>
 

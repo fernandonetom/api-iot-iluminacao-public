@@ -33,6 +33,22 @@
         }
       }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script>
+      var socket = io("https://api.frstore.tk:65080", {
+        secure: true,
+        rejectUnauthorized: true,
+      });
+      socket.on("connect", function () {
+        socket.emit("dados", ["1"]);
+      });
+      socket.on("visits", function (visitas) {
+        console.log(visitas);
+      });
+      socket.on("/poste", function (dados) {
+        console.log(`Recebeu: ${dados}`);
+      });
+    </script>
   </head>
   <body>
     <h4>postes</h4>
