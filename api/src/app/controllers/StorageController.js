@@ -1,6 +1,7 @@
 const moment = require("moment-timezone");
 const ErrorsCatalog = require("../utils/ErrorsCatalog");
 const StoragesRepositories = require("../repositories/StoragesRepositories");
+const MqttUsersRepositories = require("../repositories/MqttUsersRepositories");
 
 class StorageController {
   async index(req, res) {
@@ -260,7 +261,7 @@ class StorageController {
     }
   }
 
-  async store(req, res) {
+  async storeBackup(req, res) {
     const { tipo } = req.params;
     const allowDataType = [
       "alerta",
@@ -291,6 +292,41 @@ class StorageController {
       res.json({ dataId: data[0] });
     } catch (error) {
       res.json(ErrorsCatalog.server(error));
+    }
+  }
+
+  async store({ tipo, valor, id }) {
+    const allowDataType = [
+      "alerta",
+      "temperatura",
+      "movimentacao",
+      "luminosidade",
+      "umidade",
+      "tensao",
+      "rele",
+    ];
+
+    if (!allowDataType.includes(tipo)) {
+      return;
+    }
+
+    if (!id || !valor) return;
+
+    const findMqtt = await MqttUsersRepositories.findById(id);
+
+    if (findMqtt.length === 0) return;
+
+    const dado = `dados_${tipo}`;
+
+    try {
+      StoragesRepositories.create({
+        dado,
+        id,
+        valor: parseFloat(valor),
+      });
+      console.log(`Dado inserido :: ${tipo} / ${valor} / ${id}`);
+    } catch (error) {
+      console.log(`Erro ao inserir dado :: ${tipo} / ${valor} / ${id}`);
     }
   }
 }

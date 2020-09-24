@@ -77,7 +77,7 @@ router.get(
   MqttUserController.credentials
 );
 
-router.post("/storage/create/:tipo", StorageController.store);
+//router.post("/storage/create/:tipo", StorageController.store);
 router.post("/storage/list/:tipo", UsersAuth.verify, StorageController.index);
 
 router.post("/superuser/signin", SuperUserController.signIn);

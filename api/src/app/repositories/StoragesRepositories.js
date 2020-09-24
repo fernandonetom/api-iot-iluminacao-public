@@ -4,7 +4,7 @@ class StoragesRepositories {
   async listAlertAndMovimentoByDateHour(type, date, hour, id) {
     const data = await db(type)
       .whereRaw(
-        'mqtt_user_id = ? and "createdAt"::date = ? and date_part(\'hour\', "createdAt") in (?)',
+        'mqtt_user_id = ? and "createdAt"::date = ? and date_part(\'hour\', "createdAt") in (?) and valor = 1',
         [id, date, hour]
       )
       .count("*")
@@ -30,7 +30,7 @@ class StoragesRepositories {
       .select(db.raw('"createdAt"::date, COUNT(*)::integer as valor'))
       .from(type)
       .whereRaw(
-        'mqtt_user_id = ? and "createdAt"::date >= ? and "createdAt"::date <= ?',
+        'mqtt_user_id = ? and "createdAt"::date >= ? and "createdAt"::date <= ? and valor = 1',
         [id, dateStart, dateStop]
       )
       .groupByRaw('"createdAt"::date');

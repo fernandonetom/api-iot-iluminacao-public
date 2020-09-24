@@ -6,6 +6,7 @@ const https = require("https");
 const fs = require("fs");
 const express = require("express");
 
+const StorageController = require("../api/src/app/controllers/StorageController");
 const app_express = express();
 const mqtt = require("mqtt");
 
@@ -64,6 +65,18 @@ io.on("connection", (socket) => {
     console.log(`Socket :: cliente possui ${data}`);
     socket.join(data);
   });
+
+  socket.on("alerta", (data) => {
+    console.log(`Socket :: cliente enviou alerta ${data}`);
+    const { id, valor } = data;
+    client.publish("/poste/alerta", `${id},${valor}`);
+
+    if (parseFloat(valor) === 1) {
+      StorageController.store({ id, valor, tipo: "alerta" });
+    }
+    socket.to(id).emit("/poste", `alerta/${id}/${valor}`);
+  });
+
   socket.on("disconnect", () => {
     visits -= visits;
     console.log("Socket :: cliente desconectado");
@@ -83,12 +96,18 @@ io.on("connection", (socket) => {
         "luminosidade",
       ];
       if (allowDataType.includes(topico)) {
-        const separa = message.toString().split(","); // RECEBE ID_POSTE,TEMPERATURA
+        const separa = message.toString().split(","); // RECEBE ID_POSTE,VALOR
         const id_poste = separa[0]; // ID_POSTE
-        const temperatura = separa[1]; // TEMPERATURA
-        socket
-          .to(id_poste)
-          .emit("/poste", `${topico}/${id_poste}/${temperatura}`);
+        const valor = separa[1]; // VALOR
+
+        //SALVA SEM AGUARDAR CONCLUIR
+        StorageController.store({
+          tipo: topico,
+          valor: parseFloat(valor),
+          id: parseFloat(id_poste),
+        });
+
+        socket.to(id_poste).emit("/poste", `${topico}/${id_poste}/${valor}`);
       }
     } catch (err) {
       console.log(`Erro :: ${err.message}`);
