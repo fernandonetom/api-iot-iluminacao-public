@@ -81,7 +81,7 @@ export default function UserDevices() {
       <Header menuType="user" active="dispositivos">
         <HeaderContent>
           <InfoLeft>
-            <InfoTitle>Usuários cadastrados</InfoTitle>
+            <InfoTitle>Dispositivos cadastrados</InfoTitle>
             {userData.userLevel === "admin" && (
               <NewDevice to="/users/new-device">
                 <PlusIcon />
