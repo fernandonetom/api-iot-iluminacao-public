@@ -112,3 +112,14 @@ export const SubmitButtom = styled.button`
     }
   }
 `;
+export const ErrorBox = styled.div`
+  background: ${themeData.colors.redLight};
+  font-size: 0.9rem;
+  border: 1px solid ${themeData.colors.redDark};
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 20px;
+`;

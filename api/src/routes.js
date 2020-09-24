@@ -34,6 +34,11 @@ router.put(
   OrganizationsAuth.verify,
   OrganizationController.updateUser
 );
+router.put(
+  "/organizations/:id",
+  OrganizationsAuth.verify,
+  OrganizationController.updateSelf
+);
 
 router.get(
   "/mqttusers",

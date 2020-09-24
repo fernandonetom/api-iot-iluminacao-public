@@ -154,12 +154,15 @@ class UserController {
   }
 
   async update(req, res) {
-    const { name, email, password, orgId } = req.body;
+    const { name, email, password, userId } = req.body;
 
     const { id } = req.params;
 
-    if (!id || !name || !email || !orgId)
+    if (!id || !name || !email || !userId)
       return res.json(ErrorsCatalog.nullData);
+
+    if (parseFloat(id) !== parseFloat(userId))
+      return res.json(ErrorsCatalog.unAuthorized.notPermissions);
 
     if (!validator.validate(email)) return res.json(ErrorsCatalog.emailInvalid);
 

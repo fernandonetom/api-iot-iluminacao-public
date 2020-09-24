@@ -164,6 +164,46 @@ class OrganizationController {
       res.json({ error: error.code, message: error.message });
     }
   }
+
+  async updateSelf(req, res) {
+    const { name, email, password, orgId } = req.body;
+
+    const { id } = req.params;
+
+    if (!id || !name || !email) return res.json(ErrorsCatalog.nullData);
+
+    if (parseFloat(id) !== parseFloat(orgId))
+      return res.json(ErrorsCatalog.unAuthorized.notPermissions);
+    if (!validator.validate(email)) return res.json(ErrorsCatalog.emailInvalid);
+
+    const findEmail = await OrganizationsRepositories.findOrganizationByEmail(
+      email
+    );
+
+    if (findEmail.length > 0 && findEmail[0].id !== parseFloat(id)) {
+      return res.json(ErrorsCatalog.emailInUser);
+    }
+
+    let newPassword;
+    if (!password) {
+      const findPassword = await OrganizationsRepositories.findById(id);
+      newPassword = findPassword[0].password;
+    } else {
+      newPassword = await bcrypt.hash(password, 10);
+    }
+
+    try {
+      await OrganizationsRepositories.update({
+        id,
+        name,
+        email,
+        password: newPassword,
+      });
+      res.json(MessageCatalog.updated);
+    } catch (error) {
+      res.json({ error: error.code, message: error.message });
+    }
+  }
   async profile(req, res) {
     const { orgId } = req.body;
 
@@ -172,6 +212,7 @@ class OrganizationController {
     if (org.length === 0) return res.json(ErrorsCatalog.organization.notFound);
 
     res.json({
+      id: org[0].id,
       name: org[0].name,
       email: org[0].email,
       createdAt: org[0].createdAt,
