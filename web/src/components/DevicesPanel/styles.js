@@ -51,9 +51,7 @@ export const DeviceItem = styled.div`
 export const DeviceItemIcon = styled.div`
   path {
     fill: ${(props) =>
-      props.status === "1"
-        ? themeData.colors.orange
-        : themeData.colors.lightGrayDark};
+      props.status ? themeData.colors.orange : themeData.colors.lightGrayDark};
   }
 `;
 export const DeviceItemName = styled.div`

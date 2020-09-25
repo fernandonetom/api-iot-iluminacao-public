@@ -30,7 +30,15 @@ export default function UserHome() {
           setError("Não foi possível obter a listagem dos dispositivos");
           setStatus("offline");
         }
-        setDevices(data);
+        const newData = data.map((device) => {
+          return {
+            ...device,
+            rele: {
+              valor: device.rele.valor ? !!parseFloat(device.rele.valor) : null,
+            },
+          };
+        });
+        setDevices(newData);
         setStatus("online");
       } catch (error) {}
     })();

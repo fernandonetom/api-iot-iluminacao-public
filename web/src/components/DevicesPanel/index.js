@@ -23,7 +23,7 @@ export default function DevicesPanel({ data }) {
             data-tip
             data-for={`${device.id}-${device.name}`}
           >
-            <DeviceItemIcon status={device.status}>
+            <DeviceItemIcon status={device.rele.valor}>
               <LightIcon />
             </DeviceItemIcon>
             <DeviceItemName>{`${device.name.toString().slice(0, 15)}${
