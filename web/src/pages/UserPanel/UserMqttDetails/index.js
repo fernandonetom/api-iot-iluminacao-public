@@ -158,54 +158,84 @@ export default function UserMqttDetails() {
   }, []);
   useEffect(() => {
     let active = true;
-    if (config.already && active) {
-      socket.emit("dados", [id]);
-      socket.on("ok", function () {
-        setConfig({
-          ...config,
-          statusIo: "online",
+    if (active) {
+      if (config.already) {
+        socket.emit("dados", [id]);
+        socket.on("ok", function () {
+          setConfig({
+            ...config,
+            statusIo: "online",
+          });
         });
-      });
-      socket.on("connect", function () {
-        setConfig({
-          ...config,
-          statusIo: "online",
+        socket.on("connect", function () {
+          setConfig({
+            ...config,
+            statusIo: "online",
+          });
         });
-      });
-      socket.on("disconnect", function () {
-        setConfig({ ...config, statusIo: "offline" });
-      });
-      socket.on("/poste", function (dados) {
-        console.log(`Recebeu: ${dados}`);
-        const [topico, , valor] = dados.split("/");
-        console.log("TOPICO :: " + topico + " valor :: " + parseFloat(valor));
-        console.log(data);
-        switch (topico) {
-          case "temperatura":
-          case "luminosidade":
-          case "umidade":
-          case "tensao":
-            setData({
-              ...data,
-              [topico]: [
-                parseFloat(valor),
-                maximum[topico] - parseFloat(valor),
-              ],
-            });
-            return;
-          case "rele":
-            setRele(!!parseFloat(valor));
-            return;
-          case "alerta":
-            setAlerta(!!parseFloat(valor));
-            return;
-          case "movimentacao":
-            setMovimentacao(!!parseFloat(valor));
-            return;
-          default:
-            return;
-        }
-      });
+        socket.on("disconnect", function () {
+          setConfig({ ...config, statusIo: "conectando" });
+        });
+        socket.on("reconnecting", function () {
+          setConfig({ ...config, statusIo: "conectando" });
+          toast.warn("Tentando reconectar...", {
+            position: "bottom-center",
+          });
+        });
+        socket.on("reconnect", function () {
+          setConfig({ ...config, statusIo: "online" });
+          toast.success("Conexão estabilizada!", {
+            position: "bottom-center",
+          });
+        });
+        socket.on("connect_error", function () {
+          setConfig({ ...config, statusIo: "offline" });
+          toast.error("Servidor offline!", {
+            position: "bottom-center",
+          });
+        });
+        socket.on("reconnect_error", function () {
+          setConfig({ ...config, statusIo: "offline" });
+          toast.error("Servidor offline!", {
+            position: "bottom-center",
+          });
+        });
+        socket.on("/poste", function (dados) {
+          process.env.NODE_ENV === "development" &&
+            console.log(`Recebeu: ${dados}`);
+          const [topico, , valor] = dados.split("/");
+          process.env.NODE_ENV === "development" &&
+            console.log(
+              "TOPICO :: " + topico + " valor :: " + parseFloat(valor)
+            );
+          process.env.NODE_ENV === "development" && console.log(data);
+          switch (topico) {
+            case "temperatura":
+            case "luminosidade":
+            case "umidade":
+            case "tensao":
+              setData({
+                ...data,
+                [topico]: [
+                  parseFloat(valor),
+                  maximum[topico] - parseFloat(valor),
+                ],
+              });
+              return;
+            case "rele":
+              setRele(!!parseFloat(valor));
+              return;
+            case "alerta":
+              setAlerta(!!parseFloat(valor));
+              return;
+            case "movimentacao":
+              setMovimentacao(!!parseFloat(valor));
+              return;
+            default:
+              return;
+          }
+        });
+      }
     }
 
     return () => {
