@@ -14,13 +14,18 @@ import DevicesPanel from "../../../components/DevicesPanel";
 import LoadingComponent from "../../../components/LoadingComponent";
 import api from "../../../services/api";
 import { Context } from "../../../Context/AuthContext";
+import socket from "../../../services/websocket";
+
+import { toast } from "react-toastify";
 
 export default function UserHome() {
   const { userData } = useContext(Context);
   const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState("wait");
+  const [status, setStatus] = useState("conectando");
   const [devices, setDevices] = useState([]);
   const [error, setError] = useState(null);
+  const [alreadyData, setAlreadyData] = useState(false);
+  const [ids, setIds] = useState([]);
   useEffect(() => {
     (async () => {
       try {
@@ -33,16 +38,81 @@ export default function UserHome() {
         const newData = data.map((device) => {
           return {
             ...device,
+            id: device.id.toString(),
             rele: {
               valor: device.rele.valor ? !!parseFloat(device.rele.valor) : null,
             },
           };
         });
+        const idsArray = data.map((device) => device.id.toString());
+        setIds(idsArray);
         setDevices(newData);
-        setStatus("online");
-      } catch (error) {}
+        setAlreadyData(true);
+      } catch (error) {
+        toast.error("Estamos com dificuldades no momento, tente mais tarde");
+      }
     })();
   }, []);
+  useEffect(() => {
+    let active = true;
+    if (active) {
+      if (alreadyData) {
+        socket.emit("dados", [...ids]);
+        socket.on("ok", function () {
+          setStatus("online");
+        });
+        socket.on("connect", function () {
+          setStatus("online");
+        });
+        socket.on("disconnect", function () {
+          setStatus("conectando");
+        });
+        socket.on("reconnecting", function () {
+          setStatus("conectando");
+          toast.warn("Tentando reconectar...", {
+            position: "bottom-center",
+          });
+        });
+        socket.on("reconnect", function () {
+          setStatus("online");
+          toast.success("Conexão estabilizada!", {
+            position: "bottom-center",
+          });
+        });
+        socket.on("connect_error", function () {
+          setStatus("offline");
+          toast.error("Servidor offline!", {
+            position: "bottom-center",
+          });
+        });
+        socket.on("reconnect_error", function () {
+          setStatus("offline");
+          toast.error("Servidor offline!", {
+            position: "bottom-center",
+          });
+        });
+        socket.on("/poste", function (dados) {
+          process.env.NODE_ENV === "development" &&
+            console.log(`Recebeu: ${dados}`);
+          const [topico, id, valor] = dados.split("/");
+
+          if (topico === "rele") {
+            const newDevices = devices.map((device) => {
+              if (device.id === id) {
+                return { ...device, rele: { valor: !!parseFloat(valor) } };
+              } else {
+                return device;
+              }
+            });
+            setDevices(newDevices);
+          }
+        });
+      }
+    }
+    return () => {
+      active = false;
+    };
+  }, [alreadyData, devices, ids]);
   return (
     <>
       <Header menuType="user" active="dashboard">
@@ -58,9 +128,7 @@ export default function UserHome() {
           </InfoLeft>
           <InfoRight>
             <Circle status={status} />
-            {status === "wait" && "conectando"}
-            {status === "offline" && status}
-            {status === "online" && status}
+            {status}
           </InfoRight>
         </HeaderContent>
       </Header>
