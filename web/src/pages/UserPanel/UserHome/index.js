@@ -57,6 +57,7 @@ export default function UserHome() {
     let active = true;
     if (active) {
       if (alreadyData) {
+        socket.connect();
         socket.emit("dados", [...ids]);
         socket.on("ok", function () {
           setStatus("online");
@@ -71,24 +72,28 @@ export default function UserHome() {
           setStatus("conectando");
           toast.warn("Tentando reconectar...", {
             position: "bottom-center",
+            toastId: "rec",
           });
         });
         socket.on("reconnect", function () {
           setStatus("online");
           toast.success("Conexão estabilizada!", {
             position: "bottom-center",
+            toastId: "rec-ok",
           });
         });
         socket.on("connect_error", function () {
           setStatus("offline");
           toast.error("Servidor offline!", {
             position: "bottom-center",
+            toastId: "rec-off",
           });
         });
         socket.on("reconnect_error", function () {
           setStatus("offline");
           toast.error("Servidor offline!", {
             position: "bottom-center",
+            toastId: "rec-off",
           });
         });
         socket.on("/poste", function (dados) {
@@ -111,6 +116,7 @@ export default function UserHome() {
     }
     return () => {
       active = false;
+      socket.disconnect();
     };
   }, [alreadyData, devices, ids]);
   return (

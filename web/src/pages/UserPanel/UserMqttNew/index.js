@@ -36,8 +36,8 @@ export default function UserMqttNew({ type }) {
   const [loadingData, setLoadingData] = useState(false);
   const [center, setCenter] = useState({
     status: "loading",
-    lat: null,
-    lng: null,
+    lat: -7.141959,
+    lng: -34.850528,
   });
   const [locationPin, setLocationPin] = useState({
     lat: null,
@@ -151,7 +151,7 @@ export default function UserMqttNew({ type }) {
       }
     } else {
       if (!isCancelled) {
-        setCenter(standardLocation);
+        setCenter({ ...standardLocation });
       }
     }
 

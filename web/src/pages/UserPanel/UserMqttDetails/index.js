@@ -160,6 +160,7 @@ export default function UserMqttDetails() {
     let active = true;
     if (active) {
       if (config.already) {
+        socket.connect();
         socket.emit("dados", [id]);
         socket.on("ok", function () {
           setConfig({
@@ -240,6 +241,7 @@ export default function UserMqttDetails() {
 
     return () => {
       active = false;
+      socket.disconnect();
     };
   }, [config.already]);
   async function handleMqttInfo() {

@@ -18,6 +18,7 @@ import Checkbox from "../../components/Checkbox";
 import LoginLogo from "../../assets/images/LoginLogo";
 import { Context } from "../../Context/AuthContext";
 import GlobalLoading from "../../components/GlobalLoading";
+import { toast } from "react-toastify";
 
 export default function Login({ loginType }) {
   const { handleLogin, authLoading } = useContext(Context);
@@ -44,7 +45,9 @@ export default function Login({ loginType }) {
       password,
       remember,
     });
+
     if (response && response.error) {
+      toast.error(response.message);
       return setConfigs({
         ...configs,
         error: {
