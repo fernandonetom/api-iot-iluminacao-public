@@ -47,15 +47,23 @@ class MqttUserController {
       });
 
     const mqttUsers = await MqttUsersRepositories.findMqttByOrgId(orgId);
-
-    res.json(
-      mqttUsers.map((user) => ({
-        id: user.id,
-        name: user.name,
-        latitude: parseFloat(user.latitude),
-        longitude: parseFloat(user.longitude),
-      }))
+    const response = await Promise.all(
+      mqttUsers.map(async (user) => {
+        return {
+          id: user.id,
+          name: user.name,
+          latitude: parseFloat(user.latitude),
+          longitude: parseFloat(user.longitude),
+          rele: (await StoragesRepositories.lastDataRegister(
+            "rele",
+            user.id
+          )) || {
+            valor: null,
+          },
+        };
+      })
     );
+    res.json(response);
   }
   async store(req, res) {
     // PRECISA AUTENTICAR USUARIO ADMIN, SE CHEGOU AQUI TEMOS QUE É ADMIN
