@@ -40,6 +40,7 @@ export default function ListUsers() {
     setLoading(false);
   }
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (!authLoading) {
       loadUsers();
     }

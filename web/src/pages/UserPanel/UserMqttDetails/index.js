@@ -90,6 +90,7 @@ export default function UserMqttDetails() {
     already: false,
   });
   useEffect(() => {
+    window.scrollTo(0, 0);
     let active = true;
     if (active) {
       (async () => {

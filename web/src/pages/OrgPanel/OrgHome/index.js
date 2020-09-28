@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import InfoTitle from "../../../components/InfoTitle";
 import Header from "../../../components/Header";
 import Icons from "../../../assets/icons";
@@ -15,6 +15,9 @@ import {
 import themeData from "../../../assets/theme/theme";
 import isMobile from "../../../utils/isMobile";
 export default function OrgHome() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <>
       <Header menuType="organization" active="dashboard"></Header>

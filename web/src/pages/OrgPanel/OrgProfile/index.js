@@ -56,6 +56,7 @@ export default function OrgProfile() {
     }
   }
   useEffect(() => {
+    window.scrollTo(0, 0);
     loadProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

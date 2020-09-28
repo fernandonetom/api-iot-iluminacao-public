@@ -27,6 +27,7 @@ export default function UserHome() {
   const [alreadyData, setAlreadyData] = useState(false);
   const [ids, setIds] = useState([]);
   useEffect(() => {
+    window.scrollTo(0, 0);
     (async () => {
       try {
         const { data } = await api.get("mqttusers/home");

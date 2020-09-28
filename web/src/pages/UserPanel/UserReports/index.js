@@ -73,6 +73,7 @@ export default function UserReports() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     getDevices();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -59,6 +59,7 @@ export default function UserProfile() {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     loadProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

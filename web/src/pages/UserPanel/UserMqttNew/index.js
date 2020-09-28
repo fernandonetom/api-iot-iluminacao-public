@@ -104,6 +104,7 @@ export default function UserMqttNew({ type }) {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     (async () => {
       if (type === "edit") {
         setLoadingData(true);

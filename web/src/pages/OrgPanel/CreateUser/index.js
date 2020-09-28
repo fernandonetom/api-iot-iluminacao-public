@@ -37,6 +37,7 @@ export default function CreateUser({ type }) {
   const history = useHistory();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (!authLoading) {
       if (type === "edit") {
         setLoading(true);
