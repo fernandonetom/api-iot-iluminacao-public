@@ -18,45 +18,11 @@ import Checkbox from "../../components/Checkbox";
 import LoginLogo from "../../assets/images/LoginLogo";
 import { Context } from "../../Context/AuthContext";
 import GlobalLoading from "../../components/GlobalLoading";
-import { toast } from "react-toastify";
-
+import { Formik } from "formik";
+import { loginSchema } from "../../utils/validations";
 export default function Login({ loginType }) {
   const { handleLogin, authLoading } = useContext(Context);
-  const [email, setEmail] = useState("");
   const [remember, setRemember] = useState(false);
-  const [password, setPassword] = useState("");
-  const [configs, setConfigs] = useState({
-    error: { code: null, message: null },
-  });
-
-  async function handleSubmit() {
-    if (email.trim().length === 0 || password.trim().length === 0) {
-      return setConfigs({
-        ...configs,
-        error: {
-          code: "empty",
-          message: "Os campos devem ser preenchidos",
-        },
-      });
-    }
-    const response = await handleLogin({
-      loginType,
-      email,
-      password,
-      remember,
-    });
-
-    if (response && response.error) {
-      toast.error(response.message);
-      return setConfigs({
-        ...configs,
-        error: {
-          code: response.error,
-          message: response.message,
-        },
-      });
-    }
-  }
   return (
     <>
       {authLoading && <GlobalLoading />}
@@ -72,39 +38,81 @@ export default function Login({ loginType }) {
         </LeftSection>
         <RightSection>
           <FormSection>
-            {configs.error.code && <ErrorBox>{configs.error.message}</ErrorBox>}
-            <FormInput>
-              <Input
-                type="email"
-                label="Email"
-                name="email"
-                width="100%"
-                error={configs.error.code === "empty" ? "error" : null}
-                onChange={setEmail}
-                autoComplete="off"
-              />
-            </FormInput>
-            <FormInput>
-              <Input
-                type="password"
-                label="Senha"
-                name="senha"
-                width="100%"
-                error={configs.error.code === "empty" ? "error" : null}
-                onChange={setPassword}
-                autoComplete="off"
-              />
-            </FormInput>
-            <FormInput>
-              <Checkbox
-                label="lembrar-me"
-                onChange={(e) => setRemember(e.target.checked)}
-              />
-            </FormInput>
-            <SubmitButtom onClick={handleSubmit} loginType={loginType}>
-              acessar
-            </SubmitButtom>
-            <ForgotPass to="forgot">esqueci minha senha</ForgotPass>
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={loginSchema}
+              onSubmit={async (values, form) => {
+                form.setFieldError("response", null);
+                const response = await handleLogin({
+                  loginType,
+                  email: values.email,
+                  password: values.password,
+                  remember,
+                });
+                if (response && response.error) {
+                  form.setFieldError("response", response.message);
+                }
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+                /* and other goodies */
+              }) => (
+                <form onSubmit={handleSubmit}>
+                  {errors.response && <ErrorBox>{errors.response}</ErrorBox>}
+                  <FormInput>
+                    <Input
+                      type="email"
+                      name="email"
+                      label="Email"
+                      width="100%"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.email}
+                      error={errors.email}
+                    />
+                  </FormInput>
+                  {errors.email && touched.email && (
+                    <ErrorBox>{errors.email}</ErrorBox>
+                  )}
+                  <FormInput>
+                    <Input
+                      type="password"
+                      name="password"
+                      label="Senha"
+                      width="100%"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.password}
+                      error={errors.password}
+                    />
+                  </FormInput>
+                  {errors.password && touched.password && (
+                    <ErrorBox>{errors.password}</ErrorBox>
+                  )}
+                  <FormInput>
+                    <Checkbox
+                      label="lembrar-me"
+                      onChange={(e) => setRemember(e.target.checked)}
+                    />
+                  </FormInput>
+                  <SubmitButtom
+                    type="submit"
+                    disabled={isSubmitting}
+                    loginType={loginType}
+                  >
+                    {isSubmitting ? "aguarde" : "acessar"}
+                  </SubmitButtom>
+                  <ForgotPass to="#">esqueci minha senha</ForgotPass>
+                </form>
+              )}
+            </Formik>
           </FormSection>
           <ChangeLogin
             to={loginType === "users" ? "/organizations/login" : "/login"}

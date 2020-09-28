@@ -3,5 +3,5 @@ const socket = io(process.env.REACT_APP_WEBSOCKETS, {
   secure: true,
   rejectUnauthorized: true,
   forceNew: false,
-});
+}).close();
 export default socket;

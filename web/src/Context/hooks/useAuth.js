@@ -45,14 +45,12 @@ export default function useAuth() {
   }, []);
 
   async function handleLogin({ loginType, email, password, remember }) {
-    setAuthLoading(true);
     const { data } = await api.post(`${loginType}/signin`, {
       email,
       password,
       remember,
     });
     if (data.error) {
-      setAuthLoading(false);
       return data;
     }
     api.defaults.headers.Authorization = `Bearer ${data.token}`;
@@ -66,7 +64,7 @@ export default function useAuth() {
     localStorage.setItem("@sipi-data", JSON.stringify(signinData));
     setAuthenticated(true);
     setUserData(signinData);
-    setAuthLoading(false);
+
     history.replace(`/${loginType}/dashboard`);
   }
   function handleLogout() {

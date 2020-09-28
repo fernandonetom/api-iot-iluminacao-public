@@ -181,24 +181,28 @@ export default function UserMqttDetails() {
           setConfig({ ...config, statusIo: "conectando" });
           toast.warn("Tentando reconectar...", {
             position: "bottom-center",
+            toastId: "rec",
           });
         });
         socket.on("reconnect", function () {
           setConfig({ ...config, statusIo: "online" });
           toast.success("Conexão estabilizada!", {
             position: "bottom-center",
+            toastId: "rec-ok",
           });
         });
         socket.on("connect_error", function () {
           setConfig({ ...config, statusIo: "offline" });
           toast.error("Servidor offline!", {
             position: "bottom-center",
+            toastId: "rec-off",
           });
         });
         socket.on("reconnect_error", function () {
           setConfig({ ...config, statusIo: "offline" });
           toast.error("Servidor offline!", {
             position: "bottom-center",
+            toastId: "rec-off",
           });
         });
         socket.on("/poste", function (dados) {

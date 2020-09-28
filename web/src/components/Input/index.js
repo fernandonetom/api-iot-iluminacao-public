@@ -13,12 +13,7 @@ export default function Input({
   return (
     <>
       <Container width={width} bgColor={bgColor} error={error}>
-        <input
-          placeholder=" "
-          id={name}
-          {...attrs}
-          onChange={(e) => onChange && onChange(e.target.value)}
-        />
+        <input placeholder=" " id={name} {...attrs} onChange={onChange} />
         <label htmlFor={name}>{label}</label>
       </Container>
     </>

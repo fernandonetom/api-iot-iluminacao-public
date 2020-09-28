@@ -16,6 +16,7 @@ import {
   TextPassword,
   SubmitButtom,
   ErrorBox,
+  LoadingSpinner,
 } from "./styles";
 import InfoTitle from "../../../components/InfoTitle";
 import Icons from "../../../assets/icons";
@@ -27,6 +28,8 @@ import GlobalLoading from "../../../components/GlobalLoading";
 import { DateToStringFormat } from "../../../utils/dateFormatter";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Formik } from "formik";
+import { updateSchema } from "../../../utils/validations";
 export default function OrgProfile() {
   const history = useHistory();
   const { updateUser } = useContext(Context);
@@ -34,13 +37,6 @@ export default function OrgProfile() {
   const [userData, setUserData] = useState({});
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState({
-    name: null,
-    email: null,
-    password: null,
-  });
   async function loadProfile() {
     try {
       setLoading(true);
@@ -64,51 +60,14 @@ export default function OrgProfile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function handleUpdate() {
-    if (name.trim().length === 0) {
-      return setError({
-        name: "O nome não pode ficar em branco",
-        email: null,
-        password: null,
-      });
-    }
-    if (email.trim().length === 0) {
-      return setError({
-        email: "O email não pode ficar em branco",
-        name: null,
-        password: null,
-      });
-    }
-    if (
-      password.trim().length !== 0 &&
-      password.trim() !== confirmPassword.trim()
-    ) {
-      return setError({
-        password: "As senhas não conferem",
-        name: null,
-        email: null,
-      });
-    }
-    setError({
-      password: null,
-      name: null,
-      email: null,
-    });
-
+  async function handleUpdate({ name, email, password }) {
     try {
-      setLoading(true);
-      const { data } = await api.put(`/organizations/${userData.id}`, {
+      const { data } = await api.put(`organizations/${userData.id}`, {
         name,
         email,
         password,
       });
-      setLoading(false);
-      if (data.error) {
-        return toast.error(data.message);
-      }
-      loadProfile();
-      updateUser({ name, email });
-      toast.success(data.message);
+      return data;
     } catch (error) {}
   }
   return (
@@ -135,55 +94,110 @@ export default function OrgProfile() {
         </ContainerLeft>
         <ContainerRight>
           <InfoTitle>Atualizar dados</InfoTitle>
-          <UpdatePanel>
-            {error.name && <ErrorBox>{error.name}</ErrorBox>}
-            {error.email && <ErrorBox>{error.email}</ErrorBox>}
-            {error.password && <ErrorBox>{error.password}</ErrorBox>}
-            <InputGroup>
-              <Input
-                type="text"
-                label="Nome"
-                name="nome"
-                bgColor={themeData.colors.background}
-                value={name}
-                onChange={setName}
-                error={error.name}
-              />
-              <Input
-                type="email"
-                label="Email"
-                name="email"
-                bgColor={themeData.colors.background}
-                value={email}
-                onChange={setEmail}
-                error={error.email}
-              />
-            </InputGroup>
-            <InputGroup>
-              <Input
-                type="password"
-                label="Nova Senha*"
-                name="senha"
-                bgColor={themeData.colors.background}
-                value={password}
-                onChange={setPassword}
-                error={error.password}
-              />
-              <Input
-                type="password"
-                label="Confirmar Nova Senha"
-                name="confirmar-senha"
-                bgColor={themeData.colors.background}
-                value={confirmPassword}
-                onChange={setConfirmPassword}
-                error={error.password}
-              />
-            </InputGroup>
-            <TextPassword>
-              *deixe a nova senha em branco se não deseja alterar sua senha
-            </TextPassword>
-            <SubmitButtom onClick={handleUpdate}>atualizar</SubmitButtom>
-          </UpdatePanel>
+          <Formik
+            initialValues={{
+              name,
+              email,
+              password: "",
+              confirmPassword: "",
+            }}
+            enableReinitialize
+            validationSchema={updateSchema}
+            onSubmit={async (values, form) => {
+              form.setFieldError("response", null);
+              const response = await handleUpdate({
+                name: values.name,
+                email: values.email,
+                password: values.password,
+              });
+              if (response && response.error) {
+                return form.setFieldError("response", response.message);
+              }
+              loadProfile();
+              updateUser({ name, email });
+              toast.success(response.message);
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+              /* and other goodies */
+            }) => (
+              <form onSubmit={handleSubmit}>
+                {errors.response && <ErrorBox>{errors.response}</ErrorBox>}
+                <UpdatePanel>
+                  <InputGroup>
+                    <Input
+                      type="text"
+                      label="Nome"
+                      name="name"
+                      bgColor={themeData.colors.background}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.name}
+                      error={errors.name}
+                    />
+                    <Input
+                      type="email"
+                      label="Email"
+                      name="email"
+                      bgColor={themeData.colors.background}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.email}
+                      error={errors.email}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <Input
+                      type="password"
+                      label="Nova Senha*"
+                      name="password"
+                      bgColor={themeData.colors.background}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.password}
+                      error={errors.password}
+                    />
+                    <Input
+                      type="password"
+                      label="Confirmar Nova Senha"
+                      name="confirmPassword"
+                      bgColor={themeData.colors.background}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.confirmPassword}
+                      error={errors.confirmPassword}
+                    />
+                  </InputGroup>
+                  <TextPassword>
+                    *deixe a nova senha em branco se não deseja alterar sua
+                    senha
+                  </TextPassword>
+                  {errors.name && touched.name && (
+                    <ErrorBox>{errors.name}</ErrorBox>
+                  )}
+                  {errors.email && touched.email && (
+                    <ErrorBox>{errors.email}</ErrorBox>
+                  )}
+                  {errors.password && touched.password && (
+                    <ErrorBox>{errors.password}</ErrorBox>
+                  )}
+                  {errors.confirmPassword && touched.confirmPassword && (
+                    <ErrorBox>{errors.confirmPassword}</ErrorBox>
+                  )}
+                  <SubmitButtom type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? <LoadingSpinner /> : "atualizar"}
+                  </SubmitButtom>
+                </UpdatePanel>
+              </form>
+            )}
+          </Formik>
         </ContainerRight>
       </Container>
     </>

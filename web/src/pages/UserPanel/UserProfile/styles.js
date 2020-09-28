@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import themeData from "../../../assets/theme/theme";
-
+import PulseLoader from "react-spinners/PulseLoader";
+export const LoadingSpinner = styled(PulseLoader).attrs({
+  color: themeData.colors.gray,
+  size: 10,
+})``;
 export const Container = styled.div`
   width: 100%;
   max-width: 1280px;
