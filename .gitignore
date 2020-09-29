@@ -2,3 +2,4 @@ node_modules
 .env
 
 mongodb.yml
+docker-compose.yml

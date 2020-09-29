@@ -40,6 +40,7 @@ class MqttUserController {
       });
 
     const organization = await OrganizationsRepositories.findById(orgId);
+
     if (organization.length === 0)
       return res.json({
         error: "Inválid organization",
@@ -47,6 +48,7 @@ class MqttUserController {
       });
 
     const mqttUsers = await MqttUsersRepositories.findMqttByOrgId(orgId);
+
     const response = await Promise.all(
       mqttUsers.map(async (user) => {
         return {
