@@ -48,7 +48,7 @@ class OrganizationController {
       const passwordHash = await bcrypt.hash(password, 10);
       const orgId = await OrganizationsRepositories.create({
         name,
-        email,
+        email: email.toLowerCase(),
         password: passwordHash,
         superUserId,
       });

@@ -90,7 +90,7 @@ class UserController {
       const passwordHash = await bcrypt.hash(password, 10);
       const user = await UsersRepositories.create({
         name,
-        email,
+        email: email.toLowerCase(),
         password: passwordHash,
         level,
         organizationId: orgId,
