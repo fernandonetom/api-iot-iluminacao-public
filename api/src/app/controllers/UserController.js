@@ -69,6 +69,8 @@ class UserController {
     if (!validator.validate(email))
       return res.json({ error: "Inválid email", message: "Email inválido" });
 
+    if (password.length < 4) return res.json(ErrorsCatalog.passwordLength);
+
     const findOrg = await OrganizationsRepositories.findById(orgId);
 
     if (findOrg.length === 0) {

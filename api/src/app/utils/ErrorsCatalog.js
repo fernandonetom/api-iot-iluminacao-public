@@ -54,6 +54,10 @@ const ErrorsCatalog = {
     error: "Null data",
     message: "Campos obrigatório estão em branco",
   },
+  passwordLength: {
+    error: "Short password",
+    message: "A senha deve ter no mínimo 4 caracteres",
+  },
   server: (error) => ({
     error: error.message,
     message: "Tente novamente mais tarde",

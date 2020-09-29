@@ -23,7 +23,7 @@ class OrganizationController {
 
     if (!validator.validate(email))
       return res.json({ error: "Inválid email", message: "Email inválido" });
-
+    if (password.length < 4) return res.json(ErrorsCatalog.passwordLength);
     const findSuperUser = await SuperUsersRepositories.findUserById(
       superUserId
     );
