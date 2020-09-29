@@ -1,52 +1,18 @@
 const UserConnections = require("../model/usersConnections");
+const UserStatsRepositories = require("../repositories/UserStatsRepositories");
 const moment = require("moment-timezone");
+const ErrorsCatalog = require("../utils/ErrorsCatalog");
 moment.tz("America/Sao_Paulo");
 class StatController {
   async index(req, res) {
-    const daysBefore = moment().subtract(7, "days").format("YYYY-MM-DD");
+    const days = req.params.days || 7;
+    const { orgId } = req.body;
 
-    const response = await UserConnections.aggregate([
-      {
-        $project: {
-          date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-          createdAt: 1,
-          userId: 1,
-          orgId: 1,
-        },
-      },
-      {
-        $match: {
-          date: { $gte: daysBefore },
-          userId: 1,
-        },
-      },
-      {
-        $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-          count: { $sum: 1 },
-        },
-      },
-    ]);
+    if (!orgId) return res.json(ErrorsCatalog.organization.idNotFound);
 
-    var responseDays = response.map(function (item) {
-      return item._id;
-    });
+    const data = await UserStatsRepositories.sessionsLastDays({ orgId, days });
 
-    var start = new Date(moment().subtract(7, "days").format("YYYY/MM/DD"));
-    var end = new Date(moment().format("YYYY/MM/DD"));
-
-    for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
-      let dataComparada = moment(d).format("YYYY-MM-DD");
-
-      if (!responseDays.includes(dataComparada))
-        response.push({ _id: dataComparada, count: 0 });
-    }
-
-    const result = response.sort(function (a, b) {
-      return a._id < b._id ? -1 : a._id > b._id ? 1 : 0;
-    });
-
-    return res.json(result);
+    return res.json(data);
   }
   async create(req, res) {
     // const stats = await UserConnections.create({

@@ -39,6 +39,11 @@ router.put(
   OrganizationsAuth.verify,
   OrganizationController.updateSelf
 );
+router.get(
+  "/organizations/stats/sessions/:days?",
+  OrganizationsAuth.verify,
+  StatController.index
+);
 
 router.get(
   "/mqttusers",

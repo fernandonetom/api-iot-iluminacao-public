@@ -7,7 +7,7 @@ const UsersRepositories = require("../repositories/UsersRepositories");
 const OrganizationsRepositories = require("../repositories/OrganizationsRepositories");
 const ErrorsCatalog = require("../utils/ErrorsCatalog");
 const MessageCatalog = require("../utils/MessageCatalog");
-
+const UserStatsRepositories = require("../repositories/UserStatsRepositories");
 class UserController {
   async index(req, res) {
     const { orgId } = req.body;
@@ -55,7 +55,10 @@ class UserController {
       process.env.SECRET_USERS,
       { expiresIn }
     );
-
+    UserStatsRepositories.storeSession({
+      userId: user[0].id,
+      orgId: user[0].organization_id,
+    });
     res.json({ userLevel: user[0].level, token });
   }
 
