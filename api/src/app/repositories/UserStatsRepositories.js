@@ -86,6 +86,51 @@ class UserStatsRepositories {
 
     return response;
   }
+  async sessionsLastMonths({ orgId, months }) {
+    var mongo_return = [
+      {
+        _id: "2020-05",
+        count: 294,
+      },
+      {
+        _id: "2020-06",
+        count: 243,
+      },
+      {
+        _id: "2020-07",
+        count: 153,
+      },
+    ];
+
+    var months = mongo_return.map(function (item) {
+      return item._id;
+    });
+
+    var start = new Date(moment().subtract(10, "months").format("YYYY-MM-DD"));
+    var end = new Date(moment().format("YYYY-MM-DD"));
+
+    var d = start;
+
+    for (var d = start; d <= end; d.setMonth(d.getMonth() + 1)) {
+      let MyDate = moment(d).format("YYYY-MM");
+      if (!months.includes(MyDate))
+        mongo_return.push({ _id: MyDate, count: 0 });
+    }
+
+    let result = mongo_return.sort(function (a, b) {
+      return a._id < b._id ? -1 : a._id > b._id ? 1 : 0;
+    });
+    result = result.map(function (item) {
+      return {
+        mes: moment(item._id).format("MM"),
+        mesNome: moment(item._id).format("MMMM"),
+        ano: moment(item._id).format("YYYY"),
+        valor: item.count,
+      };
+    });
+
+    console.log(result);
+  }
   async storeSession({ userId, orgId }) {
     try {
       const insert = await UserConnections.create({ userId, orgId });

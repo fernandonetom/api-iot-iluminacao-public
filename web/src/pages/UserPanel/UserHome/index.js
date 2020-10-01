@@ -50,7 +50,10 @@ export default function UserHome() {
         setDevices(newData);
         setAlreadyData(true);
       } catch (error) {
-        toast.error("Estamos com dificuldades no momento, tente mais tarde");
+        if (401 !== error.response.status)
+          return toast.error(
+            "Estamos com dificuldades no momento, tente mais tarde"
+          );
       }
     })();
   }, []);

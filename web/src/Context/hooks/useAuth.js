@@ -10,7 +10,6 @@ export default function useAuth() {
   useEffect(() => {
     api.interceptors.response.use(undefined, function (error) {
       if (401 === error.response.status) {
-        handleLogout();
         toast.error("Token expirado, faça login novamente", {
           toastId: "401",
           position: "top-right",
@@ -21,6 +20,7 @@ export default function useAuth() {
           draggable: true,
           progress: undefined,
         });
+        return handleLogout();
       } else {
         return Promise.reject(error);
       }
