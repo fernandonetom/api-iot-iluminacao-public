@@ -1,6 +1,7 @@
 const UserConnections = require("../model/usersConnections");
 const { getAsync, set } = require("../../database/redis");
 const moment = require("moment-timezone");
+moment.locale("pt-br");
 class UserStatsRepositories {
   async index() {
     try {
@@ -87,49 +88,74 @@ class UserStatsRepositories {
     return response;
   }
   async sessionsLastMonths({ orgId, months }) {
-    var mongo_return = [
-      {
-        _id: "2020-05",
-        count: 294,
-      },
-      {
-        _id: "2020-06",
-        count: 243,
-      },
-      {
-        _id: "2020-07",
-        count: 153,
-      },
-    ];
+    const key = `UserStatsRepositories.sessionsLastMonths({${orgId},${months}})`;
 
-    var months = mongo_return.map(function (item) {
-      return item._id;
-    });
+    const monthsBefore = moment()
+      .subtract(parseInt(parseFloat(months)), "months")
+      .format("YYYY-MM-DD");
 
-    var start = new Date(moment().subtract(10, "months").format("YYYY-MM-DD"));
-    var end = new Date(moment().format("YYYY-MM-DD"));
+    const cache = await getAsync(key);
 
-    var d = start;
+    if (cache) {
+      return cache;
+    } else {
+      let response = await UserConnections.aggregate([
+        {
+          $project: {
+            date: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$createdAt",
+                timezone: "America/Sao_Paulo",
+              },
+            },
+            createdAt: 1,
+            userId: 1,
+            orgId: 1,
+          },
+        },
+        {
+          $match: {
+            date: { $gte: monthsBefore },
+            orgId: orgId,
+          },
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+            count: { $sum: 1 },
+          },
+        },
+      ]);
 
-    for (var d = start; d <= end; d.setMonth(d.getMonth() + 1)) {
-      let MyDate = moment(d).format("YYYY-MM");
-      if (!months.includes(MyDate))
-        mongo_return.push({ _id: MyDate, count: 0 });
+      var monthsArray = response.map(function (item) {
+        return item._id;
+      });
+
+      var start = new Date(
+        moment().subtract(months, "months").format("YYYY-MM-DD")
+      );
+      var end = new Date(moment().format("YYYY-MM-DD"));
+
+      for (var d = start; d <= end; d.setMonth(d.getMonth() + 1)) {
+        let MyDate = moment(d).format("YYYY-MM");
+        if (!monthsArray.includes(MyDate))
+          response.push({ _id: MyDate, count: 0 });
+      }
+      let result = response.sort(function (a, b) {
+        return a._id < b._id ? -1 : a._id > b._id ? 1 : 0;
+      });
+      result = result.map(function (item) {
+        return {
+          mes: moment(item._id).format("MM"),
+          mesNome: moment(item._id).format("MMM").toLocaleUpperCase(),
+          ano: moment(item._id).format("YYYY"),
+          valor: item.count,
+        };
+      });
+      set(key, result, 600);
+      return result;
     }
-
-    let result = mongo_return.sort(function (a, b) {
-      return a._id < b._id ? -1 : a._id > b._id ? 1 : 0;
-    });
-    result = result.map(function (item) {
-      return {
-        mes: moment(item._id).format("MM"),
-        mesNome: moment(item._id).format("MMMM"),
-        ano: moment(item._id).format("YYYY"),
-        valor: item.count,
-      };
-    });
-
-    console.log(result);
   }
   async storeSession({ userId, orgId }) {
     try {

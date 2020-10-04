@@ -14,6 +14,19 @@ class StatController {
 
     return res.json(data);
   }
+  async byMonth(req, res) {
+    const months = req.params.months || 7;
+    const { orgId } = req.body;
+
+    if (!orgId) return res.json(ErrorsCatalog.organization.idNotFound);
+
+    const data = await UserStatsRepositories.sessionsLastMonths({
+      orgId,
+      months,
+    });
+
+    return res.json(data);
+  }
   async create(req, res) {
     // const stats = await UserConnections.create({
     //   userId: 1,
