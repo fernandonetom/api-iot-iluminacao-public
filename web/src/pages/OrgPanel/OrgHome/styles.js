@@ -20,8 +20,9 @@ export const Content = styled.div`
 export const Container = styled.div`
   display: grid;
   grid-template-areas:
-    "admin users graph"
-    "dispo regis graph";
+    "admin users graph graph"
+    "dispo regis graph graph"
+    "access-days access-days access-month access-month";
   grid-template-columns: 1fr 1fr 2fr;
   grid-gap: 40px;
   @media screen and (max-width: 1120px) {
@@ -32,7 +33,8 @@ export const Container = styled.div`
       "admin graph"
       "users graph"
       "dispo graph"
-      "regis graph";
+      "regis graph"
+      "access-days access-month";
     grid-template-columns: 1fr 1fr;
   }
   @media screen and (max-width: 770px) {
@@ -41,7 +43,9 @@ export const Container = styled.div`
       "users"
       "dispo"
       "regis"
-      "graph";
+      "graph"
+      "access-days"
+      "access-month";
     grid-template-columns: 100%;
   }
 `;
@@ -70,4 +74,10 @@ export const Label = styled.div`
 export const LabelText = styled.div`
   font-size: 1.5rem;
   font-weight: 500;
+`;
+export const BlockAccess = styled.div`
+  background-color: ${themeData.colors.gray};
+  border-radius: 5px;
+  padding: 15px 25px;
+  margin-top: 40px;
 `;
