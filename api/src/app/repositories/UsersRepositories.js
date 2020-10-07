@@ -112,5 +112,20 @@ class UsersRepository {
       .where("id", id);
     return update;
   }
+  async countAdminUsersByOrg({ orgId }) {
+    const users = await db("users")
+      .where("organization_id", orgId)
+      .where("level", "admin")
+      .count();
+    return users;
+  }
+
+  async countUsersByOrg({ orgId }) {
+    const users = await db("users")
+      .where("organization_id", orgId)
+      .where("level", "user")
+      .count();
+    return users;
+  }
 }
 module.exports = new UsersRepository();

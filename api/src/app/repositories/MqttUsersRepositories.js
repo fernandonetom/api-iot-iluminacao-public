@@ -75,5 +75,12 @@ class MqttUsersRepository {
       .where("id", id);
     return mqtt;
   }
+  async countByOrgId({ orgId }) {
+    const devices = await db("mqtt_user")
+      .where("organization_id", orgId)
+      .count();
+
+    return devices;
+  }
 }
 module.exports = new MqttUsersRepository();
