@@ -50,6 +50,12 @@ router.get(
   StatController.byMonth
 );
 router.get(
+  "/organizations/stats/cron",
+  OrganizationsAuth.verify,
+  StatController.getStatsFromCronJob
+);
+
+router.get(
   "/mqttusers",
   UsersAuth.verify,
   UsersAuth.isAdmin,

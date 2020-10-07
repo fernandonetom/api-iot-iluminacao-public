@@ -2,6 +2,7 @@ const UserConnections = require("../model/usersConnections");
 const UserStatsRepositories = require("../repositories/UserStatsRepositories");
 const moment = require("moment-timezone");
 const ErrorsCatalog = require("../utils/ErrorsCatalog");
+const OrgStatsRepositories = require("../repositories/OrgStatsRepositories");
 moment.tz("America/Sao_Paulo");
 class StatController {
   async index(req, res) {
@@ -85,10 +86,6 @@ class StatController {
 
     return res.json(resultEnd);
   }
-  async teste(req, res) {
-    const insert = await UserConnections.create({ userId: 1, orgId: 3 });
-    res.json(insert);
-  }
   async listar(req, res) {
     const insert = await UserConnections.aggregate([
       {
@@ -114,6 +111,19 @@ class StatController {
       };
     });
     res.json(response);
+  }
+
+  async getStatsFromCronJob(req, res) {
+    const { orgId } = req.body;
+
+    const stats = await OrgStatsRepositories.index({ orgId });
+
+    res.json({
+      adminUsers: stats.adminUsers,
+      users: stats.users,
+      devices: stats.devices,
+      storages: stats.storages,
+    });
   }
 }
 module.exports = new StatController();
