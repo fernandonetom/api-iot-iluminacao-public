@@ -81,3 +81,35 @@ export const BlockAccess = styled.div`
   padding: 15px 25px;
   margin-top: 40px;
 `;
+export const LoadingShimmer = styled.div`
+  height: 280px;
+  background: ${themeData.colors.gray};
+  background-image: linear-gradient(
+    to right,
+    ${themeData.colors.gray} 0%,
+    ${themeData.colors.grayLight} 20%,
+    ${themeData.colors.gray} 40%,
+    ${themeData.colors.gray} 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeholderShimmer;
+  animation-timing-function: ease-in-out;
+
+  @keyframes placeholderShimmer {
+    0% {
+      background-position: -600px 0;
+    }
+
+    100% {
+      background-position: 600px 0;
+    }
+  }
+  @media screen and (max-width: 700px) {
+    height: 100px;
+    -webkit-animation-duration: 1.5s;
+  }
+`;

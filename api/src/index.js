@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const routes = require("./routes");
-
+const cronsStart = require("./app/cron/crons");
 // const connection = mongoose.connection;
 
 // connection.once("open", function () {
@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(routes);
-app.listen(3000, () =>
-  console.log("Servidor rodando em http://localhost:3000")
-);
+app.listen(3000, () => {
+  cronsStart();
+  console.log("Servidor rodando em http://localhost:3000");
+});
