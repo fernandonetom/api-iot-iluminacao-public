@@ -21,19 +21,15 @@ import api from "../../../services/api";
 import GlobalLoading from "../../../components/GlobalLoading";
 import { showSucess } from "../../../utils/alerts";
 import { Context } from "../../../Context/AuthContext";
-
+import { Formik } from "formik";
+import { createUserSchema, updateSchema } from "../../../utils/validations";
 export default function CreateUser({ type }) {
   const { id } = useParams();
   const { authLoading } = useContext(Context);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [admin, setAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [configs, setConfigs] = useState({
-    error: { code: null, message: null },
-  });
   const history = useHistory();
 
   useEffect(() => {
@@ -57,87 +53,6 @@ export default function CreateUser({ type }) {
     }
   }, [authLoading, id, type]);
 
-  async function handleSubmit() {
-    if (type === "new") {
-      if (
-        name.trim().length === 0 ||
-        email.trim().length === 0 ||
-        password.trim().length === 0 ||
-        confirmPassword.trim().length === 0
-      ) {
-        return setConfigs({
-          ...configs,
-          error: {
-            code: "empty",
-            message: "Os campos devem ser preenchidos",
-          },
-        });
-      }
-    }
-
-    if (password.trim() !== confirmPassword.trim()) {
-      return setConfigs({
-        ...configs,
-        error: {
-          code: "passwordConfirm",
-          message: "As senhas são diferentes",
-        },
-      });
-    }
-    if (type === "new") {
-      try {
-        setLoading(true);
-        const response = await api.post("users", {
-          name,
-          email,
-          password,
-          admin,
-        });
-        setLoading(false);
-        if (response.data.error) {
-          return setConfigs({
-            ...configs,
-            error: {
-              code: "badRequest",
-              message: response.data.message,
-            },
-          });
-        }
-        showSucess("Cadastrado com sucesso", 3000);
-        document.getElementById("name").value = "";
-        document.getElementById("email").value = "";
-        document.getElementById("password").value = "";
-        document.getElementById("confirm-password").value = "";
-        return setConfigs({
-          ...configs,
-          error: {
-            code: null,
-            message: null,
-          },
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        setLoading(true);
-        const { data } = await api.put(`organizations/users/${id}`, {
-          name,
-          email,
-          password: password.trim() === "" ? null : password.trim(),
-          admin,
-        });
-        setLoading(false);
-        if (data.error) {
-          return console.log(data.error);
-        }
-        showSucess("Usuário atualizado", 3000);
-        history.push("/organizations/users");
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
   return (
     <>
       {loading && <GlobalLoading />}
@@ -163,90 +78,165 @@ export default function CreateUser({ type }) {
         </HeaderContent>
       </Header>
       <FormContent>
-        {configs.error.code && <ErrorBox>{configs.error.message}</ErrorBox>}
-        <FormGroup>
-          <Input
-            type="text"
-            id="name"
-            name="nome"
-            label="Nome"
-            width="100%"
-            onChange={setName}
-            error={configs.error.code === "empty" ? "error" : null}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            type="email"
-            id="email"
-            name="email"
-            label="Email"
-            width="100%"
-            onChange={setEmail}
-            error={configs.error.code === "empty" ? "error" : null}
-          />
-        </FormGroup>
-        {type === "edit" && (
-          <span className="infoSenha">
-            Se não deseja alterar a senha, deixe-a em branco
-          </span>
-        )}
-        <FormGroup>
-          <Input
-            type="password"
-            id="password"
-            name="senha"
-            label="Senha"
-            width="100%"
-            onChange={setPassword}
-            error={
-              configs.error.code === "empty"
-                ? "error"
-                : configs.error.code === "passwordConfirm"
-                ? "pass"
-                : null
+        <Formik
+          initialValues={{
+            name,
+            email,
+            password: "",
+            confirmPassword: "",
+          }}
+          enableReinitialize
+          validationSchema={type === "new" ? createUserSchema : updateSchema}
+          onSubmit={async (values, form) => {
+            form.setFieldError("response", null);
+            if (type === "new") {
+              try {
+                const response = await api.post("users", {
+                  name: values.name,
+                  email: values.email,
+                  password: values.password,
+                  admin,
+                });
+                if (response.data.error) {
+                  return form.setFieldError("response", response.data.message);
+                }
+                showSucess("Cadastrado com sucesso", 3000);
+                history.push("/organizations/users");
+              } catch (error) {
+                console.log(error);
+              }
+            } else {
+              try {
+                const { data } = await api.put(`organizations/users/${id}`, {
+                  name: values.name,
+                  email: values.email,
+                  password: values.password,
+                  admin,
+                });
+                if (data.error) {
+                  return form.setFieldError("response", data.error.message);
+                }
+                showSucess("Usuário atualizado", 3000);
+                history.push("/organizations/users");
+              } catch (error) {
+                console.log(error);
+              }
             }
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            type="password"
-            id="confirm-password"
-            name="confirm-senha"
-            label="Confirmar senha"
-            width="100%"
-            onChange={setConfirmPassword}
-            error={
-              configs.error.code === "empty"
-                ? "error"
-                : configs.error.code === "passwordConfirm"
-                ? "pass"
-                : null
-            }
-          />
-        </FormGroup>
+          }}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            /* and other goodies */
+          }) => (
+            <form onSubmit={handleSubmit}>
+              {errors.response && <ErrorBox>{errors.response}</ErrorBox>}
+              <>
+                <FormGroup>
+                  <Input
+                    type="text"
+                    id="name"
+                    name="nome"
+                    label="Nome"
+                    width="100%"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.name}
+                    error={touched.name && errors.name}
+                  />
+                </FormGroup>
+                {errors.name && touched.name && (
+                  <ErrorBox>{errors.name}</ErrorBox>
+                )}
+                <FormGroup>
+                  <Input
+                    type="email"
+                    id="email"
+                    name="email"
+                    label="Email"
+                    width="100%"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                    error={touched.email && errors.email}
+                  />
+                </FormGroup>
+                {errors.email && touched.email && (
+                  <ErrorBox>{errors.email}</ErrorBox>
+                )}
+                <FormGroup>
+                  <Input
+                    type="password"
+                    id="password"
+                    name="senha"
+                    label="Senha"
+                    width="100%"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    error={touched.password && errors.password}
+                  />
+                </FormGroup>
 
-        <FormGroup>
-          <FormLabel>Nível do usuário</FormLabel>
-          <FormLocationSelect>
-            <FormLocationSelected
-              selected={admin ? false : true}
-              onClick={() => setAdmin(false)}
-            >
-              Comum
-            </FormLocationSelected>
-            <FormLocationSelected
-              selected={admin ? true : false}
-              onClick={() => setAdmin(true)}
-            >
-              Administrador
-            </FormLocationSelected>
-          </FormLocationSelect>
-        </FormGroup>
+                {errors.password && touched.password && (
+                  <ErrorBox>{errors.password}</ErrorBox>
+                )}
+                <FormGroup>
+                  <Input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    label="Confirmar senha"
+                    width="100%"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.confirmPassword}
+                    error={touched.confirmPassword && errors.confirmPassword}
+                  />
+                </FormGroup>
 
-        <SubmitButton onClick={handleSubmit}>
-          {type && type === "edit" ? "Atualizar usuário" : "Cadastrar usuário"}
-        </SubmitButton>
+                {errors.confirmPassword && touched.confirmPassword && (
+                  <ErrorBox>{errors.confirmPassword}</ErrorBox>
+                )}
+                {type === "edit" && (
+                  <span className="infoSenha">
+                    Se não deseja alterar a senha, deixe-a em branco
+                  </span>
+                )}
+                <FormGroup>
+                  <FormLabel>Nível do usuário</FormLabel>
+                  <FormLocationSelect>
+                    <FormLocationSelected
+                      selected={admin ? false : true}
+                      onClick={() => setAdmin(false)}
+                    >
+                      Comum
+                    </FormLocationSelected>
+                    <FormLocationSelected
+                      selected={admin ? true : false}
+                      onClick={() => setAdmin(true)}
+                    >
+                      Administrador
+                    </FormLocationSelected>
+                  </FormLocationSelect>
+                </FormGroup>
+
+                <SubmitButton type="submit" disabled={isSubmitting}>
+                  {isSubmitting
+                    ? "Aguarde"
+                    : type && type === "edit"
+                    ? "Atualizar usuário"
+                    : "Cadastrar usuário"}
+                </SubmitButton>
+              </>
+            </form>
+          )}
+        </Formik>
       </FormContent>
     </>
   );

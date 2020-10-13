@@ -53,6 +53,10 @@ export const FormContent = styled.section`
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
+  form {
+    width: 100%;
+    text-align: center;
+  }
   @media screen and (max-width: 700px) {
     padding: 30px 20px;
   }
@@ -67,6 +71,7 @@ export const FormGroup = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 20px;
+  text-align: left;
 `;
 export const FormLabel = styled.label`
   font-weight: 200;

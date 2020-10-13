@@ -54,3 +54,15 @@ export const updateSchema = yup.object().shape({
       then: yup.string().required("Confirme sua senha"),
     }),
 });
+export const createUserSchema = yup.object().shape({
+  name: yup.string().required(),
+  email: yup.string().email().required(),
+  password: yup.string().min(4).required(),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "As senhas devem ser iguais")
+    .when("password", {
+      is: (password) => password && password,
+      then: yup.string().required("Confirme sua senha"),
+    }),
+});
