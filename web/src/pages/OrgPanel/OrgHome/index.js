@@ -15,14 +15,51 @@ import {
 } from "./styles";
 import themeData from "../../../assets/theme/theme";
 import isMobile from "../../../utils/isMobile";
+import GlobalLoading from "../../../components/GlobalLoading";
+import api from "../../../services/api";
+import moment from "moment";
+import { toast } from "react-toastify";
+moment().locale("pt-br");
 export default function OrgHome() {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({});
+  const [dataDays, setDataDays] = useState([]);
+  const [dataMonths, setDataMonths] = useState([]);
   const [loadingDays, setLoadingDays] = useState(true);
   const [loadingMonths, setLoadingMonths] = useState(true);
   useEffect(() => {
     window.scrollTo(0, 0);
+    (async () => {
+      try {
+        const { data } = await api.get("organizations/stats/cron");
+        setLoading(false);
+        setData(data);
+      } catch (err) {
+        toast.error("Ocorreu um erro, tente atualizar a página");
+      }
+    })();
+    (async () => {
+      try {
+        const { data } = await api.get("organizations/stats/sessions/days");
+        setLoadingDays(false);
+        setDataDays(data);
+      } catch (err) {
+        toast.error("Ocorreu um erro, tente atualizar a página");
+      }
+    })();
+    (async () => {
+      try {
+        const { data } = await api.get("organizations/stats/sessions/months");
+        setLoadingMonths(false);
+        setDataMonths(data);
+      } catch (err) {
+        toast.error("Ocorreu um erro, tente atualizar a página");
+      }
+    })();
   }, []);
   return (
     <>
+      {loading && <GlobalLoading />}
       <Header menuType="organization" active="dashboard"></Header>
       <DashboardTitle>
         <InfoTitle>Dashboard</InfoTitle>
@@ -33,28 +70,28 @@ export default function OrgHome() {
             <Title>Administradores</Title>
             <Label>
               <Icons name="user-admin" />
-              <LabelText>2</LabelText>
+              <LabelText>{data.adminUsers && data.adminUsers}</LabelText>
             </Label>
           </Block>
           <Block area="users">
             <Title>Usuários</Title>
             <Label>
               <Icons name="users" />
-              <LabelText>5</LabelText>
+              <LabelText>{data.users && data.users}</LabelText>
             </Label>
           </Block>
           <Block area="dispo">
             <Title>Dispositivos</Title>
             <Label>
               <Icons name="light" />
-              <LabelText>7</LabelText>
+              <LabelText>{data.devices && data.devices}</LabelText>
             </Label>
           </Block>
           <Block area="regis">
             <Title>Registros</Title>
             <Label>
               <Icons name="database" />
-              <LabelText>245</LabelText>
+              <LabelText>{data.storages && data.storages}</LabelText>
             </Label>
           </Block>
           <Block area="graph">
@@ -62,7 +99,11 @@ export default function OrgHome() {
               data={{
                 datasets: [
                   {
-                    data: [2, 5, 3],
+                    data: [
+                      data.adminUsers || 0,
+                      data.users || 0,
+                      data.devices || 0,
+                    ],
                     backgroundColor: [
                       themeData.colors.lightGrayDark,
                       themeData.colors.greenDark,
@@ -99,7 +140,7 @@ export default function OrgHome() {
                 data={{
                   datasets: [
                     {
-                      data: [2, 5, 3, 6, 8, 5, 4],
+                      data: dataDays.map((item) => parseFloat(item.valor)),
                       fill: true,
                       backgroundColor: themeData.colors.orange,
                       pointBackgroundColor: "rgba(0,0,0,0)",
@@ -107,7 +148,9 @@ export default function OrgHome() {
                       pointHoverRadius: 10,
                     },
                   ],
-                  labels: ["Seg", "ter", "qua", "qui", "sex", "sab", "dom"],
+                  labels: dataDays.map((item) =>
+                    moment(item.data).format("ddd")
+                  ),
                 }}
                 width={isMobile ? 150 : 300}
                 options={{
@@ -181,7 +224,7 @@ export default function OrgHome() {
                 data={{
                   datasets: [
                     {
-                      data: [2, 5, 3, 6, 8, 5, 4],
+                      data: dataMonths.map((item) => parseFloat(item.valor)),
                       fill: true,
                       backgroundColor: themeData.colors.blue,
                       pointBackgroundColor: "rgba(0,0,0,0)",
@@ -189,7 +232,7 @@ export default function OrgHome() {
                       pointHoverRadius: 10,
                     },
                   ],
-                  labels: ["Seg", "ter", "qua", "qui", "sex", "sab", "dom"],
+                  labels: dataMonths.map((item) => item.mesNome.toLowerCase()),
                 }}
                 width={isMobile ? 150 : 300}
                 options={{
