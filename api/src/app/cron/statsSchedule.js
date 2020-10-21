@@ -5,6 +5,9 @@ const StoragesRepositories = require("../repositories/StoragesRepositories");
 const UsersRepositories = require("../repositories/UsersRepositories");
 const moment = require("moment-timezone");
 const OrgStatsRepositories = require("../repositories/OrgStatsRepositories");
+
+moment.tz.setDefault('America/Recife');
+
 const job = new CronJob("0 */5 * * * *", async () => {
   console.log(`statsSchedule :: ${moment().format("DD/MM/YY HH:mm")}`);
   const orgs = await OrganizationsRepositories.index();
