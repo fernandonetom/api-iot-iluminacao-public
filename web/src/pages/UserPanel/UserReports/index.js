@@ -240,7 +240,8 @@ export default function UserReports() {
                   name="data"
                   type="date"
                   width="100%"
-                  onChange={setDateFilter}
+                  value={dateFilter}
+                  onChange={e => setDateFilter(e.target.value)}
                 />
               </BoxItems>
             )}
@@ -253,7 +254,8 @@ export default function UserReports() {
                     name="data-inicio"
                     type="date"
                     width="100%"
-                    onChange={setDateStarterFilter}
+                    value={dateStarterFilter}
+                    onChange={e => setDateStarterFilter(e.target.value)}
                   />
                 </BoxItems>
                 <BoxItems>
@@ -262,7 +264,8 @@ export default function UserReports() {
                     name="data-fim"
                     type="date"
                     width="100%"
-                    onChange={setDateFinishFilter}
+                    value={dateFinishFilter}
+                    onChange={e => setDateFinishFilter(e.target.value)}
                   />
                 </BoxItems>
               </>

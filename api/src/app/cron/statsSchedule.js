@@ -8,7 +8,7 @@ const OrgStatsRepositories = require("../repositories/OrgStatsRepositories");
 
 moment.tz.setDefault('America/Recife');
 
-const job = new CronJob("0 */5 * * * *", async () => {
+const job = new CronJob("0 */10 * * * *", async () => {
   console.log(`statsSchedule :: ${moment().format("DD/MM/YY HH:mm")}`);
   const orgs = await OrganizationsRepositories.index();
   Promise.all(
