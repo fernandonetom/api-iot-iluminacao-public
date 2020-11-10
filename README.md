@@ -56,6 +56,10 @@
     - [Organizations Listar usuários](#organizations-listar-usuários)
     - [Organizations Informações de um usuário](#organizations-informações-de-um-usuário)
     - [Organizations Perfil](#organizations-perfil)
+    - [Organizations Atualizar perfil da organização](#organizations-atualizar-perfil-da-organização)
+    - [Organizations Listar dados numéricos do dashboard](#organizations-listar-dados-numéricos-do-dashboard)
+    - [Organizations Listar dados de acesso nos últimos dias](#organizations-listar-dados-de-acesso-nos-últimos-dias)
+    - [Organizations Listar dados de acesso nos últimos meses](#organizations-listar-dados-de-acesso-nos-últimos-meses)
   - [Users](#users)
     - [Users Login](#users-login)
     - [Users Criar usuário MQTT](#users-criar-usuário-mqtt)
@@ -65,9 +69,7 @@
     - [Users Listar **storage** de um dispositivo](#users-listar-storage-de-um-dispositivo)
     - [Users Perfil](#users-perfil)
     - [Users credenciais MQTT](#users-credenciais-mqtt)
-  - [Storage](#storage)
-    - [Storage salvar dado](#storage-salvar-dado)
-- [Storage](#storage-1)
+- [Storage](#storage)
     - [Tipos de dados](#tipos-de-dados)
     - [Listagem de dados](#listagem-de-dados)
       - [Listagem para "hoje"](#listagem-para-hoje)
@@ -138,27 +140,31 @@ DB_DATABASE_DEV=api_database_developer
 DB_DATABASE=api_database_production
 DB_USER=_api_database_user
 DB_PASSWORD=api_api_database_password
-DB_PORT=api_database_port
-SECRET=sajhdjsahd
+DB_PORT=3355
+SECRET_SUPERUSER=asasa
+SECRET_ORGANIZATIONS=asasa
+SECRET_USERS=asasa
 ROOT_EMAIL=youremail@youremail.com
 ROOT_PASS="dsdsdss"
 ROOT_NAME="Your Name"
 DEV=true
 ```
 
-| CONFIGURAÇÃO    | DESCRIÇÃO                                                                                                                                                  |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DB_HOST         | Servidor do banco PostreSQL                                                                                                                                |
-| DB_DATABASE_DEV | Base de dados de desenvolvimento                                                                                                                           |
-| DB_DATABASE     | Base de dados de produção                                                                                                                                  |
-| DB_USER         | Usário do banco de dados                                                                                                                                   |
-| DB_PASSWORD     | Senha do banco de dados                                                                                                                                    |
-| DB_PORT         | Porta do banco de dados                                                                                                                                    |
-| SECRET          | Hash para a criação dos tokens                                                                                                                             |
-| ROOT_EMAIL      | Email do usuário root                                                                                                                                      |
-| ROOT_PASS       | Senha do usuário root                                                                                                                                      |
-| ROOT_NAME       | Nome do usuário root                                                                                                                                       |
-| DEV             | True: Ativa o modo de desenvolvimento (usa a base da dados de desenvolvimento) False: Desativa o modo de desenvolvimento (usa a base da dados de produção) |
+| CONFIGURAÇÃO     | DESCRIÇÃO                                                                                                                                                  |
+| ---------------  | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DB_HOST          | Servidor do banco PostreSQL                                                                                                                                |
+| DB_DATABASE_DEV  | Base de dados de desenvolvimento                                                                                                                           |
+| DB_DATABASE      | Base de dados de produção                                                                                                                                  |
+| DB_USER          | Usário do banco de dados                                                                                                                                   |
+| DB_PASSWORD      | Senha do banco de dados                                                                                                                                    |
+| DB_PORT          | Porta do banco de dados                                                                                                                                    |
+| SECRET_SUPERUSER | Hash para a criação dos tokens do super usuário                                                                                                            |
+| SECRET_ORGANIZATIONS           | Hash para a criação dos tokens da organização                                                                                                                        |
+| SECRET_USERS           | Hash para a criação dos tokens do usuário                                                                                                                          |
+| ROOT_EMAIL       | Email do usuário root                                                                                                                                      |
+| ROOT_PASS        | Senha do usuário root                                                                                                                                      |
+| ROOT_NAME        | Nome do usuário root                                                                                                                                       |
+| DEV              | True: Ativa o modo de desenvolvimento (usa a base da dados de desenvolvimento) False: Desativa o modo de desenvolvimento (usa a base da dados de produção) |
 
 <!-- USAGE EXAMPLES -->
 
@@ -274,6 +280,134 @@ A **{url}** é http://localhost:3000, todas os corpo das requisições e respost
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
 | Resposta             | {"name": "Org name", "email": "email@email.com", "createdAt": "2020-09-04T13:00:24.115Z"}                                                                                           |
 
+#### Organizations Atualizar perfil da organização
+
+| PUT                  | {url}/organizations/{orgId}                                                                                                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+| Corpo da requisição  | { "name": "Empresa", "email": "mail@mail.com", "password": "123" //Se deixado em branco não vai alterar a senha                |
+| Resposta             | { "message": "Atualizado com sucesso" }                                                                                                                                             |
+
+#### Organizations Listar dados numéricos do dashboard
+
+| GET                  | {url}/organizations/stats/cron                                                                                                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+| Resposta             | {  "adminUsers": 1,  "users": 0,  "devices": 1,  "storages": 0}                                                                                                                                   |
+
+
+#### Organizations Listar dados de acesso nos últimos dias
+
+* Parâmetro `days` opcional, padrão é 7 caso não seja informado.
+
+| GET                  | {url}/organizations/stats/sessions/days/:days?                                                                                                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+
+
+Exemplo da resposta:
+
+```
+[
+  {
+    "data": "2020-10-06",
+    "valor": 0
+  },
+  {
+    "data": "2020-10-07",
+    "valor": 0
+  },
+  {
+    "data": "2020-10-08",
+    "valor": 0
+  },
+  {
+    "data": "2020-10-09",
+    "valor": 0
+  },
+  {
+    "data": "2020-10-10",
+    "valor": 0
+  },
+  {
+    "data": "2020-10-11",
+    "valor": 0
+  },
+  {
+    "data": "2020-10-12",
+    "valor": 0
+  },
+  {
+    "data": "2020-10-13",
+    "valor": 0
+  }
+]
+```
+
+
+#### Organizations Listar dados de acesso nos últimos meses
+
+* Parâmetro `months` opcional, padrão é 7 caso não seja informado.
+
+| GET                  | {url}/organizations/stats/sessions/months/:months?                                                                                                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
+
+Exemplo da resposta:
+
+```
+[
+  {
+    "mes": "03",
+    "mesNome": "MAR",
+    "ano": "2020",
+    "valor": 0
+  },
+  {
+    "mes": "04",
+    "mesNome": "ABR",
+    "ano": "2020",
+    "valor": 0
+  },
+  {
+    "mes": "05",
+    "mesNome": "MAI",
+    "ano": "2020",
+    "valor": 0
+  },
+  {
+    "mes": "06",
+    "mesNome": "JUN",
+    "ano": "2020",
+    "valor": 0
+  },
+  {
+    "mes": "07",
+    "mesNome": "JUL",
+    "ano": "2020",
+    "valor": 0
+  },
+  {
+    "mes": "08",
+    "mesNome": "AGO",
+    "ano": "2020",
+    "valor": 0
+  },
+  {
+    "mes": "09",
+    "mesNome": "SET",
+    "ano": "2020",
+    "valor": 4
+  },
+  {
+    "mes": "10",
+    "mesNome": "OUT",
+    "ano": "2020",
+    "valor": 1
+  }
+]
+```
+
 ### Users
 
 #### Users Login
@@ -335,16 +469,6 @@ A **{url}** é http://localhost:3000, todas os corpo das requisições e respost
 | Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"               |
 | Resposta             | { "id": 1, "name": "Poste 1", "username": "a5b6c7","password": "d4c8v3", "latitude": -35.05, "longitude": -19.05641, "organization_id": 1, "user_id": 1, "createdAt": "2020-09-01T12:36:57.926Z"} |
 
-### Storage
-
-#### Storage salvar dado
-
-Consulte os tipos de dados em: [Tipos de dados](#tipos-de-dados)
-
-| POST                | {url}/storage/create/{tipoDoDado} |
-| ------------------- | --------------------------------- |
-| Corpo da requisição | { "id": "1", "valor":"25" }       |
-| Resposta            | { "dataId": 1" }                  |
 
 ## Storage
 
