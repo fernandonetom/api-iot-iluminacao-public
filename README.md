@@ -490,7 +490,6 @@ Como o objetivo da API foi para o sistema de iluminação pública inteligente, 
 
 ##### Listagem para "hoje"
 
-Lista os dados para a data atual, os dados de alerta e movimentação não são coletados eventualmente (ex. de 30 em 30 minutos) são representados por hora, ou seja se entre 12:00h e 13:00h teve 5 movimentações/alertas a resposta será dada abaixo:
 
 Exemplo de requisição:
 | GET | {url}/storage/list/alerta |
@@ -504,67 +503,130 @@ Exemplo da resposta:
 [
   {
     "hora": "0:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   },
   {
     "hora": "1:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   },
   {
     "hora": "2:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   },
-  ...
+  {
+    "hora": "3:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "4:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "5:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "6:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "7:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "8:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "9:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "10:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "11:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
   {
     "hora": "12:00",
-    "data": "2020-09-02",
-    "quantidade": "5"
+    "valor": 0,
+    "data": "2020-09-23"
   },
-  ...
+  {
+    "hora": "13:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "14:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "15:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "16:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "17:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "18:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "19:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "20:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "21:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
   {
     "hora": "22:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   },
   {
     "hora": "23:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   }
 ]
 ```
 
-Já o restante dos dados é representado de acordo com a inserção do dado, ou seja:
-
-Exemplo de requisição:
-| GET | {url}/storage/list/temperatura |
-|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
-| Corpo da requisição | { "id": "2", "rangeType": "hoje" } |
-
-Exemplo da resposta:
-
-```
-[
-  {
-    "valor": "25.60",
-    "hora": "20:42",
-    "data": "2020-09-02"
-  },
-  {
-    "valor": "24.4",
-    "hora": "21:42",
-    "data": "2020-09-02"
-  }
-]
-```
 
 ##### Listagem para "data" específica
 
-Bem parecido com a listagem para "hoje", a única difereça é que a data deve ser informada, ja listando para "hoje" ele pega para a data atual. Os dados de alerta e movimentação não são coletados eventualmente (ex. de 30 em 30 minutos) são representados por hora, ou seja se entre 12:00h e 13:00h teve 5 movimentações/alertas a resposta será dada abaixo:
 
 Exemplo de requisição:
 | GET | {url}/storage/list/alerta |
@@ -578,61 +640,125 @@ Exemplo da resposta:
 [
   {
     "hora": "0:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   },
   {
     "hora": "1:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   },
   {
     "hora": "2:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   },
-  ...
+  {
+    "hora": "3:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "4:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "5:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "6:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "7:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "8:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "9:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "10:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "11:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
   {
     "hora": "12:00",
-    "data": "2020-09-02",
-    "quantidade": "5"
+    "valor": 0,
+    "data": "2020-09-23"
   },
-  ...
+  {
+    "hora": "13:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "14:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "15:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "16:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "17:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "18:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "19:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "20:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
+  {
+    "hora": "21:00",
+    "valor": 0,
+    "data": "2020-09-23"
+  },
   {
     "hora": "22:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   },
   {
     "hora": "23:00",
-    "data": "2020-09-02",
-    "quantidade": "0"
+    "valor": 0,
+    "data": "2020-09-23"
   }
 ]
-```
-
-Já o restante dos dados é representado de acordo com a inserção do dado, ou seja:
-
-Exemplo de requisição:
-| GET | {url}/storage/list/temperatura |
-|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Header da requisição | Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" |
-| Corpo da requisição | { "id": "2", "rangeType": "data", "data": "2020-09-02" } |
-
-Exemplo da resposta:
-
-```
-[
-  {
-    "valor": "25.60",
-    "hora": "20:42",
-    "data": "2020-09-02"
-  },
-  {
-    "valor": "24.4",
-    "hora": "21:42",
-    "data": "2020-09-02"
-  }
 ]
 ```
 
@@ -652,11 +778,11 @@ Exemplo da resposta:
 [
   {
     "data": "2020-09-01",
-    "quantidade": "10"
+    "valor": 10
   },
   {
     "data": "2020-09-03",
-    "quantidade": "2"
+    "valor": 2
   }
 ]
 ```
